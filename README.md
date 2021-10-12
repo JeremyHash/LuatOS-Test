@@ -1,39 +1,33 @@
 # LuatOS_TEST
 
-#### 介绍
-{**以下是 Gitee 平台说明，您可以替换此简介**
-Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用 Gitee 实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
+## 简介
+LuatOS_Test是针对合宙LuatOS的自动化测试工程，包含了测试用例测试，测试结果输出以及压力测试
 
-#### 软件架构
-软件架构说明
+## 结构
+LuatOS_Test包含LuatOS-Air和LuatOS-Soc两部分的测试代码
+对应目录下src下全部文件就是测试代码及资源文件
 
+## 使用方法
+### LuatOS-Air
+LuatOS-Air的测试需要先配置testConfig
+```lua
+-- 测试配置 设置为true代表开启此项测试
+testConfig = {
+    -- 8910 1603 1802S
+    modType = "1603",
+    -- single loop
+    testMode = "single",
+    gpsModType = "GK",
+    netLed = false,
+    consoleTest = false,
+    socketTest = true,
+    httpTest = false,
+    mqttTest = false,
+    ftpTest = false
+}
+```
+testMode设置为"single"，模块会进行单次的测试用例测试，并将结果从uart.USB即USB虚拟出的AT端口输出（输出格式例子：HttpTest.getTest PASS）
+设置为"loop"代表循环压力测试
 
-#### 安装教程
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 使用说明
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+## 烧录方法
+参考LuaTools使用方法烧录
