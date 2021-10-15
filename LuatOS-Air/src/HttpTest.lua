@@ -397,6 +397,37 @@ local function postTestCb(result, prompt, head, body)
     sys.publish("postTestFinished")
 end
 
+local function httpsPostTestCb(result, prompt, head, body)
+    local tag = "HttpTest.httpsPostTestCb"
+    if result then
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
+        if head then
+            log.info(tag .. ".Head", "遍历响应头")
+            for k, v in pairs(head) do
+                log.info(tag .. ".Head", k .. " : " .. v)
+            end
+        else
+            log.error(tag .. ".Head", "读取响应头FAIL")
+        end
+
+        if body then
+            log.info(tag .. ".Body", body)
+            log.info(tag .. ".BodyLen", body:len())
+            if #body > 0 then
+                outPutTestRes("HttpTest.httpsPostTest PASS")
+            end
+        else
+            log.error(tag .. ".Body", "读取响应体FAIL")
+        end
+    else
+        log.error(tag .. ".result", "FAIL")
+        outPutTestRes("HttpTest.httpsPostTest FAIL")
+        log.error(tag .. ".prompt", prompt)
+    end
+    sys.publish("httpsPostTestFinished")
+end
+
 local function postJsonTestCb(result, prompt, head, body)
     local tag = "HttpTest.postJsonTestCb"
     if result then
@@ -722,6 +753,31 @@ local function httpTestTask()
     http.request("POST", serverAddress .. "/", nil, nil, "PostTest", nil,
                  postTestCb)
     sys.waitUntil("postTestFinished")
+
+    local timestamp = os.time()
+    local productId = 15091999
+    local deviceId = "150919991"
+    local Master_APIkey = "ed3700e4413a491c9ad44aa620bdc9c6"
+    local signKey = "test"
+    local temp = signKey .. Master_APIkey .. timestamp
+    local signature = string.lower(tostring(crypto.sha256(temp)))
+    local password = 'kiVihCWYTb36JreNIm4w3N5eZWJAUcMoQi_h_dHUfvA'
+    local head = {
+        timestamp = timestamp,
+        signKey = "test",
+        signature = signature,
+        Content_Type = "application/json"
+    }
+    local body = {
+        productId = productId,
+        deviceId = deviceId,
+        password = password,
+        version = _G.VERSION
+    }
+    http.request("POST", "http://http.ctwing.cn:8991/auth", nil, head,
+                 json.encode(body), nil, httpsPostTestCb)
+
+    sys.publish("httpsPostTestFinished")
 
     local testJson = {
         ["imei"] = "123456789012345",

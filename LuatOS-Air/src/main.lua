@@ -11,14 +11,14 @@ LOG_LEVEL = log.LOGLEVEL_INFO
 
 -- 测试配置 设置为true代表开启此项测试
 testConfig = {
-    -- 8910 1603 1802S
-    modType = "1603",
+    -- 8910 1603S 1603E 1802S
+    modType = "1603E",
     -- single loop
-    testMode = "single",
+    testMode = "loop",
     gpsModType = "GK",
     netLed = false,
     consoleTest = false,
-    socketTest = true,
+    socketTest = false,
     httpTest = false,
     mqttTest = false,
     ftpTest = false
@@ -36,7 +36,6 @@ require "websocket"
 require "mqtt"
 require "ftp"
 require "pins"
-require "cc"
 require "lbsLoc"
 require "pm"
 require "nvm"
@@ -44,14 +43,23 @@ require "aLiYun"
 require "pb"
 require "ril"
 require "patch"
-require "wifiScan"
-require "scanCode"
-require "uiWin"
-require "audio"
-require "record"
 -- require "wdt"
 
-function outPutTestRes(data) uart.write(uart.USB, data .. "\r\n") end
+if testConfig.modType == "8910" or testConfig.modType == "1603E" then
+    require "cc"
+    require "wifiScan"
+    require "scanCode"
+    require "uiWin"
+    require "audio"
+    require "record"
+end
+
+function outPutTestRes(data)
+    if testConfig.testMode == "single" then
+        uart.write(uart.USB, data .. "\r\n")
+    end
+end
+
 function printTable(tbl, lv)
     lv = lv and lv .. "\t" or ""
     print(lv .. "{")
@@ -86,7 +94,7 @@ if testConfig.netLed == true then
         netLed.setup(true, 1, 4)
     elseif testConfig.modType == "1802S" then
         netLed.setup(true, 64, 65)
-    elseif testConfig.modType == "1603" then
+    elseif testConfig.modType == "1603E" or testConfig.modType == "1603S" then
         netLed.setup(true, 121, 35)
     end
 end
@@ -106,26 +114,26 @@ if testConfig.mqttTest == true then require "MqttTest" end
 
 if testConfig.ftpTest == true then require "FtpTest" end
 
-sys.taskInit(function()
-    while true do
-        log.info("PROJECT", PROJECT)
-        log.info("CORE", rtos.get_version())
-        log.info("USER_SCRIPT", VERSION)
-        log.info("LIB", sys.SCRIPT_LIB_VER)
-        log.info("FS_TOTAL_SIZE", rtos.get_fs_total_size() .. "Bytes")
-        log.info("FS_FREE_SIZE", rtos.get_fs_free_size() .. "Bytes")
-        log.info("RAM_USEAGE", collectgarbage("count") .. "KB")
-        log.info("SOCKET_STATUS", socket.isReady())
-        log.info("PERCENTAGE", rtos.get_env_usage() .. "%")
-        log.info("PWRON_REASON", rtos.poweron_reason())
-        local timeTable = misc.getClock()
-        log.info("TIME",
-                 string.format("%d-%d-%d %d:%d:%d", timeTable.year,
-                               timeTable.month, timeTable.day, timeTable.hour,
-                               timeTable.min, timeTable.sec))
-        sys.wait(30000)
-    end
-end)
+-- sys.taskInit(function()
+--     while true do
+--         log.info("PROJECT", PROJECT)
+--         log.info("CORE", rtos.get_version())
+--         log.info("USER_SCRIPT", VERSION)
+--         log.info("LIB", sys.SCRIPT_LIB_VER)
+--         log.info("FS_TOTAL_SIZE", rtos.get_fs_total_size() .. "Bytes")
+--         log.info("FS_FREE_SIZE", rtos.get_fs_free_size() .. "Bytes")
+--         log.info("RAM_USEAGE", collectgarbage("count") .. "KB")
+--         log.info("SOCKET_STATUS", socket.isReady())
+--         log.info("PERCENTAGE", rtos.get_env_usage() .. "%")
+--         log.info("PWRON_REASON", rtos.poweron_reason())
+--         local timeTable = misc.getClock()
+--         log.info("TIME",
+--                  string.format("%d-%d-%d %d:%d:%d", timeTable.year,
+--                                timeTable.month, timeTable.day, timeTable.hour,
+--                                timeTable.min, timeTable.sec))
+--         sys.wait(30000)
+--     end
+-- end)
 
 ntp.timeSync(nil, function(time, result)
     local tag = "ntpTimeSync"
