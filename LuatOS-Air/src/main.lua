@@ -11,18 +11,33 @@ LOG_LEVEL = log.LOGLEVEL_INFO
 
 -- 测试配置 设置为true代表开启此项测试
 testConfig = {
-    -- 8910 1603S 1603E 1802S
+    -- 8910 1603S 1603E
     modType = "1603E",
     -- single loop
     testMode = "loop",
     gpsModType = "GK",
-    netLed = false,
+    netLed = true,
     consoleTest = false,
+    lteTest = false,
     socketTest = false,
     httpTest = false,
     mqttTest = false,
-    ftpTest = false
+    ftpTest = false,
+    iotTest = false,
+    rtmpTest = false,
+    audioTest = false,
+    dispTest = false,
+    lvglTest = false,
+    peripheralsTest = false,
+    fsTest = false,
+    gpioTest = false,
+    lbsLocTest = false,
+    bleTest = false,
+    gpsTest = false,
+    keypadTest = false
 }
+
+-- cmux ppp alarm  simdetect usb download factory fota
 
 require "sys"
 require "net"
@@ -114,6 +129,8 @@ if testConfig.mqttTest == true then require "MqttTest" end
 
 if testConfig.ftpTest == true then require "FtpTest" end
 
+if testConfig.lbsLocTest == true then require "LbsLocTest" end
+
 -- sys.taskInit(function()
 --     while true do
 --         log.info("PROJECT", PROJECT)
@@ -131,7 +148,7 @@ if testConfig.ftpTest == true then require "FtpTest" end
 --                  string.format("%d-%d-%d %d:%d:%d", timeTable.year,
 --                                timeTable.month, timeTable.day, timeTable.hour,
 --                                timeTable.min, timeTable.sec))
---         sys.wait(30000)
+--         sys.wait(3000)
 --     end
 -- end)
 

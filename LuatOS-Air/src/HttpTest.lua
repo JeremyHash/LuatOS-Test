@@ -717,8 +717,8 @@ local function httpTestTask()
                  get302TestCb)
     sys.waitUntil("get302TestFinished")
 
-    http.request("GET", "https://www.baidu.com", {caCert = "ca.cer"}, nil, nil,
-                 nil, getWithCATestCb)
+    http.request("GET", "https://www.baidu.com", {caCert = "baiduca.cer"}, nil,
+                 nil, nil, getWithCATestCb)
     sys.waitUntil("getWithCATestFinished")
 
     -- http.request("GET", "https://36.7.136.116:4434", {
@@ -731,9 +731,9 @@ local function httpTestTask()
     log.info("创建文件前可用空间 " .. rtos.get_fs_free_size() ..
                  " Bytes")
     if rtos.make_dir("/Jeremy") then
-        log.info("HttpTest.GetTestAndSaveToBigFile.makeDir", "SUCCESS")
+        log.info("HttpTest.GetAndSaveToBigFileTest.makeDir", "SUCCESS")
     else
-        log.error("HttpTest.GetTestAndSaveToBigFile.makeDir", "FAIL")
+        log.error("HttpTest.GetAndSaveToBigFileTest.makeDir", "FAIL")
     end
     http.request("GET", serverAddress .. "/download/600K", nil, nil, nil, nil,
                  getAndSaveToBigFileTestCb, "/Jeremy/600K")
@@ -742,9 +742,9 @@ local function httpTestTask()
     log.info("创建文件前可用空间 " .. rtos.get_fs_free_size() ..
                  " Bytes")
     if rtos.make_dir("/Jeremy") then
-        log.info("HttpTest.GetTestAndSaveToSmallFile.makeDir", "SUCCESS")
+        log.info("HttpTest.GetAndSaveToSmallFileTest.makeDir", "SUCCESS")
     else
-        log.error("HttpTest.GetTestAndSaveToSmallFile.makeDir", "FAIL")
+        log.error("HttpTest.GetAndSaveToSmallFileTest.makeDir", "FAIL")
     end
     http.request("GET", serverAddress .. "/download/2K", nil, nil, nil, nil,
                  getAndSaveToSmallFileTestCb, "/Jeremy/2K")
