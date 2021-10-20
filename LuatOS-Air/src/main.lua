@@ -26,7 +26,6 @@ testConfig = {
     iotTest = false,
     rtmpTest = false,
     audioTest = false,
-    dispTest = false,
     lvglTest = false,
     peripheralsTest = false,
     fsTest = false,
