@@ -130,6 +130,10 @@ if testConfig.ftpTest == true then require "FtpTest" end
 
 if testConfig.lbsLocTest == true then require "LbsLocTest" end
 
+if testConfig.peripheralsTest == true then require "PeripheralsTest" end
+
+if testConfig.gpsTest == true then require "GpsTest" end
+
 -- sys.taskInit(function()
 --     while true do
 --         log.info("PROJECT", PROJECT)
