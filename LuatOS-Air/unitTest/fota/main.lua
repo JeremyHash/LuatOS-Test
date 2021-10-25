@@ -6,16 +6,18 @@ require "update"
 require "log"
 LOG_LEVEL = log.LOGLEVEL_INFO
 
+local tag = "fotaTest"
+
 sys.taskInit(function()
     sys.waitUntil("IP_READY_IND")
-    log.info("UpdateTest",
+    log.info(tag,
              "成功访问网络, FOTA升级测试开始，当前版本 : " ..
                  rtos.get_version() .. " VERSION : " .. VERSION)
     -- IOT平台
     update.request()
     -- 自定义服务器
     -- update.request(nil, "http://wiki.airm2m.com:48000/fota.bin")
-    sys.timerLoopStart(log.info, 1000, "testUpdate.version", rtos.get_version(),
+    sys.timerLoopStart(log.info, 1000, tag .. ".version", rtos.get_version(),
                        _G.VERSION)
 end)
 

@@ -1,8 +1,10 @@
 PROJECT = "uartTest"
 VERSION = "1.0.0"
 
-require"utils"
-require"pm"
+require "sys"
+require "ntp"
+require "utils"
+require "pm"
 require "log"
 LOG_LEVEL = log.LOGLEVEL_INFO
 
