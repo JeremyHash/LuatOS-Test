@@ -177,6 +177,45 @@ local function lteTestTask()
         log.error("BitTest.arshift", "FAIL")
         outPutTestRes("LteTest.BitTest.arshift FAIL")
     end
+
+    tag = "LteTest.PackTest"
+    local res1,res2= string.toHex(pack.pack(">H", 0x3234))
+    if res1 == "3234" and res2 == 2 then 
+        log.info("PackTest1","SUCCESS")
+        outPutTestRes("LteTest.PackTest1 PASS")
+    else 
+        log.info("PackTest1","FAIL")
+        outPutTestRes("LteTest.PackTest1 FAIL")
+    end
+
+    local res1,res2= string.toHex(pack.pack("<H", 0x3234))
+    if res1 == "3432" and res2 == 2 then 
+        log.info("PackTest2","SUCCESS")
+        outPutTestRes("LteTest.PackTest2 PASS")
+    else 
+        log.info("PackTest2","FAIL")
+        outPutTestRes("LteTest.PackTest2 FAIL")
+    end
+
+    local res1,res2= string.toHex(pack.pack(">AHb", "LUAT", 100, 10))
+    if res1 == "4C55415400640A" and res2 == 7 then 
+        log.info("PackTest3","SUCCESS")
+        outPutTestRes("LteTest.PackTest3 PASS")
+    else 
+        log.info("PackTest3","FAIL")
+        outPutTestRes("LteTest.PackTest3 FAIL")
+    end
+    
+    local stringtest = pack.pack(">AHb", "luat", 999, 10)
+    local res1,res2,res3= pack.unpack(string.sub(stringtest, 5, -1), ">Hb")
+    if res1 == 4 and res2 == 999 and res3 == 10 then 
+        log.info("PackTest4","SUCCESS")
+        outPutTestRes("LteTest.PackTest4 PASS")
+    else 
+        log.info("PackTest4","FAIL")
+        outPutTestRes("LteTest.PackTest4 FAIL")
+    end
+
 end
 
 sys.taskInit(function()
