@@ -12,13 +12,13 @@ LOG_LEVEL = log.LOGLEVEL_INFO
 -- 测试配置 设置为true代表开启此项测试
 testConfig = {
     -- 8910 1603S 1603E
-    modType = "1603E",
+    modType = "8910",
     -- single loop
-    testMode = "loop",
+    testMode = "single",
     gpsModType = "GK",
     netLed = true,
     consoleTest = false,
-    lteTest = false,
+    lteTest = true,
     socketTest = false,
     httpTest = false,
     mqttTest = false,
@@ -119,6 +119,8 @@ if testConfig.consoleTest == true then
     require "console"
     console.setup(uart.USB, 921600)
 end
+
+if testConfig.lteTest == true then require "LteTest" end
 
 if testConfig.socketTest == true then require "SocketTest" end
 
