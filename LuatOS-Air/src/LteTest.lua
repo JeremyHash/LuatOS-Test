@@ -216,6 +216,210 @@ local function lteTestTask()
         outPutTestRes("LteTest.PackTest4 FAIL")
     end
 
+    tag = "LteTest.StringTest" 
+    local testStr = "Luat is very NB,NB (10086)"
+
+    if string.upper(testStr) == "LUAT IS VERY NB,NB (10086)" then
+        log.info("StringTest.upper", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.upper PASS")
+    else
+        log.error("StringTest.upper", "FAIL")
+        outPutTestRes("LteTest.StringTest.upper FAIL")
+    end
+
+    if string.lower(testStr) == "luat is very nb,nb (10086)" then
+        log.info("StringTest.lower", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.lower PASS")
+    else
+        log.error("StringTest.lower", "FAIL")
+        outPutTestRes("LteTest.StringTest.lower FAIL")
+    end
+    
+    local res1,res2 = string.gsub(testStr, "L%w%w%w", "AirM2M")
+    if res1 == "AirM2M is very NB,NB (10086)" then
+        log.info("StringTest.gsub", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.gsub PASS")
+    else
+        log.error("StringTest.gsub", "FAIL")
+        outPutTestRes("LteTest.StringTest.gsub FAIL")
+    end
+
+    local res1,res2 = string.find(testStr, "NB", 1, true)
+    if res1 == 14 and res2 == 15 then
+        log.info("StringTest.find1", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.find1 PASS")
+    else
+        log.error("StringTest.find1", "FAIL")
+        outPutTestRes("LteTest.StringTest.find1 FAIL")
+    end
+
+    local res1,res2 = string.find(testStr, "N%w", 16, false)
+    if res1 == 17 and res2 == 18 then
+        log.info("StringTest.find2", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.find2 PASS")
+    else
+        log.error("StringTest.find2", "FAIL")
+        outPutTestRes("LteTest.StringTest.find2 FAIL")
+    end
+
+    if string.reverse(testStr) == ")68001( BN,BN yrev si tauL" then
+        log.info("StringTest.reverse", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.reverse PASS")
+    else
+        log.error("StringTest.reverse", "FAIL")
+        outPutTestRes("LteTest.StringTest.reverse FAIL")
+    end
+
+    local i = 43981
+    if string.format("This is %d test string : %s", i, testStr) == "This is 43981 test string : Luat is very NB,NB (10086)" then
+        log.info("StringTest.format1", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.format1 PASS")
+    else
+        log.error("StringTest.format1", "FAIL")
+        outPutTestRes("LteTest.StringTest.format1 FAIL")
+    end
+
+    if string.format("%d(Hex) = %x / %X", i, i, i) == "43981(Hex) = abcd / ABCD" then
+        log.info("StringTest.format2", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.format2 PASS")
+    else
+        log.error("StringTest.format2", "FAIL")
+        outPutTestRes("LteTest.StringTest.format2 FAIL")
+    end
+
+    if string.char(33, 48, 49, 50, 97, 98, 99) == "!012abc" then
+        log.info("StringTest.Char", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.Char PASS")
+    else
+        log.error("StringTest.Char", "FAIL")
+        outPutTestRes("LteTest.StringTest.Char FAIL")
+    end
+
+    if string.byte("abc", 1) == 97 then
+        log.info("StringTest.Byte1", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.Byte1 PASS")
+    else
+        log.error("StringTest.Byte1", "FAIL")
+        outPutTestRes("LteTest.StringTest.Byte1 FAIL")
+    end
+
+    if string.byte("abc", 2) == 98 then
+        log.info("StringTest.Byte2", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.Byte2 PASS")
+    else
+        log.error("StringTest.Byte2", "FAIL")
+        outPutTestRes("LteTest.StringTest.Byte2 FAIL")
+    end
+
+    if string.byte("abc", 3) == 99 then
+        log.info("StringTest.Byte3", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.Byte3 PASS")
+    else
+        log.error("StringTest.Byte3", "FAIL")
+        outPutTestRes("LteTest.StringTest.Byte3 FAIL")
+    end
+
+    if string.len(testStr) == 26 then
+        log.info("StringTest.len", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.len PASS")
+    else
+        log.error("StringTest.len", "FAIL")
+        outPutTestRes("LteTest.StringTest.len FAIL")
+    end
+
+    if string.rep(testStr, 2) == "Luat is very NB,NB (10086)Luat is very NB,NB (10086)" then
+        log.info("StringTest.rep", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.rep PASS")
+    else
+        log.error("StringTest.rep", "FAIL")
+        outPutTestRes("LteTest.StringTest.rep FAIL")
+    end
+
+    if string.match(testStr, "Luat (..) very NB") == "is" then
+        log.info("StringTest.match", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.match PASS")
+    else
+        log.error("StringTest.match", "FAIL")
+        outPutTestRes("LteTest.StringTest.match FAIL")
+    end
+
+    if string.sub(testStr, 1, 4) == "Luat" then
+        log.info("StringTest.sub", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.sub PASS")
+    else
+        log.error("StringTest.sub", "FAIL")
+        outPutTestRes("LteTest.StringTest.sub FAIL")
+    end
+
+    local res1,res2 = string.toHex(testStr)
+    if res1 == "4C7561742069732076657279204E422C4E422028313030383629" and res2 == 26 then
+        log.info("StringTest.toHex1", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.toHex1 PASS")
+    else
+        log.error("StringTest.toHex1", "FAIL")
+        outPutTestRes("LteTest.StringTest.toHex1 FAIL")
+    end
+
+    local res1,res2 = string.toHex(testStr, ",")
+    if res1 == "4C,75,61,74,20,69,73,20,76,65,72,79,20,4E,42,2C,4E,42,20,28,31,30,30,38,36,29," and res2 == 26 then
+        log.info("StringTest.toHex2", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.toHex2 PASS")
+    else
+        log.error("StringTest.toHex2", "FAIL")
+        outPutTestRes("LteTest.StringTest.toHex2 FAIL")
+    end
+
+    local res1,res2 = string.fromHex("313233616263")
+    if res1 == "123abc" and res2 == 6 then
+        log.info("StringTest.fromHex", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.fromHex PASS")
+    else
+        log.error("StringTest.fromHex", "FAIL")
+        outPutTestRes("LteTest.StringTest.fromHex FAIL")
+    end
+
+    if string.utf8Len("Luat中国こにちはПривет🤣❤💚☢") == 20 then
+        log.info("StringTest.utf8Len", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.utf8Len PASS")
+    else
+        log.error("StringTest.utf8Len", "FAIL")
+        outPutTestRes("LteTest.StringTest.utf8Len FAIL")
+    end
+
+    if string.rawurlEncode("####133Luat中国こにちはПривет🤣❤💚☢") == "%23%23%23%23133Luat%E4%B8%AD%E5%9B%BD%E3%81%93%E3%81%AB%E3%81%A1%E3%81%AF%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%F0%9F%A4%A3%E2%9D%A4%F0%9F%92%9A%E2%98%A2" then
+        log.info("StringTest.rawurlEncode", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.rawurlEncode PASS")
+    else
+        log.error("StringTest.rawurlEncode", "FAIL")
+        outPutTestRes("LteTest.StringTest.rawurlEncode FAIL")
+    end
+
+    if string.urlEncode("####133Luat中国こにちはПривет🤣❤💚☢") == "%23%23%23%23133Luat%E4%B8%AD%E5%9B%BD%E3%81%93%E3%81%AB%E3%81%A1%E3%81%AF%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%F0%9F%A4%A3%E2%9D%A4%F0%9F%92%9A%E2%98%A2" then
+        log.info("StringTest.urlEncode", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.urlEncode PASS")
+    else
+        log.error("StringTest.urlEncode", "FAIL")
+        outPutTestRes("LteTest.StringTest.urlEncode FAIL")
+    end
+
+    if string.formatNumberThousands(1234567890) == "1,234,567,890" then
+        log.info("StringTest.formatNumberThousands", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.formatNumberThousands PASS")
+    else
+        log.error("StringTest.formatNumberThousands", "FAIL")
+        outPutTestRes("LteTest.StringTest.formatNumberThousands FAIL")
+    end
+
+    local table = string.split("Luat,is,very,nb", ",")
+    if table[1] == "Luat" and table[2] == "is" and table[3] == "very" and table[4] == "nb" then
+        log.info("StringTest.split", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.split PASS")
+    else
+        log.error("StringTest.split", "FAIL")
+        outPutTestRes("LteTest.StringTest.split FAIL")
+    end
+
+
 end
 
 sys.taskInit(function()
