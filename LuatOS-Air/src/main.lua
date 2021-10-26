@@ -18,7 +18,7 @@ testConfig = {
     gpsModType = "GK",
     netLed = true,
     consoleTest = false,
-    lteTest = true,
+    lteTest = false,
     socketTest = false,
     httpTest = false,
     mqttTest = false,
@@ -129,6 +129,8 @@ if testConfig.httpTest == true then require "HttpTest" end
 if testConfig.mqttTest == true then require "MqttTest" end
 
 if testConfig.ftpTest == true then require "FtpTest" end
+
+if testConfig.fsTest == true then require "FsTest" end
 
 if testConfig.rtmpTest == true then require "RtmpTest" end
 
