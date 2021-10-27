@@ -91,12 +91,11 @@ end
 
 local function fsTestTask()
 
-       tag = "FsTest.sdCardTest"
        local tag = "FsTest.sdCardTest"
 	    local sdcardPath = "/sdcard0"
-	       sys.wait(waitTime1)
+	    sys.wait(waitTime1)
 	    log.info(tag .. ".mount", "开始挂载SD卡")
-	       local mountRes = io.mount(io.SDCARD)
+	    local mountRes = io.mount(io.SDCARD)
 	    if mountRes == 1 then
 	    	log.info(tag .. ".mount", "SD卡挂载SUCCESS")
 	       	log.info(tag .. ".totalSize", rtos.get_fs_total_size(1, 1) .. " KB")
@@ -117,7 +116,7 @@ local function fsTestTask()
                            writeFileW(testPath .. "/FsWriteTest2.txt", "This is a FsWriteWTest")
                            readFile(testPath .. "/FsWriteTest2.txt")
                            if io.fileSize(testPath .. "/FsWriteTest1.txt") > 200 then
-                               log.info(tag .. "." .. testPath .. "/FsWriteTest1.txt", "文件大小超过200，清空文件内容")
+                               log.info(tag .. "." .. testPath .. "/FsWriteTest1.txt", "文件大小超过200byte，清空文件内容")
                                deleteFile(testPath .. "/FsWriteTest1.txt")
                                log.info(tag .. "   SUCCESS")
                                outPutTestRes("FsTest.sdCardTest  PASS")
@@ -141,6 +140,59 @@ local function fsTestTask()
             outPutTestRes("FsTest.sdCardTest  FAIL")
 	    end
 	       io.unmount(io.SDCARD)
+
+
+    local tag = "FsTest.insideFlashTest"
+    sys.wait(waitTime1)
+    log.info(tag .. ".getDirContent./")
+    getDirContent("/")
+    local testPath = "/FsTestPath"
+    if io.exists(testPath .. "/FsWriteTest1.txt") then
+        log.info(tag .. ".exists." .. testPath .. "/FsWriteTest1.txt", "文件存在,准备删除该文件")
+        deleteFile(testPath .. "/FsWriteTest1.txt")
+    else
+        log.info(tag .. ".exists." .. testPath .. "/FsWriteTest1.txt", "文件不存在")
+    end
+    if rtos.make_dir(testPath) == true then
+        log.info(tag .. ".make_dir", "SUCCESS")
+        while true do
+            writeFileA(testPath .. "/FsWriteTest1.txt", "This is a FsWriteATest")
+            log.info(tag .. "." .. testPath .. "/FsWriteTest1.txt.fileSize", io.fileSize(testPath .. "/FsWriteTest1.txt") .. "Bytes")
+            writeFileW(testPath .. "/FsWriteTest2.txt", "This is a FsWriteWTest")
+            readFile(testPath .. "/FsWriteTest2.txt")
+            log.info(tag .. ".readFile." .. testPath .. "/FsWriteTest2.txt", io.readFile(testPath .. "/FsWriteTest2.txt"))
+            io.writeFile(testPath .. "/FsWriteTest3.txt", "test")
+            readFile(testPath .. "/FsWriteTest3.txt")
+            local pathTable = io.pathInfo(testPath .. "/FsWriteTest1.txt")
+            for k, v in pairs(pathTable) do
+                log.info(tag .. ".pathInfo." .. k, v)
+            end
+            local file = io.open("/FileSeekTest.txt", "w")
+            file:write("FileSeekTest")
+            file:close()
+            local file = io.open("/FileSeekTest.txt", "r")
+            log.info(tag .. ".seek", file:seek("end"))
+            log.info(tag .. ".seek", file:seek("set"))
+            log.info(tag .. ".seek", file:seek())
+            log.info(tag .. ".seek", file:seek("cur", 10))
+            log.info(tag .. ".seek", file:seek("cur"))
+            log.info(tag .. ".seek", file:read(1))
+            log.info(tag .. ".seek", file:seek("cur"))
+            file:close()
+            log.info(tag .. "./FileSeekTest.txt.readStream", io.readStream("/FileSeekTest.txt", 3, 5))
+            if io.fileSize(testPath .. "/FsWriteTest1.txt") > 200 then
+                log.info(tag .. "." .. testPath .. "/FsWriteTest1.txt", "文件大小超过200byte，清空文件内容")
+                deleteFile(testPath .. "/FsWriteTest1.txt")
+                log.info(tag .. "   SUCCESS")
+                outPutTestRes("FsTest.insideFlashTest  PASS")
+                break
+                
+            end
+            sys.wait(waitTime2)
+        end
+    else
+        log.error(tag .. ".make_dir", "FAIL")
+    end
 
 end
 
