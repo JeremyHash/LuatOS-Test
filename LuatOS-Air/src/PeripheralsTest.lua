@@ -40,7 +40,7 @@ local tag = "PeripheralsTest"
 local function peripheralsTestTask()
 
     -- ADC
-    rtos.sleep(1000)
+    sys.wait(2000)
     adc.open(ADC0)
     adc.open(ADC1)
     log.info(tag .. ".open", "ADC打开")
@@ -58,87 +58,87 @@ local function peripheralsTestTask()
     outPutTestRes("PeripheralsTest.ADC.close SUCCESS")
 
     -- I2C外设 使用 AHT10 温湿度传感器
-    -- local setupResult = i2c.setup(i2cId, i2cSpeed)
-    -- if setupResult == i2cSpeed then
-    --     log.info(tag .. ".I2C.setup", "SUCCESS")
-    --     outPutTestRes("PeripheralsTest.I2C.setup SUCCESS")
-    --     rtos.sleep(1000)
-    --     local sentDataSize = i2c.send(i2cId, i2cSlaveAddr, {0xac, 0x22, 0x00})
-    --     if sentDataSize == 3 then
-    --         log.info(tag .. ".I2C.成功发送字节数", sentDataSize)
-    --         outPutTestRes("PeripheralsTest.I2C.send SUCCESS")
-    --         rtos.sleep(1000)
-    --         local receivedData = i2c.recv(i2cId, i2cSlaveAddr, 6)
-    --         if #receivedData == 6 then
-    --             log.info(tag .. ".I2C.receivedDataHex", receivedData:toHex())
-    --             outPutTestRes("PeripheralsTest.I2C.receive SUCCESS")
-    --             local tempBit = string.byte(receivedData, 6) + 0x100 *
-    --                                 string.byte(receivedData, 5) + 0x10000 *
-    --                                 bit.band(string.byte(receivedData, 4), 0x0F)
-    --             local humidityBit =
-    --                 bit.band(string.byte(receivedData, 4), 0xF0) + 0x100 *
-    --                     string.byte(receivedData, 3) + 0x10000 *
-    --                     string.byte(receivedData, 2)
-    --             humidityBit = bit.rshift(humidityBit, 4)
-    --             log.info(tag .. ".I2C.tempBit", tempBit)
-    --             log.info(tag .. ".I2C.humidityBit", humidityBit)
-    --             local calcTemp = (tempBit / 1048576) * 200 - 50
-    --             local calcHum = humidityBit / 1048576
-    --             log.info(tag .. ".I2C.当前温度",
-    --                      string.format("%.1f℃", calcTemp))
-    --             log.info(tag .. ".I2C.当前湿度",
-    --                      string.format("%.1f%%", calcHum * 100))
-    --             i2c.close(i2cId)
-    --             rtos.sleep(1000)
-    --         else
-    --             log.error(tag .. ".I2C.receive", "FAIL")
-    --             outPutTestRes("PeripheralsTest.I2C.receive FAIL")
-    --             i2c.close(i2cId)
-    --             rtos.sleep(1000)
-    --         end
-    --     else
-    --         log.error(tag .. ".I2C.send", "FAIL")
-    --         outPutTestRes("PeripheralsTest.I2C.send FAIL")
-    --         i2c.close(i2cId)
-    --         rtos.sleep(1000)
-    --     end
-    -- else
-    --     log.error(tag .. ".I2C.setup", "FAIL")
-    --     outPutTestRes("PeripheralsTest.I2C.setup FAIL")
-    --     i2c.close(i2cId)
-    --     rtos.sleep(1000)
-    -- end
+    local setupResult = i2c.setup(i2cId, i2cSpeed)
+    if setupResult == i2cSpeed then
+        log.info(tag .. ".I2C.setup", "SUCCESS")
+        outPutTestRes("PeripheralsTest.I2C.setup SUCCESS")
+        sys.wait(1000)
+        local sentDataSize = i2c.send(i2cId, i2cSlaveAddr, {0xac, 0x22, 0x00})
+        if sentDataSize == 3 then
+            log.info(tag .. ".I2C.成功发送字节数", sentDataSize)
+            outPutTestRes("PeripheralsTest.I2C.send SUCCESS")
+            sys.wait(1000)
+            local receivedData = i2c.recv(i2cId, i2cSlaveAddr, 6)
+            if #receivedData == 6 then
+                log.info(tag .. ".I2C.receivedDataHex", receivedData:toHex())
+                outPutTestRes("PeripheralsTest.I2C.receive SUCCESS")
+                local tempBit = string.byte(receivedData, 6) + 0x100 *
+                                    string.byte(receivedData, 5) + 0x10000 *
+                                    bit.band(string.byte(receivedData, 4), 0x0F)
+                local humidityBit =
+                    bit.band(string.byte(receivedData, 4), 0xF0) + 0x100 *
+                        string.byte(receivedData, 3) + 0x10000 *
+                        string.byte(receivedData, 2)
+                humidityBit = bit.rshift(humidityBit, 4)
+                log.info(tag .. ".I2C.tempBit", tempBit)
+                log.info(tag .. ".I2C.humidityBit", humidityBit)
+                local calcTemp = (tempBit / 1048576) * 200 - 50
+                local calcHum = humidityBit / 1048576
+                log.info(tag .. ".I2C.当前温度",
+                         string.format("%.1f℃", calcTemp))
+                log.info(tag .. ".I2C.当前湿度",
+                         string.format("%.1f%%", calcHum * 100))
+                i2c.close(i2cId)
+                sys.wait(1000)
+            else
+                log.error(tag .. ".I2C.receive", "FAIL")
+                outPutTestRes("PeripheralsTest.I2C.receive FAIL")
+                i2c.close(i2cId)
+                sys.wait(1000)
+            end
+        else
+            log.error(tag .. ".I2C.send", "FAIL")
+            outPutTestRes("PeripheralsTest.I2C.send FAIL")
+            i2c.close(i2cId)
+            sys.wait(1000)
+        end
+    else
+        log.error(tag .. ".I2C.setup", "FAIL")
+        outPutTestRes("PeripheralsTest.I2C.setup FAIL")
+        i2c.close(i2cId)
+        sys.wait(1000)
+    end
 
     -- SPI外设 使用 W25Qxx
-    -- local spiSetupRes = spi.setup(spiId, 0, 0, 8, 100000, 1)
-    -- if spiSetupRes == 0 then
-    --     log.error(tag .. ".SPI.setup", "FAIL")
-    --     outPutTestRes("PeripheralsTest.SPI.setup FAIL")
-    --     rtos.sleep(1000)
-    -- elseif spiSetupRes == 1 then
-    --     log.info(tag .. ".SPI.setup", "SUCCESS")
-    --     outPutTestRes("PeripheralsTest.SPI.setup SUCCESS")
-    --     spi.send_recv(spiId, string.char(0x06))
-    --     rtos.sleep(1000)
-    --     local flashInfo = spi.send_recv(spiId, string.char(0x90, 0, 0, 0, 0, 0))
-    --     log.info(tag .. ".SPI.readFlashInfo", string.toHex(flashInfo))
-    --     local manufactureID, deviceID = string.byte(flashInfo, 5, 6)
-    --     log.info(tag .. ".SPI.FlashName", flashList[manufactureID * 256 + deviceID])
-    --     rtos.sleep(100)
-    --     spi.send_recv(spiId, string.char(0x06))
-    --     rtos.sleep(100)
-    --     spi.send_recv(spiId, string.char(0x20, 0, 0x10, 0))
-    --     rtos.sleep(100)
-    --     spi.send_recv(spiId, string.char(0x06))
-    --     rtos.sleep(100)
-    --     spi.send_recv(spiId, string.char(0x02, 0, 0x10, 0) .. "LuaTaskSPITest")
-    --     rtos.sleep(100)
-    --     log.info(tag .. ".SPI.readData",
-    --              spi.send_recv(spiId, string.char(0x03, 0, 0x10, 0) ..
-    --                                string.rep("1", 14)):sub(5))
-    --     spi.close(spiId)
-    --     rtos.sleep(1000)
-    -- end
+    local spiSetupRes = spi.setup(spiId, 0, 0, 8, 100000, 1)
+    if spiSetupRes == 0 then
+        log.error(tag .. ".SPI.setup", "FAIL")
+        outPutTestRes("PeripheralsTest.SPI.setup FAIL")
+        sys.wait(1000)
+    elseif spiSetupRes == 1 then
+        log.info(tag .. ".SPI.setup", "SUCCESS")
+        outPutTestRes("PeripheralsTest.SPI.setup SUCCESS")
+        spi.send_recv(spiId, string.char(0x06))
+        sys.wait(1000)
+        local flashInfo = spi.send_recv(spiId, string.char(0x90, 0, 0, 0, 0, 0))
+        log.info(tag .. ".SPI.readFlashInfo", string.toHex(flashInfo))
+        local manufactureID, deviceID = string.byte(flashInfo, 5, 6)
+        log.info(tag .. ".SPI.FlashName", flashList[manufactureID * 256 + deviceID])
+        sys.wait(100)
+        spi.send_recv(spiId, string.char(0x06))
+        sys.wait(100)
+        spi.send_recv(spiId, string.char(0x20, 0, 0x10, 0))
+        sys.wait(100)
+        spi.send_recv(spiId, string.char(0x06))
+        sys.wait(100)
+        spi.send_recv(spiId, string.char(0x02, 0, 0x10, 0) .. "LuaTaskSPITest")
+        sys.wait(100)
+        log.info(tag .. ".SPI.readData",
+                 spi.send_recv(spiId, string.char(0x03, 0, 0x10, 0) ..
+                                   string.rep("1", 14)):sub(5))
+        spi.close(spiId)
+        sys.wait(1000)
+    end
 end
 
 sys.taskInit(function()

@@ -136,6 +136,8 @@ if testConfig.peripheralsTest == true then require "PeripheralsTest" end
 
 if testConfig.gpsTest == true then require "GpsTest" end
 
+if testConfig.audioTest == true then require "AudioTest" end
+
 -- sys.taskInit(function()
 --     while true do
 --         log.info("PROJECT", PROJECT)
