@@ -130,6 +130,10 @@ if testConfig.mqttTest == true then require "MqttTest" end
 
 if testConfig.ftpTest == true then require "FtpTest" end
 
+if testConfig.fsTest == true then require "FsTest" end
+
+if testConfig.rtmpTest == true then require "RtmpTest" end
+
 if testConfig.lbsLocTest == true then require "LbsLocTest" end
 
 if testConfig.peripheralsTest == true then require "PeripheralsTest" end

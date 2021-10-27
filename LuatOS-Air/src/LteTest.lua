@@ -216,6 +216,338 @@ local function lteTestTask()
         outPutTestRes("LteTest.PackTest4 FAIL")
     end
 
+    tag = "LteTest.StringTest" 
+    local testStr = "Luat is very NB,NB (10086)"
+
+    if string.upper(testStr) == "LUAT IS VERY NB,NB (10086)" then
+        log.info("StringTest.upper", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.upper PASS")
+    else
+        log.error("StringTest.upper", "FAIL")
+        outPutTestRes("LteTest.StringTest.upper FAIL")
+    end
+
+    if string.lower(testStr) == "luat is very nb,nb (10086)" then
+        log.info("StringTest.lower", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.lower PASS")
+    else
+        log.error("StringTest.lower", "FAIL")
+        outPutTestRes("LteTest.StringTest.lower FAIL")
+    end
+    
+    local res1,res2 = string.gsub(testStr, "L%w%w%w", "AirM2M")
+    if res1 == "AirM2M is very NB,NB (10086)" then
+        log.info("StringTest.gsub", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.gsub PASS")
+    else
+        log.error("StringTest.gsub", "FAIL")
+        outPutTestRes("LteTest.StringTest.gsub FAIL")
+    end
+
+    local res1,res2 = string.find(testStr, "NB", 1, true)
+    if res1 == 14 and res2 == 15 then
+        log.info("StringTest.find1", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.find1 PASS")
+    else
+        log.error("StringTest.find1", "FAIL")
+        outPutTestRes("LteTest.StringTest.find1 FAIL")
+    end
+
+    local res1,res2 = string.find(testStr, "N%w", 16, false)
+    if res1 == 17 and res2 == 18 then
+        log.info("StringTest.find2", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.find2 PASS")
+    else
+        log.error("StringTest.find2", "FAIL")
+        outPutTestRes("LteTest.StringTest.find2 FAIL")
+    end
+
+    if string.reverse(testStr) == ")68001( BN,BN yrev si tauL" then
+        log.info("StringTest.reverse", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.reverse PASS")
+    else
+        log.error("StringTest.reverse", "FAIL")
+        outPutTestRes("LteTest.StringTest.reverse FAIL")
+    end
+
+    local i = 43981
+    if string.format("This is %d test string : %s", i, testStr) == "This is 43981 test string : Luat is very NB,NB (10086)" then
+        log.info("StringTest.format1", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.format1 PASS")
+    else
+        log.error("StringTest.format1", "FAIL")
+        outPutTestRes("LteTest.StringTest.format1 FAIL")
+    end
+
+    if string.format("%d(Hex) = %x / %X", i, i, i) == "43981(Hex) = abcd / ABCD" then
+        log.info("StringTest.format2", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.format2 PASS")
+    else
+        log.error("StringTest.format2", "FAIL")
+        outPutTestRes("LteTest.StringTest.format2 FAIL")
+    end
+
+    if string.char(33, 48, 49, 50, 97, 98, 99) == "!012abc" then
+        log.info("StringTest.Char", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.Char PASS")
+    else
+        log.error("StringTest.Char", "FAIL")
+        outPutTestRes("LteTest.StringTest.Char FAIL")
+    end
+
+    if string.byte("abc", 1) == 97 then
+        log.info("StringTest.Byte1", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.Byte1 PASS")
+    else
+        log.error("StringTest.Byte1", "FAIL")
+        outPutTestRes("LteTest.StringTest.Byte1 FAIL")
+    end
+
+    if string.byte("abc", 2) == 98 then
+        log.info("StringTest.Byte2", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.Byte2 PASS")
+    else
+        log.error("StringTest.Byte2", "FAIL")
+        outPutTestRes("LteTest.StringTest.Byte2 FAIL")
+    end
+
+    if string.byte("abc", 3) == 99 then
+        log.info("StringTest.Byte3", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.Byte3 PASS")
+    else
+        log.error("StringTest.Byte3", "FAIL")
+        outPutTestRes("LteTest.StringTest.Byte3 FAIL")
+    end
+
+    if string.len(testStr) == 26 then
+        log.info("StringTest.len", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.len PASS")
+    else
+        log.error("StringTest.len", "FAIL")
+        outPutTestRes("LteTest.StringTest.len FAIL")
+    end
+
+    if string.rep(testStr, 2) == "Luat is very NB,NB (10086)Luat is very NB,NB (10086)" then
+        log.info("StringTest.rep", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.rep PASS")
+    else
+        log.error("StringTest.rep", "FAIL")
+        outPutTestRes("LteTest.StringTest.rep FAIL")
+    end
+
+    if string.match(testStr, "Luat (..) very NB") == "is" then
+        log.info("StringTest.match", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.match PASS")
+    else
+        log.error("StringTest.match", "FAIL")
+        outPutTestRes("LteTest.StringTest.match FAIL")
+    end
+
+    if string.sub(testStr, 1, 4) == "Luat" then
+        log.info("StringTest.sub", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.sub PASS")
+    else
+        log.error("StringTest.sub", "FAIL")
+        outPutTestRes("LteTest.StringTest.sub FAIL")
+    end
+
+    local res1,res2 = string.toHex(testStr)
+    if res1 == "4C7561742069732076657279204E422C4E422028313030383629" and res2 == 26 then
+        log.info("StringTest.toHex1", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.toHex1 PASS")
+    else
+        log.error("StringTest.toHex1", "FAIL")
+        outPutTestRes("LteTest.StringTest.toHex1 FAIL")
+    end
+
+    local res1,res2 = string.toHex(testStr, ",")
+    if res1 == "4C,75,61,74,20,69,73,20,76,65,72,79,20,4E,42,2C,4E,42,20,28,31,30,30,38,36,29," and res2 == 26 then
+        log.info("StringTest.toHex2", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.toHex2 PASS")
+    else
+        log.error("StringTest.toHex2", "FAIL")
+        outPutTestRes("LteTest.StringTest.toHex2 FAIL")
+    end
+
+    local res1,res2 = string.fromHex("313233616263")
+    if res1 == "123abc" and res2 == 6 then
+        log.info("StringTest.fromHex", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.fromHex PASS")
+    else
+        log.error("StringTest.fromHex", "FAIL")
+        outPutTestRes("LteTest.StringTest.fromHex FAIL")
+    end
+
+    if string.utf8Len("Luat中国こにちはПривет🤣❤💚☢") == 20 then
+        log.info("StringTest.utf8Len", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.utf8Len PASS")
+    else
+        log.error("StringTest.utf8Len", "FAIL")
+        outPutTestRes("LteTest.StringTest.utf8Len FAIL")
+    end
+
+    if string.rawurlEncode("####133Luat中国こにちはПривет🤣❤💚☢") == "%23%23%23%23133Luat%E4%B8%AD%E5%9B%BD%E3%81%93%E3%81%AB%E3%81%A1%E3%81%AF%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%F0%9F%A4%A3%E2%9D%A4%F0%9F%92%9A%E2%98%A2" then
+        log.info("StringTest.rawurlEncode", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.rawurlEncode PASS")
+    else
+        log.error("StringTest.rawurlEncode", "FAIL")
+        outPutTestRes("LteTest.StringTest.rawurlEncode FAIL")
+    end
+
+    if string.urlEncode("####133Luat中国こにちはПривет🤣❤💚☢") == "%23%23%23%23133Luat%E4%B8%AD%E5%9B%BD%E3%81%93%E3%81%AB%E3%81%A1%E3%81%AF%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%F0%9F%A4%A3%E2%9D%A4%F0%9F%92%9A%E2%98%A2" then
+        log.info("StringTest.urlEncode", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.urlEncode PASS")
+    else
+        log.error("StringTest.urlEncode", "FAIL")
+        outPutTestRes("LteTest.StringTest.urlEncode FAIL")
+    end
+
+    if string.formatNumberThousands(1234567890) == "1,234,567,890" then
+        log.info("StringTest.formatNumberThousands", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.formatNumberThousands PASS")
+    else
+        log.error("StringTest.formatNumberThousands", "FAIL")
+        outPutTestRes("LteTest.StringTest.formatNumberThousands FAIL")
+    end
+
+    local table = string.split("Luat,is,very,nb", ",")
+    if table[1] == "Luat" and table[2] == "is" and table[3] == "very" and table[4] == "nb" then
+        log.info("StringTest.split", "SUCCESS")
+        outPutTestRes("LteTest.StringTest.split PASS")
+    else
+        log.error("StringTest.split", "FAIL")
+        outPutTestRes("LteTest.StringTest.split FAIL")
+    end
+
+    tag = "LteTest.CommonTest" 
+    if common.ucs2ToAscii("0030003100320033003400350036003700380039") == "0123456789" then
+        log.info("CommonTest.ucs2ToAscii", "SUCCESS")
+        outPutTestRes("LteTest.CommonTest.ucs2ToAscii PASS")
+    else
+        log.error("CommonTest.ucs2ToAscii", "FAIL")
+        outPutTestRes("LteTest.CommonTest.ucs2ToAscii FAIL")
+    end
+
+    if common.nstrToUcs2Hex("+0123456789+0123456789+0123456789+0123456789+0123456789") == "002B0030003100320033003400350036003700380039002B0030003100320033003400350036003700380039002B0030003100320033003400350036003700380039002B0030003100320033003400350036003700380039002B0030003100320033003400350036003700380039" then
+        log.info("CommonTest.nstrToUcs2Hex", "SUCCESS")
+        outPutTestRes("LteTest.CommonTest.nstrToUcs2Hex PASS")
+    else
+        log.error("CommonTest.nstrToUcs2Hex", "FAIL")
+        outPutTestRes("LteTest.CommonTest.nstrToUcs2Hex FAIL")
+    end
+
+    res1,res2 = string.toHex(common.numToBcdNum("8618126324567F"))
+    if res1 == "688121364265F7" and res2 ==7 then
+        log.info("CommonTest.numToBcdNum", "SUCCESS")
+        outPutTestRes("LteTest.CommonTest.numToBcdNum PASS")
+    else
+        log.error("CommonTest.numToBcdNum", "FAIL")
+        outPutTestRes("LteTest.CommonTest.numToBcdNum FAIL")
+    end
+
+    if common.bcdNumToNum(string.fromHex("688121364265F7")) == "8618126324567" then
+        log.info("CommonTest.bcdNumToNum", "SUCCESS")
+        outPutTestRes("LteTest.CommonTest.bcdNumToNum PASS")
+    else
+        log.error("CommonTest.bcdNumToNum", "FAIL")
+        outPutTestRes("LteTest.CommonTest.bcdNumToNum FAIL")
+    end
+
+    -- if common.ucs2ToGb2312(string.fromHex("xd98f2f66004e616755004300530032000f5cef7a167f017884768551b95b6c8f62633a4e470042003200330031003200167f017884764b6dd58b8551b95b")) == "fȡߡѴߡ" then
+    --     log.info("CommonTest.ucs2ToGb2312", "SUCCESS")
+    --     outPutTestRes("LteTest.CommonTest.ucs2ToGb2312 PASS")
+    -- else
+    --     log.error("CommonTest.ucs2ToGb2312", "FAIL")
+    --     log.info("CommonTest.ucs2ToGb2312",common.ucs2ToGb2312(string.fromHex("xd98f2f66004e616755004300530032000f5cef7a167f017884768551b95b6c8f62633a4e470042003200330031003200167f017884764b6dd58b8551b95b")))
+    --     outPutTestRes("LteTest.CommonTest.ucs2ToGb2312 FAIL")
+    -- end
+
+    res1,res2 = string.toHex(common.gb2312ToUcs2(string.fromHex("D5E2CAC7D2BBCCF555544638B1E0C2EBB5C4C4DAC8DDD7AABBBBCEAA55435332B1E0C2EBB5C4B2E2CAD4C4DAC8DD")))
+    if res1 == "D98F2F66004E61675500540046003800167F017884768551B95B6C8F62633A4E5500430053003200167F017884764B6DD58B8551B95B" and res2 == 54 then
+        log.info("CommonTest.gb2312ToUcs2", "SUCCESS")
+        outPutTestRes("LteTest.CommonTest.gb2312ToUcs2 PASS")
+    else
+        log.error("CommonTest.gb2312ToUcs2", "FAIL")
+        outPutTestRes("LteTest.CommonTest.gb2312ToUcs2 FAIL")
+    end
+
+    -- if common.ucs2beToGb2312(string.fromHex("8fd9662f4e006761005500430053003259277aef7f167801768451855bb98f6c63624e3a0047004200320033003100327f16780176846d4b8bd551855bb9")) == "这是一条UCS2大端编码的内容转换为GB2312编码的测试内容" then
+    --     log.info("CommonTest.ucs2beToGb2312", "SUCCESS")
+    --     outPutTestRes("LteTest.CommonTest.ucs2beToGb2312 PASS")
+    -- else
+    --     log.error("CommonTest.ucs2beToGb2312", "FAIL")
+    --     log.info("CommonTest.ucs2beToGb2312",common.ucs2beToGb2312(string.fromHex("8fd9662f4e006761005500430053003259277aef7f167801768451855bb98f6c63624e3a0047004200320033003100327f16780176846d4b8bd551855bb9")) )
+    --     outPutTestRes("LteTest.CommonTest.ucs2beToGb2312 FAIL")
+    -- end
+
+    res1,res2 = string.toHex(common.gb2312ToUcs2be(string.fromHex("D5E2CAC7D2BBCCF555544638B1E0C2EBB5C4C4DAC8DDD7AABBBBCEAA55435332B1E0C2EBB5C4B2E2CAD4C4DAC8DD")))
+    if res1 == "8FD9662F4E00676100550054004600387F167801768451855BB98F6C63624E3A00550043005300327F16780176846D4B8BD551855BB9" and res2 == 54 then
+        log.info("CommonTest.gb2312ToUcs2be", "SUCCESS")
+        outPutTestRes("LteTest.CommonTest.gb2312ToUcs2be PASS")
+    else
+        log.error("CommonTest.gb2312ToUcs2be", "FAIL")
+        outPutTestRes("LteTest.CommonTest.gb2312ToUcs2be FAIL")
+    end
+
+    if common.ucs2ToUtf8(string.fromHex("d98f2f66004e61675500430053003200167f017884768551b95b6c8f62633a4e5500540046003800167f017884764b6dd58b8551b95b")) == "这是一条UCS2编码的内容转换为UTF8编码的测试内容" then
+        log.info("CommonTest.ucs2ToUtf8", "SUCCESS")
+        outPutTestRes("LteTest.CommonTest.ucs2ToUtf8 PASS")
+    else
+        log.error("CommonTest.ucs2ToUtf8", "FAIL")
+        outPutTestRes("LteTest.CommonTest.ucs2ToUtf8 FAIL")
+    end
+
+    res1,res2 = string.toHex(common.utf8ToUcs2("这是一条UTF8编码的内容转换为UCS2编码的测试内容"))
+    if res1 == "D98F2F66004E61675500540046003800167F017884768551B95B6C8F62633A4E5500430053003200167F017884764B6DD58B8551B95B" and res2 ==54 then
+        log.info("CommonTest.utf8ToUcs2", "SUCCESS")
+        outPutTestRes("LteTest.CommonTest.utf8ToUcs2 PASS")
+    else
+        log.error("CommonTest.utf8ToUcs2", "FAIL")
+        outPutTestRes("LteTest.CommonTest.utf8ToUcs2 FAIL")
+    end
+
+    if common.ucs2beToUtf8(string.fromHex("8fd9662f4e00676100550043005300327f167801768451855bb98f6c63624e3a00550054004600387f16780176846d4b8bd551855bb9")) == "这是一条UCS2编码的内容转换为UTF8编码的测试内容" then
+        log.info("CommonTest.ucs2beToUtf8", "SUCCESS")
+        outPutTestRes("LteTest.CommonTest.ucs2beToUtf8 PASS")
+    else
+        log.error("CommonTest.ucs2beToUtf8", "FAIL")
+        outPutTestRes("LteTest.CommonTest.ucs2beToUtf8 FAIL")
+    end
+
+    res1,res2 = string.toHex(common.utf8ToUcs2be("这是一条UTF8编码的内容转换为UCS2大端编码的测试内容"))
+    if res1 == "8FD9662F4E00676100550054004600387F167801768451855BB98F6C63624E3A005500430053003259277AEF7F16780176846D4B8BD551855BB9" and res2 ==58 then
+        log.info("CommonTest.utf8ToUcs2be", "SUCCESS")
+        outPutTestRes("LteTest.CommonTest.utf8ToUcs2be PASS")
+    else
+        log.error("CommonTest.utf8ToUcs2be", "FAIL")
+        outPutTestRes("LteTest.CommonTest.utf8ToUcs2be FAIL")
+    end
+
+    if common.utf8ToGb2312("utf8s") == "utf8s" then
+        log.info("CommonTest.utf8ToGb2312", "SUCCESS")
+        outPutTestRes("LteTest.CommonTest.utf8ToGb2312 PASS")
+    else
+        log.error("CommonTest.utf8ToGb2312", "FAIL")
+        outPutTestRes("LteTest.CommonTest.utf8ToGb2312 FAIL")
+    end
+
+    if common.gb2312ToUtf8(string.fromHex("D5E2CAC7D2BBCCF5474232333132B1E0C2EBB5C4C4DAC8DDD7AABBBBCEAA55544638B1E0C2EBB5C4B2E2CAD4C4DAC8DD")) == "这是一条GB2312编码的内容转换为UTF8编码的测试内容" then
+        log.info("CommonTest.gb2312ToUtf8", "SUCCESS")
+        outPutTestRes("LteTest.CommonTest.gb2312ToUtf8 PASS")
+    else
+        log.error("CommonTest.gb2312ToUtf8", "FAIL")
+        outPutTestRes("LteTest.CommonTest.gb2312ToUtf8 FAIL")
+    end
+
+     table1 = common.timeZoneConvert(2020, 10, 14, 11, 24, 25, 8, 8)
+    if table1["min"] == 24 and table1["day"] == 14 and table1["month"] == 10 and table1["sec"] == 25 and table1["hour"] == 11 and table1["year"] == 2020 then
+        log.info("CommonTest.timeZoneConvert", "SUCCESS")
+        outPutTestRes("LteTest.CommonTest.timeZoneConvert PASS")
+    else
+        log.error("CommonTest.timeZoneConvert", "FAIL")
+        outPutTestRes("LteTest.CommonTest.timeZoneConvert FAIL")
+    end
+
 end
 
 sys.taskInit(function()
