@@ -1,4 +1,4 @@
--- GpsTest
+-- GPSTest
 -- Author:openluat
 -- CreateDate:20211021
 -- UpdateDate:20211021
@@ -11,7 +11,7 @@ local gpsLattmp, gpsLngtmp = "", ""
 local GPSSendToServer = false
 local rtk = false
 
-local tag = "GpsTest"
+local tag = "GPSTest"
 
 local function sendGPSInfoToServer(lat, lng)
     local gpsLocInfo = {
@@ -107,7 +107,7 @@ local function gpsTestTask()
     end
 
     log.info(tag .. ".open", "打开GPS")
-    outPutTestRes("GpsTest.open SUCCESS")
+    outPutTestRes("GPSTest.open SUCCESS")
 
     if gpsModType == "GK" then
         require "gps"
