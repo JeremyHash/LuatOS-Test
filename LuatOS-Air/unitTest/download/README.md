@@ -1,5 +1,4 @@
 # download测试
-
 ## 1、按BOOT键刷版本
     (1) 使用luatools配置好待测试的core和脚本，按BOOT键下载固件和脚本
     (2) 下载完成后，lua脚本打印正常，功能正常
