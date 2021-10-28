@@ -548,6 +548,27 @@ local function lteTestTask()
         outPutTestRes("LteTest.CommonTest.timeZoneConvert FAIL")
     end
 
+    tag = "LteTest.NtpTest" 
+
+    ntp.setServers({"www.baidu.com", "www.sina.com"})
+    local ntpServers = ntp.getServers()
+    if ntpServers[1] == "www.baidu.com" and ntpServers[2] == "www.sina.com" then
+        log.info("NtpTest.Servers  SUCCESS")
+        outPutTestRes("LteTest.NtpTest.servers  PASS")
+    else
+        log.info("NtpTest.Servers  FAIL")
+        outPutTestRes("LteTest.NtpTest.servers  FAIL")
+    end
+    sys.wait(10000)
+    local ntpStatus = ntp.isEnd()
+    if ntpStatus then 
+        log.info("NtpTest.Status", ntpStatus)
+        outPutTestRes("LteTest.NtpTest.status  PASS")
+    else
+        log.info("NtpTest.Status", ntpStatus)
+        outPutTestRes("LteTest.NtpTest.status  FAIL")
+    end
+
 end
 
 sys.taskInit(function()
