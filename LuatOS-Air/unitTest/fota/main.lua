@@ -1,3 +1,7 @@
+-- fotaTest
+-- Author:openluat
+-- CreateDate:20211022
+-- UpdateDate:20211029
 PROJECT = "fotaTest"
 VERSION = "1.0.0"
 PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"

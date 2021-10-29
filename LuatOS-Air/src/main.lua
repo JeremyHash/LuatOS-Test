@@ -15,7 +15,6 @@ testConfig = {
     modType = "8910",
     -- single loop
     testMode = "single",
-    gpsModType = "GK",
     netLed = true,
     consoleTest = false,
     lteTest = false,
@@ -24,19 +23,10 @@ testConfig = {
     mqttTest = false,
     ftpTest = false,
     iotTest = false,
-    rtmpTest = false,
-    audioTest = false,
-    lvglTest = false,
     peripheralsTest = false,
     fsTest = false,
-    gpioTest = false,
-    lbsLocTest = false,
-    bleTest = false,
-    gpsTest = false,
-    keypadTest = false
+    lbsLocTest = false
 }
-
--- cmux ppp alarm  simdetect usb download factory fota
 
 require "sys"
 require "net"
@@ -64,8 +54,6 @@ if testConfig.modType == "8910" or testConfig.modType == "1603E" then
     require "wifiScan"
     require "scanCode"
     require "uiWin"
-    require "audio"
-    require "record"
 end
 
 function outPutTestRes(data)
@@ -132,15 +120,9 @@ if testConfig.ftpTest == true then require "FtpTest" end
 
 if testConfig.fsTest == true then require "FsTest" end
 
-if testConfig.rtmpTest == true then require "RtmpTest" end
-
 if testConfig.lbsLocTest == true then require "LbsLocTest" end
 
 if testConfig.peripheralsTest == true then require "PeripheralsTest" end
-
-if testConfig.gpsTest == true then require "GpsTest" end
-
-if testConfig.audioTest == true then require "AudioTest" end
 
 -- sys.taskInit(function()
 --     while true do
