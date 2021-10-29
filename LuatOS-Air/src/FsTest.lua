@@ -6,6 +6,7 @@ module(..., package.seeall)
 
 local waitTime1 = 10000
 local waitTime2 = 30000
+local value     = true
 
 local getDirContent
 
@@ -55,6 +56,7 @@ getDirContent = function(dirPath, level)
     local tag = " "
     if io.opendir(dirPath) == 0 then
         log.error("FsTest.getDirContent", "无法打开目标文件夹\"" .. dirPath .. "\"")
+        value = false
         return
     end
     while true do
@@ -193,7 +195,22 @@ local function fsTestTask()
     else
         log.error(tag .. ".make_dir", "FAIL")
     end
+    
 
+    local tag = "FsTest.openDirTest"
+	local dirTable = {"/", "/nvm"}
+	sys.wait(waitTime2)
+	for k, v in pairs(dirTable) do
+		log.info(tag, v)
+		getDirContent(v)
+	end
+    if value then
+        log.info("FsTest.openDirTest  SUCCESS")
+        outPutTestRes("FsTest.openDirTest  PASS")
+    else
+        log.info("FsTest.openDirTest  FAIL")
+        outPutTestRes("FsTest.openDirTest  FAIL")
+    end
 end
 
 sys.taskInit(function()
