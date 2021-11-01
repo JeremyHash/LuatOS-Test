@@ -179,44 +179,44 @@ local function lteTestTask()
     end
 
     tag = "LteTest.PackTest"
-    local res1,res2= string.toHex(pack.pack(">H", 0x3234))
-    if res1 == "3234" and res2 == 2 then 
-        log.info("PackTest1","SUCCESS")
+    local res1, res2 = string.toHex(pack.pack(">H", 0x3234))
+    if res1 == "3234" and res2 == 2 then
+        log.info("PackTest1", "SUCCESS")
         outPutTestRes("LteTest.PackTest1 PASS")
-    else 
-        log.info("PackTest1","FAIL")
+    else
+        log.info("PackTest1", "FAIL")
         outPutTestRes("LteTest.PackTest1 FAIL")
     end
 
-    local res1,res2= string.toHex(pack.pack("<H", 0x3234))
-    if res1 == "3432" and res2 == 2 then 
-        log.info("PackTest2","SUCCESS")
+    local res1, res2 = string.toHex(pack.pack("<H", 0x3234))
+    if res1 == "3432" and res2 == 2 then
+        log.info("PackTest2", "SUCCESS")
         outPutTestRes("LteTest.PackTest2 PASS")
-    else 
-        log.info("PackTest2","FAIL")
+    else
+        log.info("PackTest2", "FAIL")
         outPutTestRes("LteTest.PackTest2 FAIL")
     end
 
-    local res1,res2= string.toHex(pack.pack(">AHb", "LUAT", 100, 10))
-    if res1 == "4C55415400640A" and res2 == 7 then 
-        log.info("PackTest3","SUCCESS")
+    local res1, res2 = string.toHex(pack.pack(">AHb", "LUAT", 100, 10))
+    if res1 == "4C55415400640A" and res2 == 7 then
+        log.info("PackTest3", "SUCCESS")
         outPutTestRes("LteTest.PackTest3 PASS")
-    else 
-        log.info("PackTest3","FAIL")
+    else
+        log.info("PackTest3", "FAIL")
         outPutTestRes("LteTest.PackTest3 FAIL")
     end
-    
+
     local stringtest = pack.pack(">AHb", "luat", 999, 10)
-    local res1,res2,res3= pack.unpack(string.sub(stringtest, 5, -1), ">Hb")
-    if res1 == 4 and res2 == 999 and res3 == 10 then 
-        log.info("PackTest4","SUCCESS")
+    local res1, res2, res3 = pack.unpack(string.sub(stringtest, 5, -1), ">Hb")
+    if res1 == 4 and res2 == 999 and res3 == 10 then
+        log.info("PackTest4", "SUCCESS")
         outPutTestRes("LteTest.PackTest4 PASS")
-    else 
-        log.info("PackTest4","FAIL")
+    else
+        log.info("PackTest4", "FAIL")
         outPutTestRes("LteTest.PackTest4 FAIL")
     end
 
-    tag = "LteTest.StringTest" 
+    tag = "LteTest.StringTest"
     local testStr = "Luat is very NB,NB (10086)"
 
     if string.upper(testStr) == "LUAT IS VERY NB,NB (10086)" then
@@ -234,8 +234,8 @@ local function lteTestTask()
         log.error("StringTest.lower", "FAIL")
         outPutTestRes("LteTest.StringTest.lower FAIL")
     end
-    
-    local res1,res2 = string.gsub(testStr, "L%w%w%w", "AirM2M")
+
+    local res1, res2 = string.gsub(testStr, "L%w%w%w", "AirM2M")
     if res1 == "AirM2M is very NB,NB (10086)" then
         log.info("StringTest.gsub", "SUCCESS")
         outPutTestRes("LteTest.StringTest.gsub PASS")
@@ -244,7 +244,7 @@ local function lteTestTask()
         outPutTestRes("LteTest.StringTest.gsub FAIL")
     end
 
-    local res1,res2 = string.find(testStr, "NB", 1, true)
+    local res1, res2 = string.find(testStr, "NB", 1, true)
     if res1 == 14 and res2 == 15 then
         log.info("StringTest.find1", "SUCCESS")
         outPutTestRes("LteTest.StringTest.find1 PASS")
@@ -253,7 +253,7 @@ local function lteTestTask()
         outPutTestRes("LteTest.StringTest.find1 FAIL")
     end
 
-    local res1,res2 = string.find(testStr, "N%w", 16, false)
+    local res1, res2 = string.find(testStr, "N%w", 16, false)
     if res1 == 17 and res2 == 18 then
         log.info("StringTest.find2", "SUCCESS")
         outPutTestRes("LteTest.StringTest.find2 PASS")
@@ -271,7 +271,8 @@ local function lteTestTask()
     end
 
     local i = 43981
-    if string.format("This is %d test string : %s", i, testStr) == "This is 43981 test string : Luat is very NB,NB (10086)" then
+    if string.format("This is %d test string : %s", i, testStr) ==
+        "This is 43981 test string : Luat is very NB,NB (10086)" then
         log.info("StringTest.format1", "SUCCESS")
         outPutTestRes("LteTest.StringTest.format1 PASS")
     else
@@ -327,7 +328,8 @@ local function lteTestTask()
         outPutTestRes("LteTest.StringTest.len FAIL")
     end
 
-    if string.rep(testStr, 2) == "Luat is very NB,NB (10086)Luat is very NB,NB (10086)" then
+    if string.rep(testStr, 2) ==
+        "Luat is very NB,NB (10086)Luat is very NB,NB (10086)" then
         log.info("StringTest.rep", "SUCCESS")
         outPutTestRes("LteTest.StringTest.rep PASS")
     else
@@ -351,8 +353,9 @@ local function lteTestTask()
         outPutTestRes("LteTest.StringTest.sub FAIL")
     end
 
-    local res1,res2 = string.toHex(testStr)
-    if res1 == "4C7561742069732076657279204E422C4E422028313030383629" and res2 == 26 then
+    local res1, res2 = string.toHex(testStr)
+    if res1 == "4C7561742069732076657279204E422C4E422028313030383629" and res2 ==
+        26 then
         log.info("StringTest.toHex1", "SUCCESS")
         outPutTestRes("LteTest.StringTest.toHex1 PASS")
     else
@@ -360,8 +363,10 @@ local function lteTestTask()
         outPutTestRes("LteTest.StringTest.toHex1 FAIL")
     end
 
-    local res1,res2 = string.toHex(testStr, ",")
-    if res1 == "4C,75,61,74,20,69,73,20,76,65,72,79,20,4E,42,2C,4E,42,20,28,31,30,30,38,36,29," and res2 == 26 then
+    local res1, res2 = string.toHex(testStr, ",")
+    if res1 ==
+        "4C,75,61,74,20,69,73,20,76,65,72,79,20,4E,42,2C,4E,42,20,28,31,30,30,38,36,29," and
+        res2 == 26 then
         log.info("StringTest.toHex2", "SUCCESS")
         outPutTestRes("LteTest.StringTest.toHex2 PASS")
     else
@@ -369,7 +374,7 @@ local function lteTestTask()
         outPutTestRes("LteTest.StringTest.toHex2 FAIL")
     end
 
-    local res1,res2 = string.fromHex("313233616263")
+    local res1, res2 = string.fromHex("313233616263")
     if res1 == "123abc" and res2 == 6 then
         log.info("StringTest.fromHex", "SUCCESS")
         outPutTestRes("LteTest.StringTest.fromHex PASS")
@@ -386,7 +391,9 @@ local function lteTestTask()
         outPutTestRes("LteTest.StringTest.utf8Len FAIL")
     end
 
-    if string.rawurlEncode("####133Luat中国こにちはПривет🤣❤💚☢") == "%23%23%23%23133Luat%E4%B8%AD%E5%9B%BD%E3%81%93%E3%81%AB%E3%81%A1%E3%81%AF%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%F0%9F%A4%A3%E2%9D%A4%F0%9F%92%9A%E2%98%A2" then
+    if string.rawurlEncode(
+        "####133Luat中国こにちはПривет🤣❤💚☢") ==
+        "%23%23%23%23133Luat%E4%B8%AD%E5%9B%BD%E3%81%93%E3%81%AB%E3%81%A1%E3%81%AF%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%F0%9F%A4%A3%E2%9D%A4%F0%9F%92%9A%E2%98%A2" then
         log.info("StringTest.rawurlEncode", "SUCCESS")
         outPutTestRes("LteTest.StringTest.rawurlEncode PASS")
     else
@@ -394,7 +401,9 @@ local function lteTestTask()
         outPutTestRes("LteTest.StringTest.rawurlEncode FAIL")
     end
 
-    if string.urlEncode("####133Luat中国こにちはПривет🤣❤💚☢") == "%23%23%23%23133Luat%E4%B8%AD%E5%9B%BD%E3%81%93%E3%81%AB%E3%81%A1%E3%81%AF%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%F0%9F%A4%A3%E2%9D%A4%F0%9F%92%9A%E2%98%A2" then
+    if string.urlEncode(
+        "####133Luat中国こにちはПривет🤣❤💚☢") ==
+        "%23%23%23%23133Luat%E4%B8%AD%E5%9B%BD%E3%81%93%E3%81%AB%E3%81%A1%E3%81%AF%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%F0%9F%A4%A3%E2%9D%A4%F0%9F%92%9A%E2%98%A2" then
         log.info("StringTest.urlEncode", "SUCCESS")
         outPutTestRes("LteTest.StringTest.urlEncode PASS")
     else
@@ -410,8 +419,9 @@ local function lteTestTask()
         outPutTestRes("LteTest.StringTest.formatNumberThousands FAIL")
     end
 
-    local table = string.split("Luat,is,very,nb", ",")
-    if table[1] == "Luat" and table[2] == "is" and table[3] == "very" and table[4] == "nb" then
+    local splitTable = string.split("Luat,is,very,nb", ",")
+    if splitTable[1] == "Luat" and splitTable[2] == "is" and splitTable[3] ==
+        "very" and splitTable[4] == "nb" then
         log.info("StringTest.split", "SUCCESS")
         outPutTestRes("LteTest.StringTest.split PASS")
     else
@@ -419,8 +429,9 @@ local function lteTestTask()
         outPutTestRes("LteTest.StringTest.split FAIL")
     end
 
-    tag = "LteTest.CommonTest" 
-    if common.ucs2ToAscii("0030003100320033003400350036003700380039") == "0123456789" then
+    tag = "LteTest.CommonTest"
+    if common.ucs2ToAscii("0030003100320033003400350036003700380039") ==
+        "0123456789" then
         log.info("CommonTest.ucs2ToAscii", "SUCCESS")
         outPutTestRes("LteTest.CommonTest.ucs2ToAscii PASS")
     else
@@ -428,7 +439,9 @@ local function lteTestTask()
         outPutTestRes("LteTest.CommonTest.ucs2ToAscii FAIL")
     end
 
-    if common.nstrToUcs2Hex("+0123456789+0123456789+0123456789+0123456789+0123456789") == "002B0030003100320033003400350036003700380039002B0030003100320033003400350036003700380039002B0030003100320033003400350036003700380039002B0030003100320033003400350036003700380039002B0030003100320033003400350036003700380039" then
+    if common.nstrToUcs2Hex(
+        "+0123456789+0123456789+0123456789+0123456789+0123456789") ==
+        "002B0030003100320033003400350036003700380039002B0030003100320033003400350036003700380039002B0030003100320033003400350036003700380039002B0030003100320033003400350036003700380039002B0030003100320033003400350036003700380039" then
         log.info("CommonTest.nstrToUcs2Hex", "SUCCESS")
         outPutTestRes("LteTest.CommonTest.nstrToUcs2Hex PASS")
     else
@@ -436,8 +449,8 @@ local function lteTestTask()
         outPutTestRes("LteTest.CommonTest.nstrToUcs2Hex FAIL")
     end
 
-    res1,res2 = string.toHex(common.numToBcdNum("8618126324567F"))
-    if res1 == "688121364265F7" and res2 ==7 then
+    res1, res2 = string.toHex(common.numToBcdNum("8618126324567F"))
+    if res1 == "688121364265F7" and res2 == 7 then
         log.info("CommonTest.numToBcdNum", "SUCCESS")
         outPutTestRes("LteTest.CommonTest.numToBcdNum PASS")
     else
@@ -462,8 +475,11 @@ local function lteTestTask()
     --     outPutTestRes("LteTest.CommonTest.ucs2ToGb2312 FAIL")
     -- end
 
-    res1,res2 = string.toHex(common.gb2312ToUcs2(string.fromHex("D5E2CAC7D2BBCCF555544638B1E0C2EBB5C4C4DAC8DDD7AABBBBCEAA55435332B1E0C2EBB5C4B2E2CAD4C4DAC8DD")))
-    if res1 == "D98F2F66004E61675500540046003800167F017884768551B95B6C8F62633A4E5500430053003200167F017884764B6DD58B8551B95B" and res2 == 54 then
+    res1, res2 = string.toHex(common.gb2312ToUcs2(string.fromHex(
+                                                      "D5E2CAC7D2BBCCF555544638B1E0C2EBB5C4C4DAC8DDD7AABBBBCEAA55435332B1E0C2EBB5C4B2E2CAD4C4DAC8DD")))
+    if res1 ==
+        "D98F2F66004E61675500540046003800167F017884768551B95B6C8F62633A4E5500430053003200167F017884764B6DD58B8551B95B" and
+        res2 == 54 then
         log.info("CommonTest.gb2312ToUcs2", "SUCCESS")
         outPutTestRes("LteTest.CommonTest.gb2312ToUcs2 PASS")
     else
@@ -480,8 +496,11 @@ local function lteTestTask()
     --     outPutTestRes("LteTest.CommonTest.ucs2beToGb2312 FAIL")
     -- end
 
-    res1,res2 = string.toHex(common.gb2312ToUcs2be(string.fromHex("D5E2CAC7D2BBCCF555544638B1E0C2EBB5C4C4DAC8DDD7AABBBBCEAA55435332B1E0C2EBB5C4B2E2CAD4C4DAC8DD")))
-    if res1 == "8FD9662F4E00676100550054004600387F167801768451855BB98F6C63624E3A00550043005300327F16780176846D4B8BD551855BB9" and res2 == 54 then
+    res1, res2 = string.toHex(common.gb2312ToUcs2be(string.fromHex(
+                                                        "D5E2CAC7D2BBCCF555544638B1E0C2EBB5C4C4DAC8DDD7AABBBBCEAA55435332B1E0C2EBB5C4B2E2CAD4C4DAC8DD")))
+    if res1 ==
+        "8FD9662F4E00676100550054004600387F167801768451855BB98F6C63624E3A00550043005300327F16780176846D4B8BD551855BB9" and
+        res2 == 54 then
         log.info("CommonTest.gb2312ToUcs2be", "SUCCESS")
         outPutTestRes("LteTest.CommonTest.gb2312ToUcs2be PASS")
     else
@@ -489,7 +508,9 @@ local function lteTestTask()
         outPutTestRes("LteTest.CommonTest.gb2312ToUcs2be FAIL")
     end
 
-    if common.ucs2ToUtf8(string.fromHex("d98f2f66004e61675500430053003200167f017884768551b95b6c8f62633a4e5500540046003800167f017884764b6dd58b8551b95b")) == "这是一条UCS2编码的内容转换为UTF8编码的测试内容" then
+    if common.ucs2ToUtf8(string.fromHex(
+                             "d98f2f66004e61675500430053003200167f017884768551b95b6c8f62633a4e5500540046003800167f017884764b6dd58b8551b95b")) ==
+        "这是一条UCS2编码的内容转换为UTF8编码的测试内容" then
         log.info("CommonTest.ucs2ToUtf8", "SUCCESS")
         outPutTestRes("LteTest.CommonTest.ucs2ToUtf8 PASS")
     else
@@ -497,8 +518,11 @@ local function lteTestTask()
         outPutTestRes("LteTest.CommonTest.ucs2ToUtf8 FAIL")
     end
 
-    res1,res2 = string.toHex(common.utf8ToUcs2("这是一条UTF8编码的内容转换为UCS2编码的测试内容"))
-    if res1 == "D98F2F66004E61675500540046003800167F017884768551B95B6C8F62633A4E5500430053003200167F017884764B6DD58B8551B95B" and res2 ==54 then
+    res1, res2 = string.toHex(common.utf8ToUcs2(
+                                  "这是一条UTF8编码的内容转换为UCS2编码的测试内容"))
+    if res1 ==
+        "D98F2F66004E61675500540046003800167F017884768551B95B6C8F62633A4E5500430053003200167F017884764B6DD58B8551B95B" and
+        res2 == 54 then
         log.info("CommonTest.utf8ToUcs2", "SUCCESS")
         outPutTestRes("LteTest.CommonTest.utf8ToUcs2 PASS")
     else
@@ -506,7 +530,9 @@ local function lteTestTask()
         outPutTestRes("LteTest.CommonTest.utf8ToUcs2 FAIL")
     end
 
-    if common.ucs2beToUtf8(string.fromHex("8fd9662f4e00676100550043005300327f167801768451855bb98f6c63624e3a00550054004600387f16780176846d4b8bd551855bb9")) == "这是一条UCS2编码的内容转换为UTF8编码的测试内容" then
+    if common.ucs2beToUtf8(string.fromHex(
+                               "8fd9662f4e00676100550043005300327f167801768451855bb98f6c63624e3a00550054004600387f16780176846d4b8bd551855bb9")) ==
+        "这是一条UCS2编码的内容转换为UTF8编码的测试内容" then
         log.info("CommonTest.ucs2beToUtf8", "SUCCESS")
         outPutTestRes("LteTest.CommonTest.ucs2beToUtf8 PASS")
     else
@@ -514,8 +540,11 @@ local function lteTestTask()
         outPutTestRes("LteTest.CommonTest.ucs2beToUtf8 FAIL")
     end
 
-    res1,res2 = string.toHex(common.utf8ToUcs2be("这是一条UTF8编码的内容转换为UCS2大端编码的测试内容"))
-    if res1 == "8FD9662F4E00676100550054004600387F167801768451855BB98F6C63624E3A005500430053003259277AEF7F16780176846D4B8BD551855BB9" and res2 ==58 then
+    res1, res2 = string.toHex(common.utf8ToUcs2be(
+                                  "这是一条UTF8编码的内容转换为UCS2大端编码的测试内容"))
+    if res1 ==
+        "8FD9662F4E00676100550054004600387F167801768451855BB98F6C63624E3A005500430053003259277AEF7F16780176846D4B8BD551855BB9" and
+        res2 == 58 then
         log.info("CommonTest.utf8ToUcs2be", "SUCCESS")
         outPutTestRes("LteTest.CommonTest.utf8ToUcs2be PASS")
     else
@@ -531,7 +560,9 @@ local function lteTestTask()
         outPutTestRes("LteTest.CommonTest.utf8ToGb2312 FAIL")
     end
 
-    if common.gb2312ToUtf8(string.fromHex("D5E2CAC7D2BBCCF5474232333132B1E0C2EBB5C4C4DAC8DDD7AABBBBCEAA55544638B1E0C2EBB5C4B2E2CAD4C4DAC8DD")) == "这是一条GB2312编码的内容转换为UTF8编码的测试内容" then
+    if common.gb2312ToUtf8(string.fromHex(
+                               "D5E2CAC7D2BBCCF5474232333132B1E0C2EBB5C4C4DAC8DDD7AABBBBCEAA55544638B1E0C2EBB5C4B2E2CAD4C4DAC8DD")) ==
+        "这是一条GB2312编码的内容转换为UTF8编码的测试内容" then
         log.info("CommonTest.gb2312ToUtf8", "SUCCESS")
         outPutTestRes("LteTest.CommonTest.gb2312ToUtf8 PASS")
     else
@@ -539,8 +570,9 @@ local function lteTestTask()
         outPutTestRes("LteTest.CommonTest.gb2312ToUtf8 FAIL")
     end
 
-     table1 = common.timeZoneConvert(2020, 10, 14, 11, 24, 25, 8, 8)
-    if table1["min"] == 24 and table1["day"] == 14 and table1["month"] == 10 and table1["sec"] == 25 and table1["hour"] == 11 and table1["year"] == 2020 then
+    table1 = common.timeZoneConvert(2020, 10, 14, 11, 24, 25, 8, 8)
+    if table1["min"] == 24 and table1["day"] == 14 and table1["month"] == 10 and
+        table1["sec"] == 25 and table1["hour"] == 11 and table1["year"] == 2020 then
         log.info("CommonTest.timeZoneConvert", "SUCCESS")
         outPutTestRes("LteTest.CommonTest.timeZoneConvert PASS")
     else
@@ -548,7 +580,7 @@ local function lteTestTask()
         outPutTestRes("LteTest.CommonTest.timeZoneConvert FAIL")
     end
 
-    tag = "LteTest.NtpTest" 
+    tag = "LteTest.NtpTest"
 
     ntp.setServers({"www.baidu.com", "www.sina.com"})
     local ntpServers = ntp.getServers()
@@ -559,14 +591,68 @@ local function lteTestTask()
         log.info("NtpTest.Servers  FAIL")
         outPutTestRes("LteTest.NtpTest.servers  FAIL")
     end
-    sys.wait(10000)
-    local ntpStatus = ntp.isEnd()
-    if ntpStatus then 
-        log.info("NtpTest.Status", ntpStatus)
-        outPutTestRes("LteTest.NtpTest.status  PASS")
+
+    tag = "LteTest.TableTest"
+    local fruits = {"banana", "orange", "apple"}
+    log.info("TableTest.Concat", table.concat(fruits))
+    if table.concat(fruits) == "bananaorangeapple" then
+        log.info("TableTest.concat1  SUCCESS")
+        outPutTestRes("LteTest.TableTest.concat1  PASS")
     else
-        log.info("NtpTest.Status", ntpStatus)
-        outPutTestRes("LteTest.NtpTest.status  FAIL")
+        log.info("TableTest.concat1  FAIL")
+        outPutTestRes("LteTest.TableTest.concat1  FAIL")
+    end
+
+    if table.concat(fruits, ", ") == "banana, orange, apple" then
+        log.info("TableTest.concat2  SUCCESS")
+        outPutTestRes("LteTest.TableTest.concat2  PASS")
+    else
+        log.info("TableTest.concat2  FAIL")
+        outPutTestRes("LteTest.TableTest.concat2  FAIL")
+    end
+
+    if table.concat(fruits, ", ", 2, 3) == "orange, apple" then
+        log.info("TableTest.concat3  SUCCESS")
+        outPutTestRes("LteTest.TableTest.concat3  PASS")
+    else
+        log.info("TableTest.concat3  FAIL")
+        outPutTestRes("LteTest.TableTest.concat3  FAIL")
+    end
+
+    table.insert(fruits, "mango")
+    if fruits[4] == "mango" then
+        log.info("TableTest.insert1  SUCCESS")
+        outPutTestRes("LteTest.TableTest.insert1  PASS")
+    else
+        log.info("TableTest.insert1  FAIL")
+        outPutTestRes("LteTest.TableTest.insert1  FAIL")
+    end
+
+    table.insert(fruits, 2, "grapes")
+    if fruits[2] == "grapes" then
+        log.info("TableTest.insert2  SUCCESS")
+        outPutTestRes("LteTest.TableTest.insert2  PASS")
+    else
+        log.info("TableTest.insert2  FAIL")
+        outPutTestRes("LteTest.TableTest.insert2  FAIL")
+    end
+
+    lastest = table.remove(fruits)
+    if fruits[5] == nil then
+        log.info("TableTest.remove1  SUCCESS")
+        outPutTestRes("LteTest.TableTest.remov1  PASS")
+    else
+        log.info("TableTest.remove1  FAIL")
+        outPutTestRes("LteTest.TableTest.remove1  FAIL")
+    end
+
+    firstest = table.remove(fruits, 1)
+    if fruits[1] == "grapes" then
+        log.info("TableTest.remove2  SUCCESS")
+        outPutTestRes("LteTest.TableTest.remove2  PASS")
+    else
+        log.info("TableTest.remove2  FAIL")
+        outPutTestRes("LteTest.TableTest.remove2   FAIL")
     end
 
 end
@@ -578,6 +664,9 @@ sys.taskInit(function()
     if testConfig.testMode == "single" then
         lteTestTask()
     elseif testConfig.testMode == "loop" then
-        while true do lteTestTask() end
+        while true do
+            lteTestTask()
+            sys.wait(10)
+        end
     end
 end)
