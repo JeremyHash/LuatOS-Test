@@ -1,8 +1,12 @@
+-- audioparamTest
+-- Author:openluat
+-- CreateDate:20211027
+-- UpdateDate:20211029
 PROJECT = "audioparamTest"
 VERSION = "1.0.0"
 
 require "sys"
-require"utils"
+require "utils"
 require "log"
 LOG_LEVEL = log.LOGLEVEL_INFO
 

@@ -1,3 +1,7 @@
+-- uartTest
+-- Author:openluat
+-- CreateDate:20211022
+-- UpdateDate:20211029
 PROJECT = "uartTest"
 VERSION = "1.0.0"
 
