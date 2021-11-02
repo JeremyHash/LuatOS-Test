@@ -120,7 +120,8 @@ function demoInit()
 			lvgl.obj_del(demo_Image)
            	demo_ImageButtonInit()
 			sys.wait(waitTime)
-			lvgl.obj_del(demo_ImageButton)   
+			lvgl.obj_del(demo_ImageButton)  
+			lvgl.obj_del(demo_ImageButtonLabel)  
            	demo_LabelInit()
 			sys.wait(waitTime)
 			lvgl.obj_del(demo_Label)
@@ -168,7 +169,7 @@ function demoInit()
 			sys.wait(waitTime)
 			lvgl.obj_del(demo_TextArea)
 		
-			-- count = count + 1
+			count = count + 1
         end
     end)
 end
