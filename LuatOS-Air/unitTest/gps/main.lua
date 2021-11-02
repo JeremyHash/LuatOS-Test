@@ -11,8 +11,8 @@ require "log"
 LOG_LEVEL = log.LOGLEVEL_INFO
 
 -- GK/ZKW/HXXT false/true
-local gpsModType = "ZKW"
-local rtk = false
+local gpsModType = "HXXT"
+local rtktest = true
 
 local serverAddr = "http://114.55.242.59:2900"
 local postGPSLocInfoAddress = serverAddr .. "/postGPSLocInfo"
@@ -81,13 +81,13 @@ local function printGpsInfo()
 end
 
 local function nmeaCb(nmeaData)
-    if rtk == true then rtk.write(nmeaData) end
+    if rtktest == true then rtk.write(nmeaData) end
     -- log.info("GPSTest.nmeaCb", nmeaData)
 end
 
 local function gpsTestTask()
 
-    if rtk == true then
+    if rtktest == true then
         rtos.on(rtos.MSG_RTK_INFO,
                 function(msg)
             log.info("rtk", msg.id, msg.status, msg.data)

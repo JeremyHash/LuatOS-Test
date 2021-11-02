@@ -6,18 +6,15 @@ PROJECT = "BluetoothTest"
 VERSION = "1.0.0"
 
 require "sys"
-require "ntp"
 require "log"
 LOG_LEVEL = log.LOGLEVEL_INFO
-
--- loop/single
-local testMode = "single"
 
 -- 蓝牙选项配置
 local masterTest = false
 local slaveTest = false
 local beaconTest = false
 local classicBtTest = false
+local scanTest = false
 
 local waitTime = 5000
 
@@ -578,60 +575,53 @@ local function BluetoothTestTask()
             sys.wait(waitTime)
         end
         btcore.close()
-    end
-end
-
-local function BluetoothscanTestTask()
-    local tag = "BluetoothTest.scanTest"
-    local msgRes, msgData
-    sys.wait(waitTime)
-    if btcore.open(1) == 0 then
-        msgRes, msgData = sys.waitUntil("BT_OPEN", waitTime)
-        if msgRes == true and msgData == 0 then
-            log.info(tag .. ".open", "打开蓝牙SUCCESS")
-            if btcore.scan(1) == 0 then
-                msgRes, msgData = sys.waitUntil("BT_SCAN_CNF", 50000)
-                if msgRes == true and msgData == 0 then
-                    log.info(tag .. ".scan", "打开扫描SUCCESS")
-                    for i = 1, 10 do
-                        msgRes, msgData = sys.waitUntil("BT_SCAN_IND", waitTime)
-                        if not msgData then
-                            log.error(tag .. ".scan",
-                                      "没有扫描到蓝牙设备")
-                            break
-                        else
-                            local deviceJsonInfo = json.encode(msgData)
-                            log.info(tag .. ".deviceJsonInfo", deviceJsonInfo)
+    elseif scanTest == true then
+        local tag = "BluetoothTest.scanTest"
+        local msgRes, msgData
+        sys.wait(waitTime)
+        if btcore.open(1) == 0 then
+            msgRes, msgData = sys.waitUntil("BT_OPEN", waitTime)
+            if msgRes == true and msgData == 0 then
+                log.info(tag .. ".open", "打开蓝牙SUCCESS")
+                btcore.setscanparam(1, 50 / 0.625, 100 / 0.625, 0, 0)
+                if btcore.scan(1) == 0 then
+                    msgRes, msgData = sys.waitUntil("BT_SCAN_CNF", 50000)
+                    if msgRes == true and msgData == 0 then
+                        log.info(tag .. ".scan", "打开扫描SUCCESS")
+                        while true do
+                            msgRes, msgData = sys.waitUntil("BT_SCAN_IND", waitTime)
+                            if not msgData then
+                                log.error(tag .. ".scan",
+                                          "没有扫描到蓝牙设备")
+                            else
+                                local deviceJsonInfo = json.encode(msgData)
+                                log.info(tag .. ".deviceJsonInfo", deviceJsonInfo)
+                            end
                         end
+                    else
+                        log.error(tag .. ".scan", "打开扫描FAIL")
                     end
                 else
-                    log.error(tag .. ".scan", "打开扫描FAIL")
+                    log.error("BluetoothTest.scan", "打开扫描FAIL")
                 end
             else
-                log.error("BluetoothTest.scan", "打开扫描FAIL")
+                log.error(tag .. ".open", "打开蓝牙FAIL")
             end
         else
             log.error(tag .. ".open", "打开蓝牙FAIL")
         end
-    else
-        log.error(tag .. ".open", "打开蓝牙FAIL")
+        btcore.scan(0)
+        log.info(tag .. ".close", "关闭蓝牙扫描")
+        sys.wait(waitTime)
+        btcore.close()
+        log.info(tag .. ".close", "关闭蓝牙")
+        sys.wait(waitTime)
     end
-    btcore.scan(0)
-    log.info(tag .. ".close", "关闭蓝牙扫描")
-    sys.wait(waitTime)
-    btcore.close()
-    log.info(tag .. ".close", "关闭蓝牙")
-    sys.wait(waitTime)
 end
 
 sys.taskInit(function()
-    sys.waitUntil("IP_READY_IND")
-    log.info(tag, "成功访问网络, Bluetooth测试开始")
-    if testMode == "single" then
-        BluetoothTestTask()
-    elseif testMode == "loop" then
-        while true do BluetoothscanTestTask() end
-    end
+    sys.wait(waitTime)
+    BluetoothTestTask()
 end)
 
 sys.init(0, 0)
