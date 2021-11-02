@@ -655,6 +655,46 @@ local function lteTestTask()
         outPutTestRes("LteTest.TableTest.remove2   FAIL")
     end
 
+    tag = "LteTest.SimTest"
+    if sim.getIccid() == nil then
+        log.error("SimTest.GetIccid", "FAIL", "查询失败")
+        outPutTestRes("LteTest.SimTest.getIccid   FAIL")
+    else
+        log.info("SimTest.GetIccid", "SUCCESS", sim.getIccid())
+        outPutTestRes("LteTest.SimTest.getIccid   PASS")
+    end
+
+    if sim.getImsi() == nil then
+        log.error("SimTest.GetImsi", "FAIL")
+        outPutTestRes("LteTest.SimTest.getImsi   FAIL")
+    else
+        log.info("SimTest.GetIccid", "SUCCESS", sim.getIccid())
+        outPutTestRes("LteTest.SimTest.getImsi   PASS")
+    end
+
+    if sim.getMcc() == "" then
+        log.error("SimTest.GetMcc", "FAIL")
+        outPutTestRes("LteTest.SimTest.getMcc   FAIL")
+    else
+        log.info("SimTest.GetIccid", "SUCCESS", sim.getIccid())
+        outPutTestRes("LteTest.SimTest.getMcc   PASS")
+    end
+
+    if sim.getMnc() == "" then
+        log.error("SimTest.GetMnc", "FAIL")
+        outPutTestRes("LteTest.SimTest.getMnc   FAIL")
+    else
+        log.info("SimTest.GetIccid", "SUCCESS", sim.getIccid())
+        outPutTestRes("LteTest.SimTest.getMnc   PASS")
+    end
+
+    if sim.getMnc() == "" then
+        log.error("SimTest.GetMnc", "FAIL")
+        outPutTestRes("LteTest.SimTest.getMnc   FAIL")
+    else
+        log.info("SimTest.GetIccid", "SUCCESS", sim.getIccid())
+        outPutTestRes("LteTest.SimTest.getMnc   PASS")
+    end
 end
 
 sys.taskInit(function()
