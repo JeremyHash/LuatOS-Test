@@ -14,11 +14,12 @@ LOG_LEVEL = log.LOGLEVEL_INFO
 local waitTime1 = 2000
 local waitTime2 = 5000
 require "color_lcd_spi_st7735"
-
+local count = 1
 
 sys.taskInit(function()
     sys.wait(1000)
     while true do   
+        log.info("LVGLTest第"..count.."次")
         -- 创建曲线
         arc = lvgl.arc_create(lvgl.scr_act(), nil)
         -- 设置尺寸
@@ -296,6 +297,7 @@ sys.taskInit(function()
         lvgl.obj_add_style(demo_Table, lvgl.TABLE_PART_BG, demo_ThemeStyle_Bg)
         sys.wait(3000)
         lvgl.obj_del(demo_Table)
+        count = count + 1
     end
 end)
 

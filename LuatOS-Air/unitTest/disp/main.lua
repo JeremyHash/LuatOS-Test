@@ -15,7 +15,6 @@ local waitTime1 = 2000
 local waitTime2 = 5000
 require "color_lcd_spi_st7735"
 
-
 local gc0310_sdr = {
     zbar_scan = 1,
     i2c_addr = 0x21,
@@ -334,124 +333,115 @@ sys.taskInit(function()
     sys.wait(5000)
     while true do
 
-            log.info("DispTest.LogoTest", "第" .. count .. "次")
-            -- 显示logo
-            -- 清空LCD显示缓冲区
+        log.info("DispTest.LogoTest", "第" .. count .. "次")
+        -- 显示logo
+        -- 清空LCD显示缓冲区
+        disp.clear()
+        -- 从坐标16,0位置开始显示"欢迎使用Luat"
+        log.info("DispTest.PutText", "LuatTest" .. count)
+        disp.puttext(common.utf8ToGb2312("LuatTest" .. count),
+                     getxpos(common.utf8ToGb2312("LuatTest" .. count)), 0)
+        -- 显示logo图片
+        log.info("DispTest.PutImage", "Logo_color")
+        disp.putimage("/lua/logo_color.png", 1, 33)
+        -- 刷新LCD显示缓冲区到LCD屏幕上
+        disp.update()
+        sys.wait(waitTime2)
+
+        log.info("DispTest.ScanTest", "第" .. count .. "次")
+        pm.wake("DispTest.ScanTest")
+        local ret = 0
+        log.info("DispTest.ScanTest", "开始扫描")
+        -- 设置扫码回调函数，默认10秒超时
+        scanCode.request(scanCodeCb)
+        -- 打开摄像头
+        ret = disp.cameraopen_ext(gc0310_sdr)
+        -- 打开摄像头预览   
+        -- log.info("DispTest.scan cameraopen_ext ret ", ret)
+        -- disp.camerapreviewzoom(-2)
+        ret = disp.camerapreview(0, 0, 0, 0, WIDTH, HEIGHT)
+        -- log.info("DispTest.scan camerapreview ret ", ret)
+        sys.wait(10000)
+
+        log.info("DispTest.PhotoTest", "第" .. count .. "次")
+        -- 拍照并显示
+        pm.wake("DispTest.PhotoTest")
+        -- 打开摄像头
+        disp.cameraopen(1, 0, 0, 1)
+        -- 打开摄像头预览
+        disp.camerapreview(0, 0, 0, 0, WIDTH, HEIGHT)
+        -- 设置照片的宽和高像素并且开始拍照
+        disp.cameracapture(WIDTH, HEIGHT)
+        -- 设置照片保存路径
+        disp.camerasavephoto("/testCamera.jpg")
+        log.info("DispTest.PhotoSize", io.fileSize("/testCamera.jpg"))
+        -- 关闭摄像头预览
+        disp.camerapreviewclose()
+        -- 关闭摄像头
+        disp.cameraclose()
+        -- 允许系统休眠
+        pm.sleep("DispTest.PhotoTest")
+        -- 显示拍照图片   
+        if WIDTH ~= 0 and HEIGHT ~= 0 then
             disp.clear()
-            -- 从坐标16,0位置开始显示"欢迎使用Luat"
-            log.info("DispTest.PutText", "LuatTest" .. count)
-            disp.puttext(common.utf8ToGb2312("LuatTest" .. count),
-                         getxpos(common.utf8ToGb2312("LuatTest" .. count)),
-                         0)
-            -- 显示logo图片
-            log.info("DispTest.PutImage", "Logo_color")
-            disp.putimage("/lua/logo_color.png", 1, 33)
-            -- 刷新LCD显示缓冲区到LCD屏幕上
+            disp.putimage("/testCamera.jpg", 0, 0)
+            disp.puttext(common.utf8ToGb2312("照片尺寸: " ..
+                                                 io.fileSize("/testCamera.jpg")),
+                         0, 5)
             disp.update()
-            sys.wait(waitTime2)
-     
-            log.info("DispTest.ScanTest", "第" .. count .. "次")
-            pm.wake("DispTest.ScanTest")
-            local ret = 0
-            log.info("DispTest.ScanTest", "开始扫描")
-            -- 设置扫码回调函数，默认10秒超时
-            scanCode.request(scanCodeCb)
-            -- 打开摄像头
-            ret = disp.cameraopen_ext(gc0310_sdr)
-            -- 打开摄像头预览   
-            -- log.info("DispTest.scan cameraopen_ext ret ", ret)
-            -- disp.camerapreviewzoom(-2)
-            ret = disp.camerapreview(0, 0, 0, 0, WIDTH, HEIGHT)
-            -- log.info("DispTest.scan camerapreview ret ", ret)
-            sys.wait(10000)
- 
-            log.info("DispTest.PhotoTest", "第" .. count .. "次")
-            -- 拍照并显示
-            pm.wake("DispTest.PhotoTest")
-            -- 打开摄像头
-            disp.cameraopen(1, 0, 0, 1)
-            -- 打开摄像头预览
-            disp.camerapreview(0, 0, 0, 0, WIDTH, HEIGHT)
-            -- 设置照片的宽和高像素并且开始拍照
-            disp.cameracapture(WIDTH, HEIGHT)
-            -- 设置照片保存路径
-            disp.camerasavephoto("/testCamera.jpg")
-            log.info("DispTest.PhotoSize", io.fileSize("/testCamera.jpg"))
-            -- 关闭摄像头预览
-            disp.camerapreviewclose()
-            -- 关闭摄像头
-            disp.cameraclose()
-            -- 允许系统休眠
-            pm.sleep("DispTest.PhotoTest")
-            -- 显示拍照图片   
-            if WIDTH ~= 0 and HEIGHT ~= 0 then
-                disp.clear()
-                disp.putimage("/testCamera.jpg", 0, 0)
-                disp.puttext(common.utf8ToGb2312("照片尺寸: " ..
-                                                     io.fileSize(
-                                                         "/testCamera.jpg")),
-                             0, 5)
-                disp.update()
-            end
-            sys.wait(waitTime2)
+        end
+        sys.wait(waitTime2)
 
-            log.info("DispTest.PhotoSendTest", "第" .. count .. "次")
-            -- 拍照并通过uart1发送出去
-            pm.wake("DispTest.PhotoSendTest")
-            -- 打开摄像头
-            disp.cameraopen(1, 0, 0, 1)
-            -- 打开摄像头预览
-            disp.camerapreview(0, 0, 0, 0, WIDTH, HEIGHT)
-            -- 设置照片的宽和高像素并且开始拍照
-            disp.cameracapture(WIDTH, HEIGHT)
-            -- 设置照片保存路径
-            disp.camerasavephoto("/testCamera.jpg")
-            log.info("DispTest.PhotoSize", io.fileSize("/testCamera.jpg"))
-            -- 关闭摄像头预览
-            disp.camerapreviewclose()
-            -- 关闭摄像头
-            disp.cameraclose()
-            -- 允许系统休眠
-            pm.sleep("DispTest.PhotoSendTest")
-            sendFile(1)
-            if WIDTH ~= 0 and HEIGHT ~= 0 then
-                disp.clear()
-                disp.putimage("/testCamera.jpg", 0, 0)
-                disp.puttext(common.utf8ToGb2312("照片尺寸: " ..
-                                                     io.fileSize(
-                                                         "/testCamera.jpg")),
-                             0, 5)
-                disp.update()
-            end
-            sys.wait(waitTime2)
-
-            log.info("DispTest.QrCodeTest", "第" .. count .. "次")
-            -- 显示二维码
+        log.info("DispTest.PhotoSendTest", "第" .. count .. "次")
+        -- 拍照并通过uart1发送出去
+        pm.wake("DispTest.PhotoSendTest")
+        -- 打开摄像头
+        disp.cameraopen(1, 0, 0, 1)
+        -- 打开摄像头预览
+        disp.camerapreview(0, 0, 0, 0, WIDTH, HEIGHT)
+        -- 设置照片的宽和高像素并且开始拍照
+        disp.cameracapture(WIDTH, HEIGHT)
+        -- 设置照片保存路径
+        disp.camerasavephoto("/testCamera.jpg")
+        log.info("DispTest.PhotoSize", io.fileSize("/testCamera.jpg"))
+        -- 关闭摄像头预览
+        disp.camerapreviewclose()
+        -- 关闭摄像头
+        disp.cameraclose()
+        -- 允许系统休眠
+        pm.sleep("DispTest.PhotoSendTest")
+        sendFile(1)
+        if WIDTH ~= 0 and HEIGHT ~= 0 then
             disp.clear()
-            local displayWidth = 100
-            disp.puttext(common.utf8ToGb2312("二维码生成测试"),
-                         getxpos(
-                             common.utf8ToGb2312("二维码生成测试")),
-                         10)
-            disp.putqrcode(data, qrCodeWidth, displayWidth,
-                           (WIDTH1 - displayWidth) / 2,
-                           (HEIGHT1 - displayWidth) / 2)
+            disp.putimage("/testCamera.jpg", 0, 0)
+            disp.puttext(common.utf8ToGb2312("照片尺寸: " ..
+                                                 io.fileSize("/testCamera.jpg")),
+                         0, 5)
             disp.update()
-            sys.wait(waitTime2)
+        end
+        sys.wait(waitTime2)
 
-            log.info("DispTest.UIWinTest", "第" .. count .. "次")
-            -- 1秒后，打开提示框窗口，提示"3秒后进入待机界面"
-            -- 提示框窗口关闭后，自动进入待机界面
-            sys.timerStart(openprompt, 1000, common.utf8ToGb2312("3秒后"),
-                           common.utf8ToGb2312("进入待机界面"), nil,
-                           openidle)
-            sys.wait(waitTime2)
+        log.info("DispTest.QrCodeTest", "第" .. count .. "次")
+        -- 显示二维码
+        disp.clear()
+        local displayWidth = 100
+        disp.puttext(common.utf8ToGb2312("二维码生成测试"),
+                     getxpos(common.utf8ToGb2312("二维码生成测试")), 10)
+        disp.putqrcode(data, qrCodeWidth, displayWidth,
+                       (WIDTH1 - displayWidth) / 2, (HEIGHT1 - displayWidth) / 2)
+        disp.update()
+        sys.wait(waitTime2)
+
+        log.info("DispTest.UIWinTest", "第" .. count .. "次")
+        -- 1秒后，打开提示框窗口，提示"3秒后进入待机界面"
+        -- 提示框窗口关闭后，自动进入待机界面
+        sys.timerStart(openprompt, 1000, common.utf8ToGb2312("3秒后"),
+                       common.utf8ToGb2312("进入待机界面"), nil, openidle)
+        sys.wait(waitTime2)
 
         count = count + 1
     end
 end)
-
-
 
 sys.init(0, 0)
 sys.run()
