@@ -695,6 +695,35 @@ local function lteTestTask()
         log.info("SimTest.GetIccid", "SUCCESS", sim.getIccid())
         outPutTestRes("LteTest.SimTest.getMnc   PASS")
     end
+
+    tag = "LteTest.JsonTest"
+
+    local torigin =
+    {
+        KEY1 = "VALUE1",
+        KEY2 = "VALUE2",
+        KEY3 = "VALUE3",
+        KEY4 = "VALUE4",
+        KEY5 = {KEY5_1 = "VALUE5_1", KEY5_2 = "VALUE5_2"},
+        KEY6 = {1, 2, 3},
+    }
+    local jsondata = json.encode(torigin)
+    if type(jsondata) == "string" then
+        log.info("LteTest.JsonTest.encode", "SUCCESS")
+        outPutTestRes("LteTest.JsonTest.encode   PASS")
+    else
+        log.error("LteTest.JsonTest.encode", "FAIL")
+        outPutTestRes("LteTest.JsonTest.encode   FAIL")
+    end
+    local origin = "{\"KEY3\":\"VALUE3\",\"KEY4\":\"VALUE4\",\"KEY2\":\"VALUE2\",\"KEY1\":\"VALUE1\",\"KEY5\":{\"KEY5_2\":\"VALUE5_2\",\"KEY5_1\":\"VALUE5_1\"},\"KEY6\":[1,2,3]}"
+    local tjsondata, result, errinfo = json.decode(origin)
+    if result and type(tjsondata) == "table" then
+        log.info("LteTest.JsonTest.decode", "SUCCESS")
+        outPutTestRes("LteTest.JsonTest.decode   PASS")
+    else
+        log.error("LteTest.JsonTest.decode", "FAIL")
+        outPutTestRes("LteTest.JsonTest.decode   FAIL")
+    end
 end
 
 sys.taskInit(function()
