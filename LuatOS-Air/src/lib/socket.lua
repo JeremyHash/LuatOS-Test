@@ -177,9 +177,10 @@ function mt:connect(address, port, timeout)
     if not result then
         log.info("socket:connect: connect fail", reason)
         sys.publish("LIB_SOCKET_CONNECT_FAIL_IND", self.ssl, self.protocol, address, port)
-        -- if reason == "RESPONSE" then
-        --     self.id = nil
-        -- end
+        -- 一处socket修改（待讨论）
+        if reason == "RESPONSE" then
+            self.id = nil
+        end
         return false
     end
     log.info("socket:connect: connect ok")
