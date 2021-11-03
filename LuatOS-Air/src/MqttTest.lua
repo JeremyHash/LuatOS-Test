@@ -21,7 +21,7 @@ local function mqttPubTask(ip, port, transport)
         "合宙测试-" .. testImei
     }
 
-    client = mqtt.client(tag .. "-" .. misc.getImei(), 60)
+    client = mqtt.client(tag .. "-" .. misc.getImei() .. "-" .. os.time(), 60)
     log.info(tag .. ".connect", "开始连接")
 
     if not client:connect(ip, port, transport) then
@@ -55,7 +55,7 @@ local function mqttRecTask(ip, port, transport)
     local topic1 = "topic1-" .. testImei
     local topic2 = "topic2-" .. testImei
     local topic3 = "合宙测试-" .. testImei
-    client = mqtt.client(tag .. "-" .. misc.getImei(), 60)
+    client = mqtt.client(tag .. "-" .. misc.getImei() .. "-" .. os.time(), 60)
     log.info(tag .. ".connect", "开始连接")
     if not client:connect(ip, port, transport) then
         log.info(tag .. ".connect", "连接FAIL")
@@ -124,6 +124,9 @@ sys.taskInit(function()
     if testConfig.testMode == "single" then
         mqttTestTask()
     elseif testConfig.testMode == "loop" then
-        while true do mqttTestTask() end
+        while true do
+            mqttTestTask()
+            sys.wait(5000)
+        end
     end
 end)

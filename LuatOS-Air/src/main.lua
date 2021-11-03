@@ -124,26 +124,26 @@ if testConfig.lbsLocTest == true then require "LbsLocTest" end
 
 if testConfig.peripheralsTest == true then require "PeripheralsTest" end
 
--- sys.taskInit(function()
---     while true do
---         log.info("PROJECT", PROJECT)
---         log.info("CORE", rtos.get_version())
---         log.info("USER_SCRIPT", VERSION)
---         log.info("LIB", sys.SCRIPT_LIB_VER)
---         log.info("FS_TOTAL_SIZE", rtos.get_fs_total_size() .. "Bytes")
---         log.info("FS_FREE_SIZE", rtos.get_fs_free_size() .. "Bytes")
---         log.info("RAM_USEAGE", collectgarbage("count") .. "KB")
---         log.info("SOCKET_STATUS", socket.isReady())
---         log.info("PERCENTAGE", rtos.get_env_usage() .. "%")
---         log.info("PWRON_REASON", rtos.poweron_reason())
---         local timeTable = misc.getClock()
---         log.info("TIME",
---                  string.format("%d-%d-%d %d:%d:%d", timeTable.year,
---                                timeTable.month, timeTable.day, timeTable.hour,
---                                timeTable.min, timeTable.sec))
---         sys.wait(3000)
---     end
--- end)
+sys.taskInit(function()
+    while true do
+        log.info("PROJECT", PROJECT)
+        log.info("CORE", rtos.get_version())
+        log.info("USER_SCRIPT", VERSION)
+        log.info("LIB", sys.SCRIPT_LIB_VER)
+        log.info("FS_TOTAL_SIZE", rtos.get_fs_total_size() .. "Bytes")
+        log.info("FS_FREE_SIZE", rtos.get_fs_free_size() .. "Bytes")
+        log.info("RAM_USEAGE", collectgarbage("count") .. "KB")
+        log.info("SOCKET_STATUS", socket.isReady())
+        log.info("PERCENTAGE", rtos.get_env_usage() .. "%")
+        log.info("PWRON_REASON", rtos.poweron_reason())
+        local timeTable = misc.getClock()
+        log.info("TIME",
+                 string.format("%d-%d-%d %d:%d:%d", timeTable.year,
+                               timeTable.month, timeTable.day, timeTable.hour,
+                               timeTable.min, timeTable.sec))
+        sys.wait(10000)
+    end
+end)
 
 ntp.timeSync(nil, function(time, result)
     local tag = "ntpTimeSync"
