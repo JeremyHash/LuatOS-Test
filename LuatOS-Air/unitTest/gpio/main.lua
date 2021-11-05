@@ -10,11 +10,14 @@ require "pins"
 require "log"
 LOG_LEVEL = log.LOGLEVEL_INFO
 
-local modType = "1603"
+local modType = "8910"
+
 -- Type=1 中断模式
 -- Type=2 输入模式
 -- Type=3 输出模式
-local Type = 1
+local Type = 3
+
+local UP_DOWN_STATUS = pio.PULLUP
 
 local gpio_8910_list = {
     0, 1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22, 23,
@@ -28,8 +31,6 @@ local gpio_1603_list = {
 }
 
 local gpio_in_functions = {}
-
-local UP_DOWN_STATUS = pio.DOWN
 
 local function gpioIntFnc(msg)
     -- 上升沿中断
@@ -115,12 +116,21 @@ sys.taskInit(function()
         end
         sys.taskInit(function()
             while true do
-                sys.wait(5000)
+                sys.wait(100)
                 for k, v in pairs(gpio_in_functions) do
                     local res = v()
-                    log.info(tag, "获取GPIO" .. k .. "的输入" .. res)
+                    if UP_DOWN_STATUS == pio.PULLDOWN then
+                        if res == 1 then
+                            log.info(tag, "检测到GPIO" .. k ..
+                                         "为高电平输入")
+                        end
+                    elseif UP_DOWN_STATUS == pio.PULLUP then
+                        if res == 0 then
+                            log.info(tag, "检测到GPIO" .. k ..
+                                         "为低电平输入")
+                        end
+                    end
                 end
-                log.info(tag, "-----------------------")
             end
         end)
     end
