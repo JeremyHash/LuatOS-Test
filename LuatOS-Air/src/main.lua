@@ -1,7 +1,7 @@
 -- LuatOS-Air-Test
 -- Author:openluat
 -- CreateDate:20211011
--- UpdateDate:20211011
+-- UpdateDate:20211105
 PROJECT = "LuatOS-Air-Test"
 VERSION = "1.0.0"
 PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
@@ -23,7 +23,6 @@ testConfig = {
     mqttTest = false,
     ftpTest = false,
     iotTest = false,
-    peripheralsTest = false,
     fsTest = false,
     lbsLocTest = false
 }
@@ -121,8 +120,6 @@ if testConfig.ftpTest == true then require "FtpTest" end
 if testConfig.fsTest == true then require "FsTest" end
 
 if testConfig.lbsLocTest == true then require "LbsLocTest" end
-
-if testConfig.peripheralsTest == true then require "PeripheralsTest" end
 
 sys.taskInit(function()
     while true do
