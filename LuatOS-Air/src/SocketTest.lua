@@ -201,28 +201,33 @@ local function socketTestTask()
 
     tag = "SocketTest.asyncTcpTest"
     sys.taskInit(function()
-        sys.waitUntil("asyncTcpTestInitOK")
-        tcpClient3:asyncSend(testSendData1)
-        local data = ""
-        for i = 1, 50 do
-            data = data .. tcpClient3:asyncRecv()
-            sys.wait(100)
-        end
-        if #data == 1000 then
-            log.info("data", data)
-            outPutTestRes("SocketTest.asyncTcpTest PASS")
+        local res, data = sys.waitUntil("asyncTcpTestInitOK")
+        if data == false then
+            return
         else
-            outPutTestRes("SocketTest.asyncTcpTest FAIL")
+            tcpClient3:asyncSend(testSendData1)
+            local data = ""
+            for i = 1, 50 do
+                data = data .. tcpClient3:asyncRecv()
+                sys.wait(100)
+            end
+            if #data == 1000 then
+                log.info("data", data)
+                outPutTestRes("SocketTest.asyncTcpTest PASS")
+            else
+                outPutTestRes("SocketTest.asyncTcpTest FAIL")
+            end
+            coroutine.resume(taskID, false)
         end
-        coroutine.resume(taskID, false)
     end)
     tcpClient3 = socket.tcp()
     connectResult, socketId = tcpClient3:connect(ip, port1)
     log.info(tag .. ".connectResult, socketId", connectResult, socketId)
     if connectResult then
-        sys.publish("asyncTcpTestInitOK")
+        sys.publish("asyncTcpTestInitOK", true)
         while tcpClient3:asyncSelect() do end
     else
+        sys.publish("asyncTcpTestInitOK", false)
         outPutTestRes("SocketTest.asyncTcpTest FAIL")
         log.error(tag .. ".connect", "FAIL")
     end
@@ -230,28 +235,33 @@ local function socketTestTask()
 
     tag = "SocketTest.asyncUdpTest"
     sys.taskInit(function()
-        sys.waitUntil("asyncUdpTestInitOK")
-        udpClient2:asyncSend(testSendData1)
-        local data = ""
-        for i = 1, 50 do
-            data = data .. udpClient2:asyncRecv()
-            sys.wait(100)
-        end
-        if #data == 1000 then
-            log.info("data", data)
-            outPutTestRes("SocketTest.asyncUdpTest PASS")
+        local res, data = sys.waitUntil("asyncUdpTestInitOK")
+        if data == false then
+            return
         else
-            outPutTestRes("SocketTest.asyncUdpTest FAIL")
+            udpClient2:asyncSend(testSendData1)
+            local data = ""
+            for i = 1, 50 do
+                data = data .. udpClient2:asyncRecv()
+                sys.wait(100)
+            end
+            if #data == 1000 then
+                log.info("data", data)
+                outPutTestRes("SocketTest.asyncUdpTest PASS")
+            else
+                outPutTestRes("SocketTest.asyncUdpTest FAIL")
+            end
+            coroutine.resume(taskID, false)
         end
-        coroutine.resume(taskID, false)
     end)
     udpClient2 = socket.udp()
     connectResult, socketId = udpClient2:connect(ip, port1)
     log.info(tag .. ".connectResult, socketId", connectResult, socketId)
     if connectResult then
-        sys.publish("asyncUdpTestInitOK")
+        sys.publish("asyncUdpTestInitOK", true)
         while udpClient2:asyncSelect() do end
     else
+        sys.publish("asyncUdpTestInitOK", false)
         outPutTestRes("SocketTest.asyncUdpTest FAIL")
         log.error(tag .. ".connect", "FAIL")
     end
@@ -296,6 +306,9 @@ taskID = sys.taskInit(function()
     if testConfig.testMode == "single" then
         socketTestTask()
     elseif testConfig.testMode == "loop" then
-        while true do socketTestTask() end
+        while true do
+            socketTestTask()
+            sys.wait(1000)
+        end
     end
 end)
