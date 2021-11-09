@@ -851,6 +851,9 @@ sys.taskInit(function()
     if testConfig.testMode == "single" then
         httpTestTask()
     elseif testConfig.testMode == "loop" then
-        while true do httpTestTask() end
+        while true do
+            httpTestTask()
+            sys.wait(100)
+        end
     end
 end)

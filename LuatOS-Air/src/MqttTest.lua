@@ -28,6 +28,7 @@ local function mqttPubTask(ip, port, transport)
         log.info(tag .. ".connect", "连接FAIL")
         client:disconnect()
         outPutTestRes("MqttTest FAIL")
+        sys.publish("MqttTestFinish")
         return
     end
 
@@ -41,6 +42,7 @@ local function mqttPubTask(ip, port, transport)
             log.error(tag .. ".publish." .. v, "发布FAIL")
             client:disconnect()
             outPutTestRes("MqttTest FAIL")
+            sys.publish("MqttTestFinish")
             return
         end
     end
@@ -61,6 +63,7 @@ local function mqttRecTask(ip, port, transport)
         log.info(tag .. ".connect", "连接FAIL")
         client:disconnect()
         outPutTestRes("MqttTest FAIL")
+        sys.publish("MqttTestFinish")
         return
     end
 
@@ -76,18 +79,21 @@ local function mqttRecTask(ip, port, transport)
                 log.error(tag .. ".subscribe", "订阅FAIL")
                 client:disconnect()
                 outPutTestRes("MqttTest FAIL")
+                sys.publish("MqttTestFinish")
                 return
             end
         else
             log.error(tag .. ".unsubscribe", "取消订阅FAIL")
             client:disconnect()
             outPutTestRes("MqttTest FAIL")
+            sys.publish("MqttTestFinish")
             return
         end
     else
         log.error(tag .. ".subscribe", "订阅FAIL")
         client:disconnect()
         outPutTestRes("MqttTest FAIL")
+        sys.publish("MqttTestFinish")
         return
     end
 

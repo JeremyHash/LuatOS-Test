@@ -308,7 +308,7 @@ taskID = sys.taskInit(function()
     elseif testConfig.testMode == "loop" then
         while true do
             socketTestTask()
-            sys.wait(1000)
+            sys.wait(100)
         end
     end
 end)
