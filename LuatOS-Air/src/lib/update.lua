@@ -166,6 +166,9 @@ end
 -- .."&imei="..misc.getimei()
 -- .."&device_key="..misc.getsn()
 -- .."&firmware_name=".._G.PROJECT.."_"..rtos.get_version().."&version=".._G.VERSION
+-- 如果用户设置了url，且url前面增加三个井号"###",http.lua会自动忽略"###"并以用户填入的url作为请求地址，不会自动添加模块信息，例如：
+-- 设置的url="###www.userserver.com"/api/site/firmware_upgrade?customparam=test",则http.lua会将此url开头的"###"忽略,并以此url为地址进行请求
+-- "www.userserver.com"/api/site/firmware_upgrade?customparam=test"
 -- 如果redir设置为true，还会补充.."&need_oss_url=1"
 -- @number[opt=nil] period，单位毫秒，定时启动远程升级功能的间隔，如果没有设置此参数，仅执行一次远程升级功能
 -- @bool[opt=nil] redir，是否访问重定向到阿里云的升级包，使用Luat提供的升级服务器时，此参数才有意义

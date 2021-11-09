@@ -183,7 +183,7 @@ end
 --- 判断文件是否存在
 -- @string path,文件全名，例如："/lua/call.mp3"
 -- @return bool,存在为true,不存在为false
--- @usage local ex = io.exists("/lua/call/call.mp3")
+-- @usage local ex = io.exists("/lua/call.mp3")
 function io.exists(path)
     local file = io.open(path, "r")
     if file then

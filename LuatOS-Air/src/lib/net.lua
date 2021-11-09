@@ -524,7 +524,7 @@ function getLac()
 end
 
 --- 获取当前注册的网络频段
--- @return string lac,当前注册的网络频段，如果还没有注册网络，则返回""
+-- @return string band,当前注册的网络频段，如果还没有注册网络，则返回""
 -- @usage net.getBand()
 function getBand()
 	return band

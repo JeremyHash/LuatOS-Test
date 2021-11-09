@@ -54,7 +54,8 @@ end
 -- @return  true 表示连接成功,false or nil 表示连接失败
 -- @usage while not ws:connect(20000) do sys.wait(2000) end
 function ws:connect(timeout)
-    self.wss, self.host, self.port, self.path = self.url:lower():match("(%a+)://([%w%.%-]+):?(%d*)(.*)")
+    self.wss, self.host, self.port, self.path = self.url:match("(%a+)://([%w%.%-]+):?(%d*)(.*)")
+    self.wss, self.host = self.wss:lower(), self.host:lower()
     self.port = self.port ~= "" and self.port or (self.wss == "wss" and 443 or 80)
     if self.wss == "wss" then
         self.io = socket.tcp(true,self.cert)
@@ -227,8 +228,12 @@ function ws:recvFrame()
     end
     -- 获取有效载荷数据
     if length > 0 then
+        if length>126 then
         -- r, s = self.io:recv()
+        s=s:sub(5,5+length-1)
+        else  
         s=s:sub(3,3+length-1)
+        end
         -- if not r then return false, nil, "读取帧有效载荷数据失败!" end
     end
     -- 处理切片帧

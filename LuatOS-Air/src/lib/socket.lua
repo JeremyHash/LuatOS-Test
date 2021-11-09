@@ -48,7 +48,7 @@ sys.subscribe("IP_ERROR_IND", function()errorInd('IP_ERROR_IND') end)
 -- 创建socket函数
 local mt = {}
 mt.__index = mt
-local function socket(protocol, cert)
+local function socket(protocol, cert, tCoreExtPara)
     local ssl = protocol:match("SSL")
     local co = coroutine.running()
     if not co then
@@ -59,6 +59,7 @@ local function socket(protocol, cert)
     local o = {
         id = nil,
         protocol = protocol,
+        tCoreExtPara = tCoreExtPara,
         ssl = ssl,
         cert = cert,
         co = co,
@@ -91,8 +92,8 @@ end
 -- c = socket.tcp(true, {caCert="ca.crt"})
 -- c = socket.tcp(true, {caCert="ca.crt", clientCert="client.crt", clientKey="client.key"})
 -- c = socket.tcp(true, {caCert="ca.crt", clientCert="client.crt", clientKey="client.key", clientPassword="123456"})
-function tcp(ssl, cert)
-    return socket("TCP" .. (ssl == true and "SSL" or ""), (ssl == true) and cert or nil)
+function tcp(ssl, cert, tCoreExtPara)
+    return socket("TCP" .. (ssl == true and "SSL" or ""), (ssl == true) and cert or nil, tCoreExtPara)
 end
 
 --- 创建基于UDP的socket对象
@@ -121,9 +122,13 @@ function mt:connect(address, port, timeout)
     
     self.address = address
     self.port = port
+    local tCoreExtPara = self.tCoreExtPara or {}
+    -- 默认缓冲区大小
+    local rcvBufferSize = tCoreExtPara.rcvBufferSize or 0
+    
     local socket_connect_fnc = (type(socketcore.sock_conn_ext)=="function") and socketcore.sock_conn_ext or socketcore.sock_conn
     if self.protocol == 'TCP' then
-        self.id = socket_connect_fnc(0, address, port)
+        self.id = socket_connect_fnc(0, address, port, rcvBufferSize)
     elseif self.protocol == 'TCPSSL' then
         local cert = {hostName = address}
         if self.cert then
@@ -140,9 +145,9 @@ function mt:connect(address, port, timeout)
                 cert.clientKey = io.readFile(self.cert.clientKey)
             end
         end
-        self.id = socket_connect_fnc(2, address, port, cert)
+        self.id = socket_connect_fnc(2, address, port, cert, rcvBufferSize)
     else
-        self.id = socket_connect_fnc(1, address, port)
+        self.id = socket_connect_fnc(1, address, port, rcvBufferSize)
     end
     if type(socketcore.sock_conn_ext)=="function" then
         if not self.id or self.id<0 then
@@ -176,11 +181,10 @@ function mt:connect(address, port, timeout)
     if self.timerId and reason ~= "TIMEOUT" then sys.timerStop(self.timerId) end
     if not result then
         log.info("socket:connect: connect fail", reason)
+		if reason == "RESPONSE" then
+			self.id = nil
+		end
         sys.publish("LIB_SOCKET_CONNECT_FAIL_IND", self.ssl, self.protocol, address, port)
-        -- 一处socket修改（待讨论）
-        if reason == "RESPONSE" then
-            self.id = nil
-        end
         return false
     end
     log.info("socket:connect: connect ok")
