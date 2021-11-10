@@ -280,21 +280,20 @@ local function getAndSaveToBigFileTestCb(result, prompt, head, filePath)
 
             log.info(tag .. "保存大文件后可用空间 " ..
                          rtos.get_fs_free_size() .. "Bytes")
-            -- os.remove(filePath)
-            local remove_dir_res = rtos.remove_dir("/Jeremy")
-            if remove_dir_res then
-                log.info(tag .. ".fileDelete", filePath .. "删除SUCCESS")
-                log.info(tag .. "删除大文件SUCCESS后可用空间 " ..
-                             rtos.get_fs_free_size() .. "Bytes")
-            else
-                log.error(tag .. ".fileDelete", filePath .. "删除FAIL")
-                log.info(tag .. "删除大文件FAIL后可用空间 " ..
-                             rtos.get_fs_free_size() .. "Bytes")
-            end
         end
     else
         log.error(tag .. ".result", "FAIL")
         outPutTestRes("HttpTest.getAndSaveToBigFileTest FAIL")
+    end
+    local remove_dir_res = rtos.remove_dir("/Jeremy")
+    if remove_dir_res then
+        log.info(tag .. ".fileDelete", "删除SUCCESS")
+        log.info(tag .. "删除大文件SUCCESS后可用空间 " ..
+                     rtos.get_fs_free_size() .. "Bytes")
+    else
+        log.error(tag .. ".fileDelete", "删除FAIL")
+        log.info(tag .. "删除大文件FAIL后可用空间 " ..
+                     rtos.get_fs_free_size() .. "Bytes")
     end
     sys.publish("getAndSaveToBigFileTestFinished")
 end
@@ -343,21 +342,20 @@ local function getAndSaveToSmallFileTestCb(result, prompt, head, filePath)
 
             log.info(tag .. "保存小文件后可用空间 " ..
                          rtos.get_fs_free_size() .. "Bytes")
-            -- os.remove(filePath)
-            local remove_dir_res = rtos.remove_dir("/Jeremy")
-            if remove_dir_res then
-                log.info(tag .. ".fileDelete", filePath .. "删除SUCCESS")
-                log.info(tag .. "删除小文件SUCCESS后可用空间 " ..
-                             rtos.get_fs_free_size() .. "Bytes")
-            else
-                log.error(tag .. ".fileDelete", filePath .. "删除FAIL")
-                log.info(tag .. "删除小文件FAIL后可用空间 " ..
-                             rtos.get_fs_free_size() .. "Bytes")
-            end
         end
     else
         log.error(tag .. ".result", "FAIL")
         outPutTestRes("HttpTest.getAndSaveToSmallFileTest FAIL")
+    end
+    local remove_dir_res = rtos.remove_dir("/Jeremy")
+    if remove_dir_res then
+        log.info(tag .. ".fileDelete", "删除SUCCESS")
+        log.info(tag .. "删除小文件SUCCESS后可用空间 " ..
+                     rtos.get_fs_free_size() .. "Bytes")
+    else
+        log.error(tag .. ".fileDelete", "删除FAIL")
+        log.info(tag .. "删除小文件FAIL后可用空间 " ..
+                     rtos.get_fs_free_size() .. "Bytes")
     end
     sys.publish("getAndSaveToSmallFileTestFinished")
 end
@@ -728,7 +726,7 @@ local function httpTestTask()
     -- }, nil, nil, nil, getWithCAAndKeyTestCb)
     -- sys.waitUntil("getWithCAAndKeyTestFinished")
 
-    log.info("创建文件前可用空间 " .. rtos.get_fs_free_size() ..
+    log.info("下载大文件前可用空间 " .. rtos.get_fs_free_size() ..
                  " Bytes")
     if rtos.make_dir("/Jeremy") then
         log.info("HttpTest.GetAndSaveToBigFileTest.makeDir", "SUCCESS")
@@ -739,7 +737,7 @@ local function httpTestTask()
                  getAndSaveToBigFileTestCb, "/Jeremy/600K")
     sys.waitUntil("getAndSaveToBigFileTestFinished")
 
-    log.info("创建文件前可用空间 " .. rtos.get_fs_free_size() ..
+    log.info("下载小文件前可用空间 " .. rtos.get_fs_free_size() ..
                  " Bytes")
     if rtos.make_dir("/Jeremy") then
         log.info("HttpTest.GetAndSaveToSmallFileTest.makeDir", "SUCCESS")
