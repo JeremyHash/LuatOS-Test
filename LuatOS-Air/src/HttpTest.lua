@@ -4,7 +4,7 @@
 -- UpdateDate:20211011
 module(..., package.seeall)
 
-local serverAddress = "114.55.242.59:2900"
+local serverAddress = "47.96.229.157:2900"
 local testCookie = string.rep("1234567890asdfghjklp", 50)
 
 -- multipart/form-data封装函数

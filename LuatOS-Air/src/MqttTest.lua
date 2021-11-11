@@ -6,7 +6,7 @@ module(..., package.seeall)
 
 local tag = "MqttTest"
 
-local ip = "114.55.242.59"
+local ip = "47.96.229.157"
 -- 普通MQTT端口
 local port1 = 1883
 -- 单双向认证的MQTT端口
