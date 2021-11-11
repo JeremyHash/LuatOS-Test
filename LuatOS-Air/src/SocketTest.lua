@@ -5,7 +5,7 @@
 module(..., package.seeall)
 
 local taskID
-local ip = "114.55.242.59"
+local ip = "47.96.229.157"
 -- port1 TCP UDP
 -- port2 TCPSSL 单向
 -- port3 TCPSSL 双向
