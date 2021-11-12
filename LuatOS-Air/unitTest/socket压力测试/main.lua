@@ -95,7 +95,11 @@ sys.taskInit(function()
     while true do
         ril.request("AT+CESQ")
         ril.request("AT+CGATT?")
-        ril.request("AT+CCED=0,1")
+        if modType == "8910" then
+            ril.request("AT+CCED=0,1")
+        elseif modType == "1603S" or modType == "1603E" then
+            ril.request("AT*BANDIND?")
+        end
         log.info("发起连接次数", connectTimes)
         log.info("连接成功次数", connectSuccessTimes)
         log.info("连接失败次数", connectFailTimes)
