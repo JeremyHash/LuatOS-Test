@@ -197,6 +197,8 @@ function ws:recvFrame()
                 local send_data = table.concat(self.send_data)
                 self.send_data = {}
                 pong(self,send_data)
+            elseif p == "CLOSE_ALL" then
+                return false, nil, "CLOSE_ALL"
             end
             return false, nil, "WEBSOCKET_OK"
         else
@@ -348,6 +350,9 @@ function ws:start(keepAlive, proc, reconnTime)
                 if self.open_callback == true then self.callbacks.open() self.open_callback = false end
                 if r then
                     if type(proc) == "function" then proc(message) end
+                elseif message == "CLOSE_ALL" then
+                    self:close()
+                    return true
                 elseif not r and message ~="WEBSOCKET_OK" then
                     log.error('ws recv error', message)
                 end

@@ -1,7 +1,7 @@
 -- SocketTest
 -- Author:openluat
 -- CreateDate:20211012
--- UpdateDate:20211012
+-- UpdateDate:20211116
 module(..., package.seeall)
 
 local taskID
@@ -270,33 +270,33 @@ local function socketTestTask()
     -- tag = "SocketTest.webSocketTest"
     -- local ws = websocket.new("ws://" .. ip .. ":2900/websocket")
 
-    -- ws:on("open", function() log.info(tag .. ".open", "连接建立SUCCESS") end)
+    -- -- ws:on("open", function() log.info(tag .. ".open", "连接建立SUCCESS") end)
 
-    -- ws:on("message", function(msg) log.info(tag .. ".receive", msg) end)
-
+    -- ws:on("message", function(msg)
+    --     log.info(tag .. ".receive", msg)
+    --     if msg == tag then
+    --         log.info(tag .. ".receive", "CHECK_SUCCESS")
+    --     else
+    --         log.error(tag .. ".receive", "CHECK_FAIL")
+    --     end
+    -- end)
     -- ws:on("sent", function() log.info(tag .. ".sent", "发送SUCCESS") end)
-
     -- ws:on("error", function(msg) log.error(tag .. ".error", msg) end)
-
     -- ws:on("close", function(code) log.info(tag .. ".close", code) end)
 
     -- sys.taskInit(function()
-    --     ws.start(ws, 180)
-    --     sys.wait(6000)
-    --     ws:close()
-    --     log.info(tag, "close")
-    --     sys.publish("webSocketTestFinish")
+    --     log.info(tag, "start")
+    --     ws:start(180)
+    --     log.info(tag, "close start task")
     -- end)
 
-    -- log.info(tag, "send")
-    -- ws:send("www.openluat.com", true)
-    -- sys.wait(1000)
-    -- log.info(tag, "send")
-    -- ws:send("www.openluat.com", true)
-    -- sys.wait(1000)
-
-    -- sys.waitUntil("webSocketTestFinish")
-
+    -- sys.wait(2000)
+    -- for i = 1, 3 do
+    --     log.info(tag, "send")
+    --     ws:send(tag, true)
+    --     sys.wait(1000)
+    -- end
+    -- ws:close()
 end
 
 taskID = sys.taskInit(function()
