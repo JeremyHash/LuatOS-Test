@@ -1,7 +1,7 @@
 -- MqttTest
 -- Author:LuatTest
 -- CreateDate:20211019
--- UpdateDate:20211019
+-- UpdateDate:20211118
 module(..., package.seeall)
 
 local tag = "MqttTest"
@@ -27,27 +27,26 @@ local function mqttPubTask(ip, port, transport)
     if not client:connect(ip, port, transport) then
         log.info(tag .. ".connect", "连接FAIL")
         client:disconnect()
-        outPutTestRes("MqttTest FAIL")
-        sys.publish("MqttTestFinish")
         return
     end
 
     log.info(tag .. ".connect", "连接SUCCESS")
 
-    sys.waitUntil("readyToReceive")
+    local waitRes, data = sys.waitUntil("MQTT_RECEIVE_STATUS")
+    if data == false then
+        client:disconnect()
+        return
+    end
     for k, v in pairs(topicList) do
         if client:publish(v, tostring(os.time()), k - 1, 0) then
             log.info(tag .. ".publish." .. v, "发布SUCCESS")
         else
             log.error(tag .. ".publish." .. v, "发布FAIL")
             client:disconnect()
-            outPutTestRes("MqttTest FAIL")
-            sys.publish("MqttTestFinish")
             return
         end
     end
     client:disconnect()
-
 end
 
 local function mqttRecTask(ip, port, transport)
@@ -62,8 +61,8 @@ local function mqttRecTask(ip, port, transport)
     if not client:connect(ip, port, transport) then
         log.info(tag .. ".connect", "连接FAIL")
         client:disconnect()
-        outPutTestRes("MqttTest FAIL")
-        sys.publish("MqttTestFinish")
+        sys.publish("MQTT_RECEIVE_STATUS", false)
+        sys.publish("MQTT_TEST_FINISH")
         return
     end
 
@@ -78,26 +77,26 @@ local function mqttRecTask(ip, port, transport)
             else
                 log.error(tag .. ".subscribe", "订阅FAIL")
                 client:disconnect()
-                outPutTestRes("MqttTest FAIL")
-                sys.publish("MqttTestFinish")
+                sys.publish("MQTT_RECEIVE_STATUS", false)
+                sys.publish("MQTT_TEST_FINISH")
                 return
             end
         else
             log.error(tag .. ".unsubscribe", "取消订阅FAIL")
             client:disconnect()
-            outPutTestRes("MqttTest FAIL")
-            sys.publish("MqttTestFinish")
+            sys.publish("MQTT_RECEIVE_STATUS", false)
+            sys.publish("MQTT_TEST_FINISH")
             return
         end
     else
         log.error(tag .. ".subscribe", "订阅FAIL")
         client:disconnect()
-        outPutTestRes("MqttTest FAIL")
-        sys.publish("MqttTestFinish")
+        sys.publish("MQTT_RECEIVE_STATUS", false)
+        sys.publish("MQTT_TEST_FINISH")
         return
     end
 
-    sys.publish("readyToReceive")
+    sys.publish("MQTT_RECEIVE_STATUS", true)
     for i = 1, 3 do
         local result, data = client:receive(10000)
         if result then
@@ -107,21 +106,18 @@ local function mqttRecTask(ip, port, transport)
             log.info(tag .. ".receive", "接收FAIL")
             log.error("data", data)
             client:disconnect()
-            outPutTestRes("MqttTest FAIL")
-            sys.publish("MqttTestFinish")
+            sys.publish("MQTT_TEST_FINISH")
             return
         end
     end
     client:disconnect()
-    outPutTestRes("MqttTest PASS")
-    sys.publish("MqttTestFinish")
-
+    sys.publish("MQTT_TEST_FINISH")
 end
 
 local function mqttTestTask()
-    sys.taskInit(function() mqttRecTask(ip, port1, "tcp") end)
     sys.taskInit(function() mqttPubTask(ip, port1, "tcp") end)
-    sys.waitUntil("MqttTestFinish")
+    sys.taskInit(function() mqttRecTask(ip, port1, "tcp") end)
+    sys.waitUntil("MQTT_TEST_FINISH")
 end
 
 sys.taskInit(function()
