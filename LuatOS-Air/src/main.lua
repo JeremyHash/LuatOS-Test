@@ -14,7 +14,7 @@ testConfig = {
     -- 8910 1603S 1603E
     modType = "8910",
     -- single loop
-    testMode = "single",
+    testMode = "loop",
     netLed = true,
     consoleTest = false,
     lteTest = false,

@@ -267,36 +267,33 @@ local function socketTestTask()
     end
     udpClient2:close()
 
-    -- tag = "SocketTest.webSocketTest"
-    -- local ws = websocket.new("ws://" .. ip .. ":2900/websocket")
+    tag = "SocketTest.webSocketTest"
+    local ws = websocket.new("ws://" .. ip .. ":2900/websocket")
+    ws:on("message", function(msg)
+        log.info(tag .. ".receive", msg)
+        if msg == tag then
+            log.info(tag .. ".receive", "CHECK_SUCCESS")
+        else
+            log.error(tag .. ".receive", "CHECK_FAIL")
+        end
+    end)
+    ws:on("sent", function() log.info(tag .. ".sent", "发送SUCCESS") end)
+    ws:on("error", function(msg) log.error(tag .. ".error", msg) end)
+    ws:on("close", function(code) log.info(tag .. ".close", code) end)
 
-    -- -- ws:on("open", function() log.info(tag .. ".open", "连接建立SUCCESS") end)
+    sys.taskInit(function()
+        log.info(tag, "open start task")
+        ws:start(180)
+        log.info(tag, "close start task")
+    end)
 
-    -- ws:on("message", function(msg)
-    --     log.info(tag .. ".receive", msg)
-    --     if msg == tag then
-    --         log.info(tag .. ".receive", "CHECK_SUCCESS")
-    --     else
-    --         log.error(tag .. ".receive", "CHECK_FAIL")
-    --     end
-    -- end)
-    -- ws:on("sent", function() log.info(tag .. ".sent", "发送SUCCESS") end)
-    -- ws:on("error", function(msg) log.error(tag .. ".error", msg) end)
-    -- ws:on("close", function(code) log.info(tag .. ".close", code) end)
-
-    -- sys.taskInit(function()
-    --     log.info(tag, "start")
-    --     ws:start(180)
-    --     log.info(tag, "close start task")
-    -- end)
-
-    -- sys.wait(2000)
-    -- for i = 1, 3 do
-    --     log.info(tag, "send")
-    --     ws:send(tag, true)
-    --     sys.wait(1000)
-    -- end
-    -- ws:close()
+    sys.wait(2000)
+    for i = 1, 3 do
+        log.info(tag, "send")
+        ws:send(tag, true)
+        sys.wait(1000)
+    end
+    websocket.exit(ws)
 end
 
 taskID = sys.taskInit(function()
