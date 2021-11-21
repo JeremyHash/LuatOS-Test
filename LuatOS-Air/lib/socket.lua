@@ -182,6 +182,7 @@ function mt:connect(address, port, timeout)
     if not result then
         log.info("socket:connect: connect fail", reason)
 		if reason == "RESPONSE" then
+            sockets[self.id] = nil
 			self.id = nil
 		end
         sys.publish("LIB_SOCKET_CONNECT_FAIL_IND", self.ssl, self.protocol, address, port)

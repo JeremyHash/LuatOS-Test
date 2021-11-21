@@ -18,6 +18,8 @@ local sProcessedLen = 0
 local httpRspCode
 local sGetImeiFnc
 
+local updateMsg
+
 local otaBegin
 
 local function httpDownloadCbFnc(result,statusCode,head)
@@ -46,7 +48,8 @@ local function processOta(stepData,totalLen,statusCode)
             if totalLen<=200 then
                 local msg = stepData:match("\"msg\":%s*\"(.-)\"")
                 if msg and msg:len()<=200 then
-                    log.warn("update.error",common.ucs2beToUtf8((msg:gsub("\\u","")):fromHex()))
+                    updateMsg = common.ucs2beToUtf8((msg:gsub("\\u","")):fromHex())
+                    log.warn("update.error",updateMsg)
                 end
             end
             httpRspCode = stepData:match("\"code\":%s*(%d+)")
@@ -65,6 +68,7 @@ function clientTask()
         local retryCnt = 0
         sProcessedLen = 0
         otaBegin = false
+        updateMsg = nil
         while true do
             --sBraekTest = sBraekTest+30
             log.info("update.http.request",sLocation,sUrl,sProcessedLen,sBraekTest,fotastart)
@@ -198,4 +202,11 @@ end
 
 function setGetImeiCbFnc(cbFnc)
     sGetImeiFnc = cbFnc
+end
+
+--- 获取请求升级包时服务器返回的信息
+-- @return updateMsg, 若没有请求升级或服务器未返回相关信息，则返回值为nil，否则返回服务器返回的相关信息
+-- @usage local msg = getUpdateMsg()
+function getUpdateMsg()
+    return updateMsg
 end

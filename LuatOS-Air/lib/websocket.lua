@@ -178,6 +178,7 @@ end
 -- 处理 websocket 发过来的数据并解析帧数据
 -- @return string : 返回解析后的单帧用户数据
 function ws:recvFrame()
+    local close_ctrl="EXIT_TASK"..self.io.id
     local r, s , p = self.io:recv(60000,"WEBSOCKET_SEND_DATA")
     if not r then
         if s=="timeout" then
@@ -197,8 +198,8 @@ function ws:recvFrame()
                 local send_data = table.concat(self.send_data)
                 self.send_data = {}
                 pong(self,send_data)
-            elseif p == "CLOSE_ALL" then
-                return false, nil, "CLOSE_ALL"
+            elseif p == close_ctrl then
+                return false, nil, close_ctrl
             end
             return false, nil, "WEBSOCKET_OK"
         else
@@ -319,6 +320,13 @@ function ws:close(code, reason)
     if self.callbacks.close then self.callbacks.close(code or 1001) end
     self.input = ""
 end
+--- 主动退出一个指定的websocket任务
+-- @传入一个websocket对象
+-- @return nil
+-- @usage wesocket.exit(ws)
+function exit(ws)
+    sys.publish("WEBSOCKET_SEND_DATA", "EXIT_TASK"..ws.io.id)
+end
 --- 获取websocket当前状态
 -- @return string: 状态值("CONNECTING","OPEN","CLOSING","CLOSED")
 -- @usage ws:state()
@@ -340,18 +348,23 @@ end
 function ws:start(keepAlive, proc, reconnTime)
     reconnTime = tonumber(reconnTime) and reconnTime * 1000 or 1000
     if tonumber(keepAlive) then
-        sys.timerLoopStart(self.ping, keepAlive * 1000, self, "heart")
+        keepAlivetimer=sys.timerLoopStart(self.ping, keepAlive * 1000, self, "heart")
     end
     while true do
         while not socket.isReady() do sys.wait(1000) end
         if self:connect() then
+            local close_ctrl="EXIT_TASK"..self.io.id
             repeat
                 local r, message = self:recv()
                 if self.open_callback == true then self.callbacks.open() self.open_callback = false end
                 if r then
                     if type(proc) == "function" then proc(message) end
-                elseif message == "CLOSE_ALL" then
+                elseif message == close_ctrl then
                     self:close()
+                    sys.timerStop(keepAlivetimer)
+                    if self.io.id ~= nil then
+                        self=nil
+                    end
                     return true
                 elseif not r and message ~="WEBSOCKET_OK" then
                     log.error('ws recv error', message)
