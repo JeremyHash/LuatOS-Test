@@ -1,7 +1,7 @@
 -- MqttTest
 -- Author:LuatTest
 -- CreateDate:20211019
--- UpdateDate:20211123
+-- UpdateDate:20211125
 module(..., package.seeall)
 
 local tag = "MqttTest"
@@ -15,11 +15,11 @@ local port1 = 1883
 local port2 = 8883
 local transport = "tcp"
 
-local testImei, topic1, topic2, topic3, topicList, pubClient, recvClient
+local testImei, topic1, topic2, topic3, topicList
 
 local function pubTestTask()
-    pubClient = mqtt.client(pubTag .. "-" .. misc.getImei() .. "-" .. os.time(),
-                            60)
+    local pubClient = mqtt.client(pubTag .. "-" .. misc.getImei() .. "-" ..
+                                      os.time(), 60)
     log.info(pubTag .. ".connect", "开始连接")
 
     if not pubClient:connect(ip, port1, transport) then
@@ -28,7 +28,7 @@ local function pubTestTask()
         return
     end
     log.info(pubTag .. ".connect", "连接SUCCESS")
-    sys.wait(1000)
+    sys.wait(5000)
     for k, v in pairs(topicList) do
         if not pubClient:publish(v, tostring(os.time()), k - 1, 0) then
             log.error(pubTag .. ".publish." .. v, "发布FAIL")
@@ -42,13 +42,14 @@ local function pubTestTask()
 end
 
 local function recvTestTask()
-    recvClient = mqtt.client(recvTag .. "-" .. misc.getImei() .. "-" ..
-                                 os.time(), 60)
+    local recvClient = mqtt.client(recvTag .. "-" .. misc.getImei() .. "-" ..
+                                       os.time(), 60)
 
     log.info(recvTag .. ".connect", "开始连接")
     if not recvClient:connect(ip, port1, transport) then
         log.info(recvTag .. ".connect", "连接FAIL")
         recvClient:disconnect()
+        sys.publish("MQTTTEST_FINISH")
         return
     end
     log.info(recvTag .. ".connect", "连接SUCCESS")
@@ -56,6 +57,7 @@ local function recvTestTask()
     if not recvClient:subscribe({[topic1] = 0, [topic2] = 1, [topic3] = 2}) then
         log.error(recvTag .. ".subscribe", "订阅FAIL")
         recvClient:disconnect()
+        sys.publish("MQTTTEST_FINISH")
         return
     end
     log.info(recvTag .. ".subscribe", "订阅SUCCESS")
@@ -63,6 +65,7 @@ local function recvTestTask()
     if not recvClient:unsubscribe(topicList) then
         log.error(recvTag .. ".unsubscribe", "取消订阅FAIL")
         recvClient:disconnect()
+        sys.publish("MQTTTEST_FINISH")
         return
     end
     log.info(recvTag .. ".unsubscribe", "取消订阅SUCCESS")
@@ -70,6 +73,7 @@ local function recvTestTask()
     if not recvClient:subscribe({[topic1] = 0, [topic2] = 1, [topic3] = 2}) then
         log.error(recvTag .. ".subscribe", "订阅FAIL")
         recvClient:disconnect()
+        sys.publish("MQTTTEST_FINISH")
         return
     end
     log.info(recvTag .. ".subscribe", "订阅SUCCESS")
@@ -80,6 +84,7 @@ local function recvTestTask()
             log.error(recvTag .. ".receive", "接收FAIL")
             log.error(recvTag .. ".data", data)
             recvClient:disconnect()
+            sys.publish("MQTTTEST_FINISH")
             return
         end
         log.info(recvTag .. ".receive", "接收SUCCESS")
@@ -87,11 +92,13 @@ local function recvTestTask()
     end
     log.info(recvTag .. ".disconnect", "断开连接")
     recvClient:disconnect()
+    sys.publish("MQTTTEST_FINISH")
 end
 
 local function mqttTestTask()
-    sys.taskInit(pubTestTask)
     sys.taskInit(recvTestTask)
+    sys.taskInit(pubTestTask)
+    sys.waitUntil("MQTTTEST_FINISH")
 end
 
 sys.taskInit(function()
