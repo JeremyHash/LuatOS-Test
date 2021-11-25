@@ -850,7 +850,7 @@ sys.taskInit(function()
         httpTestTask()
     elseif testConfig.testMode == "loop" then
         while true do
-            httpTestTask()
+            if socket.isReady() then httpTestTask() end
             sys.wait(100)
         end
     end
