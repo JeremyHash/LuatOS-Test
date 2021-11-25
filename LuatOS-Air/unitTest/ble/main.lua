@@ -60,7 +60,7 @@ rtos.on(rtos.MSG_BLUETOOTH, function(msg)
         sys.publish("BT_HFP_CONNECT_IND",
                     {["handle"] = msg.handle, ["result"] = msg.result}) -- hfp连接成功
     elseif msg.event == btcore.MSG_BT_HFP_CALLSETUP_INCOMING then
-        log.info(tag, ".call incoming")
+        log.info(tag .. ".call incoming")
         sys.publish("BT_CALLSETUP_INCOMING", msg.result) -- 呼叫传入   
     elseif msg.event == btcore.MSG_BLE_CONNECT_IND then
         log.info(tag .. ".msg", "有主设备连接成功")
@@ -94,24 +94,24 @@ rtos.on(rtos.MSG_BLUETOOTH, function(msg)
     elseif msg.event == btcore.MSG_BLE_FIND_CHARACTERISTIC_IND then
         sys.publish("BT_FIND_CHARACTERISTIC_IND", msg.result)
     elseif msg.event == btcore.MSG_BLE_FIND_SERVICE_IND then
-        log.info(tag, "find service uuid", msg.uuid)
+        log.info(tag .. ".find service uuid", msg.uuid)
         if msg.uuid == 0x1800 then
             sys.publish("BT_FIND_SERVICE_IND", msg.result)
         end
     elseif msg.event == btcore.MSG_BLE_FIND_CHARACTERISTIC_UUID_IND then
-        log.info(tag, "find characteristic uuid", msg.uuid)
+        log.info(tag .. ".find characteristic uuid", msg.uuid)
     elseif msg.event == btcore.MSG_BLE_READ_VALUE_IND then
-        log.info(tag, "read characteristic value", msg.data)
+        log.info(tag .. ".read characteristic value", msg.data)
     elseif msg.event == btcore.MSG_CLOSE_CNF then
-        log.info(tag, "close")
+        log.info(tag .. ".close")
     elseif msg.event == btcore.MSG_BT_HFP_DISCONNECT_IND then
-        log.info(tag, ".hfp disconnect")
+        log.info(tag .. ".hfp disconnect")
     elseif msg.event == btcore.MSG_BT_HFP_CALLSETUP_OUTGOING then
-        log.info(tag, ".call outgoing")
+        log.info(tag .. ".call outgoing")
     elseif msg.event == btcore.MSG_BT_HFP_RING_INDICATION then
-        log.info(tag, ".ring indication")
+        log.info(tag .. ".ring indication")
     elseif msg.event == btcore.MSG_BT_AVRCP_DISCONNECT_IND then
-        log.info(tag, ".avrcp disconnect")
+        log.info(tag .. ".avrcp disconnect")
     end
 end)
 
@@ -133,7 +133,7 @@ local function BluetoothTestTask()
         local tag = "BluetoothTest.masterTest"
         local msgRes, msgData
         sys.wait(waitTime)
-        log.info(tag, "start")
+        log.info(tag .. ".start")
         if btcore.open(1) == 0 then
             msgRes, msgData = sys.waitUntil("BT_OPEN", waitTime)
             if msgRes == true and msgData == 0 then
@@ -192,8 +192,8 @@ local function BluetoothTestTask()
                                                     log.info(tag ..
                                                                  ".connectInd",
                                                              "连接SUCCESS")
-                                                    log.info(tag,
-                                                             "开启蓝牙发现服务")
+                                                    log.info(tag ..
+                                                                 ".开启蓝牙发现服务")
                                                     btcore.findservice()
                                                     local _, result =
                                                         sys.waitUntil(
@@ -318,7 +318,7 @@ local function BluetoothTestTask()
                                                     end
                                                 end
                                             else
-                                                log.error(tag .. "connect",
+                                                log.error(tag .. ".connect",
                                                           "连接从设备FAIL")
                                             end
                                         end
@@ -327,14 +327,14 @@ local function BluetoothTestTask()
                             end
                         end
                     else
-                        log.error("BluetoothTest.scan", "打开扫描FAIL")
+                        log.error(tag .. ".scan", "打开扫描FAIL")
                     end
                 end
             else
-                log.error("BluetoothTest.open", "打开蓝牙FAIL")
+                log.error(tag .. ".open", "打开蓝牙FAIL")
             end
         else
-            log.error("BluetoothTest.open", "打开蓝牙FAIL")
+            log.error(tag .. ".open", "打开蓝牙FAIL")
         end
     elseif slaveTest == true then
         local tag = "BluetoothTest.slaveTest"
@@ -345,7 +345,7 @@ local function BluetoothTestTask()
                 msgRes, msgData = sys.waitUntil("BT_OPEN", waitTime)
                 if msgRes == true and msgData == 0 then
                     log.info(tag .. ".open", "打开蓝牙从模式SUCCESS")
-                    log.info("slave addr", btcore.getaddr())
+                    log.info(tag .. ".addr", btcore.getaddr())
                     if btcore.setname("LuatBleSlaveTest") == 0 then
                         log.info(tag .. ".setName", "设置名称SUCCESS")
                         local struct1 = {
@@ -426,11 +426,12 @@ local function BluetoothTestTask()
                                                     if data == "close" then
                                                         btcore.disconnect()
                                                     end
-                                                    -- btcore.send("LuaTaskTest.BluetoothTest.slaveTest.data", 0xfee2, msgData.handle)
-                                                    btcore.send(
-                                                        "LuaTaskTest.BluetoothTest.slaveTest.data",
-                                                        "9ecadc240ee5a9e093f3a3b50200406e",
-                                                        msgData.handle)
+                                                    local data =
+                                                        "LuaTaskTest.BluetoothTest.slaveTest.data"
+                                                    -- btcore.send(data, 0xfee2, msgData.handle)
+                                                    btcore.send(data,
+                                                                "9ecadc240ee5a9e093f3a3b50200406e",
+                                                                msgData.handle)
                                                 end
                                             else
                                                 log.info(tag .. ".recv",
@@ -509,19 +510,19 @@ local function BluetoothTestTask()
                                 while true do
                                     btcore.setavrcpvol(100)
                                     sys.wait(waitTime)
-                                    log.info(tag, ".avrcp vol",
+                                    log.info(tag .. ".avrcp vol",
                                              btcore.getavrcpvol())
                                     sys.wait(waitTime)
-                                    log.info(tag, "播放SUCCESS")
+                                    log.info(tag .. ".播放SUCCESS")
                                     btcore.setavrcpsongs(1) -- 播放
                                     sys.wait(waitTime)
-                                    log.info(tag, "暂停SUCCESS")
+                                    log.info(tag .. ".暂停SUCCESS")
                                     btcore.setavrcpsongs(0) -- 暂停
                                     sys.wait(waitTime)
-                                    log.info(tag, "切换上一曲SUCCESS")
+                                    log.info(tag .. ".切换上一曲SUCCESS")
                                     btcore.setavrcpsongs(2) -- 上一曲
                                     sys.wait(waitTime)
-                                    log.info(tag, "切换下一曲SUCCESS")
+                                    log.info(tag .. ".切换下一曲SUCCESS")
                                     btcore.setavrcpsongs(3) -- 下一曲
                                     sys.wait(waitTime)
                                 end
@@ -542,10 +543,10 @@ local function BluetoothTestTask()
                                     btcore.hfpcallanswer() --接听
                                     --btcore.hfpcallreject() --拒接
                                     sys.wait(1000)
-                                    log.info(tag .. "设置音量")
+                                    log.info(tag .. ".设置音量")
                                     btcore.sethfpvol(10) --设置音量
                                     sys.wait(waitTime)
-                                    log.info(tag .. "挂断")
+                                    log.info(tag .. ".挂断")
                                     btcore.hfpcallhangup() --挂断
                                     sys.wait(waitTime)
                                     btcore.hfpcalldial("10086") --拨号
@@ -589,20 +590,22 @@ local function BluetoothTestTask()
                     if msgRes == true and msgData == 0 then
                         log.info(tag .. ".scan", "打开扫描SUCCESS")
                         while true do
-                            msgRes, msgData = sys.waitUntil("BT_SCAN_IND", waitTime)
+                            msgRes, msgData =
+                                sys.waitUntil("BT_SCAN_IND", waitTime)
                             if not msgData then
                                 log.error(tag .. ".scan",
                                           "没有扫描到蓝牙设备")
                             else
                                 local deviceJsonInfo = json.encode(msgData)
-                                log.info(tag .. ".deviceJsonInfo", deviceJsonInfo)
+                                log.info(tag .. ".deviceJsonInfo",
+                                         deviceJsonInfo)
                             end
                         end
                     else
                         log.error(tag .. ".scan", "打开扫描FAIL")
                     end
                 else
-                    log.error("BluetoothTest.scan", "打开扫描FAIL")
+                    log.error(tag .. ".scan", "打开扫描FAIL")
                 end
             else
                 log.error(tag .. ".open", "打开蓝牙FAIL")

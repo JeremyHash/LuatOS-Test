@@ -14,6 +14,7 @@ LOG_LEVEL = log.LOGLEVEL_INFO
 local waitTime1 = 2000
 local waitTime2 = 5000
 require "color_lcd_spi_st7735"
+-- require "color_lcd_spi_gc9106l"
 
 local gc0310_sdr = {
     zbar_scan = 1,
