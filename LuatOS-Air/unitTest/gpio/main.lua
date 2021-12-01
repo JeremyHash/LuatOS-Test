@@ -15,6 +15,8 @@ local modType = "8910"
 -- Type=1 中断模式
 -- Type=2 输入模式
 -- Type=3 输出模式
+-- Type=4 LDO
+-- Type=5 PWM
 local Type = 3
 
 local UP_DOWN_STATUS = pio.PULLUP
@@ -158,6 +160,37 @@ sys.taskInit(function()
             end
         end
 
+    end
+
+    if Type == 4 then
+        local tag = "LdoTest"
+        log.info(tag, "LDO测试开始")
+        -- 0/1/2-15 关/1.8V/3.3V
+        pmd.ldoset(1, pmd.LDO_VSIM1)
+        -- 0/1 关/开 VCAMA = 2.8V VCAMD = 1.8V
+        pmd.ldoset(1, pmd.LDO_VCAMA)
+        pmd.ldoset(1, pmd.LDO_VCAMD)
+    end
+
+    if Type == 5 then
+        local tag = "PwmTest"
+        log.info(tag, "PWM测试开始")
+        while true do
+            sys.wait(1000)
+            log.info(tag .. ".open", pwm.open(1))
+            log.info(tag .. ".open", pwm.open(2))
+            log.info(tag .. ".open", pwm.open(3))
+            log.info(tag .. ".open", pwm.open(4))
+            log.info(tag .. ".set", pwm.set(1, 5000, 30))
+            log.info(tag .. ".set", pwm.set(2, 1000000, 50))
+            log.info(tag .. ".set", pwm.set(3, 1000000, 70))
+            log.info(tag .. ".set", pwm.set(4, 5000, 50))
+            sys.wait(10000)
+            log.info(tag .. ".close", pwm.close(1))
+            log.info(tag .. ".close", pwm.close(2))
+            log.info(tag .. ".close", pwm.close(3))
+            log.info(tag .. ".close", pwm.close(4))
+        end
     end
 end)
 
