@@ -21,9 +21,15 @@ sys.taskInit(function()
     update.request()
     -- 自定义服务器
     -- update.request(nil, "http://wiki.airm2m.com:48000/fota.bin")
-    sys.timerLoopStart(log.info, 1000, tag .. ".version", rtos.get_version(),
-                       _G.VERSION)
+    while true do
+        local msg = update.getUpdateMsg()
+        log.info(tag .. "服务器返回的信息", msg)
+        sys.wait(1000)
+    end
 end)
+
+sys.timerLoopStart(log.info, 1000, tag .. ".version", rtos.get_version(),
+                   _G.VERSION)
 
 sys.init(0, 0)
 sys.run()
