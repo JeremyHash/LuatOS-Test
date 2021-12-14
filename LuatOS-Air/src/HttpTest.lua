@@ -772,10 +772,10 @@ local function httpTestTask()
         password = password,
         version = _G.VERSION
     }
-    http.request("POST", "http://http.ctwing.cn:8991/auth", nil, head,
+    http.request("POST", "https://http.ctwing.cn:8991/auth", nil, head,
                  json.encode(body), nil, httpsPostTestCb)
 
-    sys.publish("httpsPostTestFinished")
+    sys.waitUntil("httpsPostTestFinished")
 
     local testJson = {
         ["imei"] = "123456789012345",
