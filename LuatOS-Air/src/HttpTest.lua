@@ -752,30 +752,30 @@ local function httpTestTask()
                  postTestCb)
     sys.waitUntil("postTestFinished")
 
-    local timestamp = os.time()
-    local productId = 15091999
-    local deviceId = "150919991"
-    local Master_APIkey = "ed3700e4413a491c9ad44aa620bdc9c6"
-    local signKey = "test"
-    local temp = signKey .. Master_APIkey .. timestamp
-    local signature = string.lower(tostring(crypto.sha256(temp)))
-    local password = 'kiVihCWYTb36JreNIm4w3N5eZWJAUcMoQi_h_dHUfvA'
-    local head = {
-        timestamp = timestamp,
-        signKey = "test",
-        signature = signature,
-        Content_Type = "application/json"
-    }
-    local body = {
-        productId = productId,
-        deviceId = deviceId,
-        password = password,
-        version = _G.VERSION
-    }
-    http.request("POST", "https://http.ctwing.cn:8991/auth", nil, head,
-                 json.encode(body), nil, httpsPostTestCb)
+    -- local timestamp = os.time()
+    -- local productId = 15091999
+    -- local deviceId = "150919991"
+    -- local Master_APIkey = "ed3700e4413a491c9ad44aa620bdc9c6"
+    -- local signKey = "test"
+    -- local temp = signKey .. Master_APIkey .. timestamp
+    -- local signature = string.lower(tostring(crypto.sha256(temp)))
+    -- local password = 'kiVihCWYTb36JreNIm4w3N5eZWJAUcMoQi_h_dHUfvA'
+    -- local head = {
+    --     timestamp = timestamp,
+    --     signKey = "test",
+    --     signature = signature,
+    --     Content_Type = "application/json"
+    -- }
+    -- local body = {
+    --     productId = productId,
+    --     deviceId = deviceId,
+    --     password = password,
+    --     version = _G.VERSION
+    -- }
+    -- http.request("POST", "https://http.ctwing.cn:8992/auth", nil, head,
+    --              json.encode(body), nil, httpsPostTestCb)
 
-    sys.waitUntil("httpsPostTestFinished")
+    -- sys.waitUntil("httpsPostTestFinished")
 
     local testJson = {
         ["imei"] = "123456789012345",
