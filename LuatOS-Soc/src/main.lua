@@ -13,6 +13,9 @@ gpioTest = require("gpioTest")
 jsonTest = require("jsonTest")
 pwmTest = require("pwmTest")
 mcuTest = require("mcuTest")
+pinTest = require("pinTest")
+rtcTest = require("rtcTest")
+rtosTest = require("rtosTest")
 
 mcu.setClk(240)
 
@@ -25,5 +28,8 @@ gpioTest.test()
 jsonTest.test()
 pwmTest.test()
 mcuTest.test()
+pinTest.test()
+rtcTest.test()
+rtosTest.test()
 
 sys.run()
