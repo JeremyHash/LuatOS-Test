@@ -10,6 +10,8 @@ fdbTest = require("fdbTest")
 i2cTest = require("i2cTest")
 fsTest = require("fsTest")
 gpioTest = require("gpioTest")
+jsonTest = require("jsonTest")
+pwmTest = require("pwmTest")
 
 mcu.setClk(240)
 
@@ -19,5 +21,7 @@ fdbTest.test()
 -- i2cTest.test()
 fsTest.test()
 gpioTest.test()
+jsonTest.test()
+pwmTest.test()
 
 sys.run()
