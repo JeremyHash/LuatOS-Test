@@ -16,6 +16,7 @@ mcuTest = require("mcuTest")
 pinTest = require("pinTest")
 rtcTest = require("rtcTest")
 rtosTest = require("rtosTest")
+stringTest = require("stringTest")
 
 mcu.setClk(240)
 
@@ -31,5 +32,6 @@ mcuTest.test()
 pinTest.test()
 rtcTest.test()
 rtosTest.test()
+stringTest.test()
 
 sys.run()
