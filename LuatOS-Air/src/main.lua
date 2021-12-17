@@ -21,6 +21,7 @@ testConfig = {
     socketTest = false,
     httpTest = false,
     mqttTest = false,
+    cryptoTest = false,
     fsTest = false,
     lbsLocTest = false
 }
@@ -112,6 +113,8 @@ if testConfig.socketTest == true then require "SocketTest" end
 if testConfig.httpTest == true then require "HttpTest" end
 
 if testConfig.mqttTest == true then require "MqttTest" end
+
+if testConfig.cryptoTest == true then require "CryptoTest" end
 
 if testConfig.fsTest == true then require "FsTest" end
 
