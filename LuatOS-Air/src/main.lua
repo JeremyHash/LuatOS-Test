@@ -119,7 +119,9 @@ if testConfig.lbsLocTest == true then require "LbsLocTest" end
 
 sys.taskInit(function()
     while true do
+        sys.wait(10000)
         log.info("PROJECT", PROJECT)
+        log.info("IMEI", misc.getImei())
         log.info("CORE", rtos.get_version())
         log.info("USER_SCRIPT", VERSION)
         log.info("LIB", sys.SCRIPT_LIB_VER)
@@ -134,7 +136,6 @@ sys.taskInit(function()
                  string.format("%d-%d-%d %d:%d:%d", timeTable.year,
                                timeTable.month, timeTable.day, timeTable.hour,
                                timeTable.min, timeTable.sec))
-        sys.wait(10000)
     end
 end)
 
