@@ -160,7 +160,7 @@ local function fsTestTask()
         end
         local pathTable = io.pathInfo(testPath .. "/FsWriteTest2.txt")
         log.info(tag, "pathInfo")
-        printTable(pathInfo)
+        printTable(pathTable)
         local file = io.open("/FileSeekTest.txt", "w")
         file:write("FileSeekTest")
         file:close()
