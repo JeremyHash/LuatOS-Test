@@ -21,7 +21,7 @@ local function base64Test()
     local originStr =
         "123456crypto.base64_encodemodule(...,package.seeall)sys.timerStart(test,5000)jdklasdjklaskdjklsa"
     local encodeStr = crypto.base64_encode(originStr, slen(originStr))
-    log.info(tag, ...)(tag .. ".base64_encode", encodeStr)
+    log.info(tag .. ".base64_encode", encodeStr)
     if crypto.base64_decode(encodeStr, slen(encodeStr)) == originStr then
         log.info(tag .. ".base64_decode", "SUCCESS")
     else
