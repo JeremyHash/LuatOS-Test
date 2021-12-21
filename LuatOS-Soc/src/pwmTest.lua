@@ -11,6 +11,10 @@ elseif MOD_TYPE == "air103" then
 end
 
 function pwmTest.test()
+    if pwm == nil then
+        log.error(tag, "this fireware is not support pwm")
+        return
+    end
     log.info(tag, "START")
     for _, v in pairs(pwmList1) do
         assert(pwm.open(v, 1000, 50, 0) == true, tag .. ".open ERROR")

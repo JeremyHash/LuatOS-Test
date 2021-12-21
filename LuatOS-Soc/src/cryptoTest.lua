@@ -8,6 +8,10 @@ local testKey = "123456"
 local upper = string.upper
 
 function cryptoTest.test()
+    if crypto == nil then
+        log.error(tag, "this fireware is not support crypto")
+        return
+    end
     log.info(tag, "START")
 
     -- assert(upper() == upper(""), tag .. ". ERROR")

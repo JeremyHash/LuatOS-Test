@@ -9,6 +9,10 @@ elseif MOD_TYPE == "air103" then
 end
 
 function mcuTest.test()
+    if mcu == nil then
+        log.error(tag, "this fireware is not support mcu")
+        return
+    end
     log.info(tag, "START")
     for _, v in pairs(clkList) do
         assert(mcu.setClk(v) == true, tag .. ".setClk ERROR")

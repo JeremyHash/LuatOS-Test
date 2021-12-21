@@ -3,6 +3,10 @@ jsonTest = {}
 local tag = "jsonTest"
 
 function jsonTest.test()
+    if json == nil then
+        log.error(tag, "this fireware is not support json")
+        return
+    end
     log.info(tag, "START")
     local testable = {
         a = 1,
