@@ -4,6 +4,10 @@ local tag = "i2cTest"
 if MOD_TYPE == "air101" then i2cId = 0 end
 
 function i2cTest.test()
+    if i2c == nil then
+        log.error(tag, "this fireware is not support i2c")
+        return
+    end
     -- AHT10
     local i2cSlaveAddr = 0x38
     log.info(tag, "START")

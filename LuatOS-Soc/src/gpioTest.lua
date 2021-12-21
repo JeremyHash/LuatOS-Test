@@ -12,6 +12,10 @@ elseif MOD_TYPE == "air103" then
 end
 
 function gpioTest.test()
+    if gpio == nil then
+        log.error(tag, "this fireware is not support gpio")
+        return
+    end
     log.info(tag, "START")
     for _, v in pairs(gpioList) do
         assert(gpio.setDefaultPull(1) == true, tag .. ".setDefaultPull ERROR")

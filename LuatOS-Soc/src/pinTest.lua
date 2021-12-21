@@ -66,6 +66,10 @@ elseif MOD_TYPE == "air103" then
 end
 
 function pinTest.test()
+    if pin == nil then
+        log.error(tag, "this fireware is not support pin")
+        return
+    end
     log.info(tag, "START")
     for k, v in pairs(pinList) do
         assert(pin.get(k) == v, tag .. ".get ERROR")
