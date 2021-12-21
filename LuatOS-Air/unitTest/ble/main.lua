@@ -10,7 +10,7 @@ require "log"
 LOG_LEVEL = log.LOGLEVEL_INFO
 
 -- 蓝牙选项配置
-local masterTest = false
+local masterTest = true
 local slaveTest = false
 local beaconTest = false
 local classicBtTest = false
@@ -177,7 +177,8 @@ local function BluetoothTestTask()
                                             log.info("connect slave addr",
                                                      msgData.addr)
                                             local connectRes = btcore.connect(
-                                                                   msgData.addr)
+                                                                   msgData.addr,
+                                                                   msgData.addr_type)
                                             if connectRes == 0 then
                                                 log.info(tag .. ".connect",
                                                          "连接从设备SUCCESS")
@@ -217,8 +218,10 @@ local function BluetoothTestTask()
                                                         else
                                                             -- btcore.opennotification(0xfee2)
                                                             -- btcore.closenotification(0xfee2)
-                                                            btcore.opennotification(
-                                                                "9ecadc240ee5a9e093f3a3b50200406e")
+                                                            log.info(
+                                                                "打开通知",
+                                                                btcore.opennotification(
+                                                                    "9ecadc240ee5a9e093f3a3b50200406e"))
                                                             -- btcore.closenotification("9ecadc240ee5a9e093f3a3b50200406e")
                                                             local data =
                                                                 "LuaTaskTest.BluetoothTest.masterTest.data"
