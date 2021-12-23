@@ -10,7 +10,6 @@ function stringTest.test()
     log.info(tag, "START")
     assert(string.toHex("123abc") == "313233616263", tag .. ".toHex ERROR")
     assert(string.fromHex("313233616263") == "123abc", tag .. ".fromHex ERROR")
-    for k, v in pairs(string.split("1,2,3", ",")) do print(k, v) end
     assert(string.split("11,22,33", ",")[1] == "11", tag .. ".split ERROR")
     assert(string.toHex(string.toValue("0123456789ABCDEF")) ==
                "000102030405060708090A0B0C0D0E0F", tag .. ".toValue ERROR")

@@ -19,7 +19,7 @@ rtosTest = require("rtosTest")
 stringTest = require("stringTest")
 zbuffTest = require("zbuffTest")
 
-mcu.setClk(240)
+if mcu then mcu.setClk(240) end
 
 adcTest.test()
 cryptoTest.test()
