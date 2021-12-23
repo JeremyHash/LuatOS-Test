@@ -11,7 +11,7 @@ require "log"
 LOG_LEVEL = log.LOGLEVEL_INFO
 
 local tag = "uartTest"
-local modType = "8910"
+local modType = "1603"
 
 local uartList = {}
 
