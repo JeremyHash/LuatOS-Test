@@ -13,21 +13,47 @@ LuatOS-Air的测试需要先配置testConfig
 ```lua
 -- 测试配置 设置为true代表开启此项测试
 testConfig = {
-    -- 8910 1603 1802S
-    modType = "1603",
+    -- 8910 1603S 1603E
+    modType = "8910",
     -- single loop
-    testMode = "single",
-    gpsModType = "GK",
-    netLed = false,
+    testMode = "loop",
+    netLed = true,
     consoleTest = false,
-    socketTest = true,
+    lteTest = false,
+    socketTest = false,
     httpTest = false,
     mqttTest = false,
-    ftpTest = false
+    cryptoTest = false,
+    fsTest = false,
+    lbsLocTest = false
 }
 ```
 testMode设置为"single"，模块会进行单次的测试用例测试，并将结果从uart.USB即USB虚拟出的AT端口输出（输出格式例子：HttpTest.getTest PASS）
 设置为"loop"代表循环压力测试
+
+### LuatOS-Soc
+LuatOS-Soc的测试项如下，如果没有对应的库会自动跳过
+```lua
+adcTest.test()
+cryptoTest.test()
+fdbTest.test()
+i2cTest.test()
+fsTest.test()
+gpioTest.test()
+jsonTest.test()
+pwmTest.test()
+mcuTest.test()
+pinTest.test()
+rtcTest.test()
+rtosTest.test()
+stringTest.test()
+zbuffTest.test()
+wlanTest.test()
+bleTest.test()
+socketTest.test()
+esp32Test.test()
+espnowTest.test()
+```
 
 ## 烧录方法
 参考LuaTools使用方法烧录
