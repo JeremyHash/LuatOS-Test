@@ -166,7 +166,8 @@ end
 local function audioTestTask()
 
     audio.setChannel(2, 0)
-    audiocore.pa(19, 2)
+    -- audiocore.pa(19, 2)
+    
     -- audiocore.playdata(audioData,audioFormat[,audioLoop]) demo中没有
     -- audiocore.setpa(audioClass) audiocore.getpa() audiocore.pa(gpio,devout,[plus_count],[plus_period]) 不清楚什么意思
 
@@ -174,7 +175,7 @@ local function audioTestTask()
     log.info(tag .. ".micVol", micVol)
 
     local setVolRes = audio.setVolume(playVol)
-    if setVolRes == true then
+    if setVolRes == 1 then
         log.info(tag .. ".setVolume", "SUCCESS")
     else
         log.error(tag .. ".setVolume", "FAIL")
