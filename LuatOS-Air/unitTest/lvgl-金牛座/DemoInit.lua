@@ -1,7 +1,7 @@
 module(...,package.seeall)
 
 --waitTime : 控件的显示时间
-local waitTime = 5000
+local waitTime = 3000
 --type     : 分为循环模式loop和单一控件显示single
 local type  =  "loop"
 
@@ -175,6 +175,10 @@ function demoInit()
 				 lvgl.obj_del(Chart2)
 				 lvgl.obj_del(Chart3)
 				 lvgl.obj_del(Chart4)
+				 lvgl.obj_del(Label1)
+				 lvgl.obj_del(Label2)
+				 lvgl.obj_del(Label3)
+				 lvgl.obj_del(Label4)
 				 ContainerInit()
 				 sys.wait(waitTime)
 				 lvgl.obj_del(Container1)

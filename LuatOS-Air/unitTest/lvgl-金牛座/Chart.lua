@@ -1,7 +1,7 @@
 function ChartInit()
     Chart1 = lvgl.chart_create(lvgl.scr_act(),nil)
     lvgl.obj_set_size(Chart1,300,150)
-    lvgl.obj_align(Chart1,Father,lvgl.ALIGN_IN_TOP_MID,0,50)
+    lvgl.obj_align(Chart1,Father,lvgl.ALIGN_IN_TOP_LEFT,0,50)
     lvgl.obj_add_style(Chart1,lvgl.CHART_PART_BG, demo_ThemeStyle_Bg)
     Red  = lvgl.chart_add_series(Chart1,lvgl.color_hex(0xFF0000))
     Blue = lvgl.chart_add_series(Chart1,lvgl.color_hex(0x0000FF))
@@ -41,9 +41,14 @@ function ChartInit()
     lvgl.chart_set_next(Chart1,Green, 10)
     lvgl.chart_remove_series(Chart1,Red)
 
+    Label1 = lvgl.label_create(lvgl.scr_act(),nil)
+    lvgl.label_set_text(Label1,"图表类型:"..lvgl.chart_get_type(Chart1).."\n数据线的数据点数:"..lvgl.chart_get_point_count(Chart1))
+    lvgl.obj_align(Label1,nil,lvgl.ALIGN_IN_TOP_RIGHT,-20,70)
+    lvgl.obj_add_style(Label1, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
+
     Chart2 = lvgl.chart_create(lvgl.scr_act(),nil)
     lvgl.obj_set_size(Chart2,300,150)
-    lvgl.obj_align(Chart2,Father,lvgl.ALIGN_IN_TOP_MID,0,240)
+    lvgl.obj_align(Chart2,Father,lvgl.ALIGN_IN_TOP_LEFT,0,240)
     lvgl.obj_add_style(Chart2,lvgl.CHART_PART_BG, demo_ThemeStyle_Bg)
     Red  = lvgl.chart_add_series(Chart2,lvgl.color_hex(0xFF0000))
     Blue = lvgl.chart_add_series(Chart2,lvgl.color_hex(0x0000FF))
@@ -97,9 +102,14 @@ function ChartInit()
     --辅助线
     -- lvgl.chart_set_y_range(Chart2,lvgl.CHART_AXIS_SECONDARY_Y,-20,20)
 
+    Label2 = lvgl.label_create(lvgl.scr_act(),nil)
+    lvgl.label_set_text(Label2,"图表类型:"..lvgl.chart_get_type(Chart2).."\n数据线的数据点数:"..lvgl.chart_get_point_count(Chart2))
+    lvgl.obj_align(Label2,nil,lvgl.ALIGN_IN_TOP_RIGHT,-20,260)
+    lvgl.obj_add_style(Label2, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
+
     Chart3 = lvgl.chart_create(lvgl.scr_act(),nil)
     lvgl.obj_set_size(Chart3,300,150)
-    lvgl.obj_align(Chart3,Father,lvgl.ALIGN_IN_TOP_MID,0,440)
+    lvgl.obj_align(Chart3,Father,lvgl.ALIGN_IN_TOP_LEFT,0,440)
     lvgl.obj_add_style(Chart3,lvgl.CHART_PART_BG, demo_ThemeStyle_Bg)
     Red  = lvgl.chart_add_series(Chart3,lvgl.color_hex(0xFF0000))
     Blue = lvgl.chart_add_series(Chart3,lvgl.color_hex(0x0000FF))
@@ -132,9 +142,15 @@ function ChartInit()
     cursor = lvgl.chart_add_cursor(Chart3,lvgl.color_hex(0x00FF00),lvgl.CHART_CURSOR_LEFT)
     lvgl.chart_set_cursor_point(Chart3,cursor,c[2])
 
+    Label3 = lvgl.label_create(lvgl.scr_act(),nil)
+    lvgl.label_set_text(Label3,"图表类型:"..lvgl.chart_get_type(Chart3).."\n数据线的数据点数:"..lvgl.chart_get_point_count(Chart3))
+    lvgl.obj_align(Label3,nil,lvgl.ALIGN_IN_TOP_RIGHT,-20,460)
+    lvgl.obj_add_style(Label3, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
+
+
     Chart4 = lvgl.chart_create(lvgl.scr_act(),nil)
     lvgl.obj_set_size(Chart4,300,150)
-    lvgl.obj_align(Chart4,Father,lvgl.ALIGN_IN_TOP_MID,0,640)
+    lvgl.obj_align(Chart4,Father,lvgl.ALIGN_IN_TOP_LEFT,0,640)
     lvgl.obj_add_style(Chart4,lvgl.CHART_PART_BG, demo_ThemeStyle_Bg)
     --y轴刻度线设置
     -- lvgl.chart_set_y_tick_length(Chart4,10,10)
@@ -151,6 +167,11 @@ function ChartInit()
     lvgl.chart_set_next(Chart4,Blue, 50)
     lvgl.chart_set_next(Chart4,Blue, 60)
     lvgl.chart_set_update_mode(Chart4,lvgl.CHART_UPDATE_MODE_CIRCULAR)
+
+    Label4 = lvgl.label_create(lvgl.scr_act(),nil)
+    lvgl.label_set_text(Label4,"图表类型:"..lvgl.chart_get_type(Chart4).."数据线的数据点数:"..lvgl.chart_get_point_count(Chart4))
+    lvgl.obj_align(Label4,nil,lvgl.ALIGN_IN_TOP_RIGHT,-20,660)
+    lvgl.obj_add_style(Label4, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
 
 end 
 
