@@ -1,7 +1,7 @@
 module(...,package.seeall)
 
 --waitTime : 控件的显示时间
-local waitTime = 3000
+local waitTime = 5000
 --type     : 分为循环模式loop和单一控件显示single
 local type  =  "loop"
 
@@ -31,6 +31,7 @@ require "Chart"
 require "Container"
 require "Colorpicker"
 require "Dropdownlist"
+require "Font"
 require "Gauge"
 require "Img"
 require "Imgbtn"
@@ -98,6 +99,7 @@ function demoInit()
 		-- ContainerInit()
 		-- ColorpickerInit()
 		-- DropdownlistInit()
+		-- FontInit()
 		-- GaugeInit()
 		-- ImgInit()
 		-- ImgbtnInit()
@@ -115,7 +117,7 @@ function demoInit()
 		-- SwitchInit()
 		-- TableInit()
 		-- TabviewInit()
-		TextareaInit()
+		-- TextareaInit()
 		-- WindowInit()
 	end
 	if type == "loop" then 
@@ -185,10 +187,6 @@ function demoInit()
 				 lvgl.obj_del(Container2)
 				 lvgl.obj_del(Container3)
 				 lvgl.obj_del(Container4)
-				 lvgl.obj_del(Label1)
-				 lvgl.obj_del(Label2)
-				 lvgl.obj_del(Label3)
-				 lvgl.obj_del(Label4)
 				 ColorpickerInit()
 				 sys.wait(waitTime)
 				 lvgl.obj_del(Colorpicker1)

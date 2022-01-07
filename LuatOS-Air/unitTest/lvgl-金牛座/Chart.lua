@@ -169,7 +169,7 @@ function ChartInit()
     lvgl.chart_set_update_mode(Chart4,lvgl.CHART_UPDATE_MODE_CIRCULAR)
 
     Label4 = lvgl.label_create(lvgl.scr_act(),nil)
-    lvgl.label_set_text(Label4,"图表类型:"..lvgl.chart_get_type(Chart4).."数据线的数据点数:"..lvgl.chart_get_point_count(Chart4))
+    lvgl.label_set_text(Label4,"图表类型:"..lvgl.chart_get_type(Chart4).."\n数据线的数据点数:"..lvgl.chart_get_point_count(Chart4))
     lvgl.obj_align(Label4,nil,lvgl.ALIGN_IN_TOP_RIGHT,-20,660)
     lvgl.obj_add_style(Label4, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
 
