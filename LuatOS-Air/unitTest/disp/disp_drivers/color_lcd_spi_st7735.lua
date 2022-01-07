@@ -26,7 +26,7 @@ module(..., package.seeall)
 参数  ：无
 返回值：无
 ]]
-local modType = "1603"
+local modType = "8910"
 
 if modType == "8910" then
     local function init()
