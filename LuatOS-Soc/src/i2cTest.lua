@@ -1,7 +1,7 @@
 i2cTest = {}
 
 local tag = "i2cTest"
-if MOD_TYPE == "air101" then i2cId = 0 end
+if MOD_TYPE == "air101" or MOD_TYPE == "air103" then i2cId = 0 end
 
 function i2cTest.test()
     if i2c == nil then
