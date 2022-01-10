@@ -92,7 +92,7 @@ local function taskClient(cbFnc,reqAddr,timeout,productKey,host,port,reqTime,req
                     local result,data = sck:recv(timeout)
                     if result then                        
                         sck:close()
-                        log.info("lbsLoc receive",data:toHex())
+                        log.info("lbcLoc receive",data:toHex())
                         if data:len()>=11 and (data:byte(1)==0 or data:byte(1)==0xFF) then
                             local locType = data:byte(1)
                             cbFnc(0,
