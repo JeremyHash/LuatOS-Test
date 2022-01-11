@@ -5,15 +5,31 @@ function LEDInit()
      lvgl.led_on(LED1)
      lvgl.led_set_bright(LED1,50)
 
+     Label1 = lvgl.label_create(lvgl.scr_act(),nil)
+     lvgl.label_set_text(Label1,"获取LED物体的亮度:"..lvgl.led_get_bright(LED1))
+     lvgl.obj_align(Label1,nil,lvgl.ALIGN_CENTER,0,-200)
+     lvgl.obj_add_style(Label1, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
+
      LED2 = lvgl.led_create(lvgl.scr_act(),nil)
 	lvgl.obj_set_size(LED2,150,150)
 	lvgl.obj_align(LED2,Father,lvgl.ALIGN_CENTER,0,0)
      lvgl.led_on(LED2)
      lvgl.led_set_bright(LED2,255)
 
+     Label2 = lvgl.label_create(lvgl.scr_act(),nil)
+     lvgl.label_set_text(Label2,"获取LED物体的亮度:"..lvgl.led_get_bright(LED2))
+     lvgl.obj_align(Label2,nil,lvgl.ALIGN_CENTER,0,100)
+     lvgl.obj_add_style(Label2, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
+
      LED3 = lvgl.led_create(lvgl.scr_act(),nil)
 	lvgl.obj_set_size(LED3,150,150)
 	lvgl.obj_align(LED3,Father,lvgl.ALIGN_CENTER,0,300)
+     lvgl.obj_add_style(LED3,lvgl.LED_PART_MAIN,demo_LEDStyle_Red)
      lvgl.led_on(LED3)
      lvgl.led_toggle(LED3)
+
+     Label3 = lvgl.label_create(lvgl.scr_act(),nil)
+     lvgl.label_set_text(Label3,"获取LED物体的亮度:"..lvgl.led_get_bright(LED3))
+     lvgl.obj_align(Label3,nil,lvgl.ALIGN_CENTER,0,400)
+     lvgl.obj_add_style(Label3, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
 end
