@@ -1,4 +1,10 @@
 function ArcInit()
+    event_handler = function(obj, event)
+        if event == lvgl.EVENT_VALUE_CHANGED then
+            lvgl.label_set_text(Label1,"圆弧的起始角度 : "..lvgl.arc_get_angle_start(obj).."\n圆弧的结束角度 : "..lvgl.arc_get_angle_end(obj).."\n圆弧背景的起始角度 : "..lvgl.arc_get_bg_angle_start(obj).."\n圆弧背景的结束角度 : "..lvgl.arc_get_bg_angle_end(obj).."\n圆弧的类型 : "..lvgl.arc_get_type(obj).."\n圆弧的值 : "..lvgl.arc_get_value(obj))
+        end
+    end 
+
     Arc1 = lvgl.arc_create(lvgl.scr_act(), nil)
     lvgl.arc_set_type(Arc1,lvgl.ARC_TYPE_NORMAL)
     lvgl.arc_set_bg_angles(Arc1, 135, 45)
@@ -9,17 +15,11 @@ function ArcInit()
     lvgl.obj_set_size(Arc1, 200, 200)
     lvgl.obj_add_style(Arc1, lvgl.ARC_PART_BG, demo_ThemeStyle_Bg)
     lvgl.obj_align(Arc1, father, lvgl.ALIGN_IN_TOP_LEFT, 0, 0)
-
-    event_handler = function(obj, event)
-        if event == lvgl.EVENT_VALUE_CHANGED then
-            lvgl.label_set_text(Label1,"圆弧的值 : "..lvgl.arc_get_value(obj))
-        end
-    end 
     lvgl.obj_set_event_cb(Arc1, event_handler)
-
+    
     Label1 = lvgl.label_create(lvgl.scr_act(),nil)
-    lvgl.label_set_text(Label1,"测试圆弧的值")
-    lvgl.obj_align(Label1,nil,lvgl.ALIGN_CENTER,-150,-200)
+    lvgl.label_set_text(Label1,"圆弧的起始角度 : "..lvgl.arc_get_angle_start(Arc1).."\n圆弧的结束角度 : "..lvgl.arc_get_angle_end(Arc1).."\n圆弧背景的起始角度 : "..lvgl.arc_get_bg_angle_start(Arc1).."\n圆弧背景的结束角度 : "..lvgl.arc_get_bg_angle_end(Arc1).."\n圆弧的类型 : "..lvgl.arc_get_type(Arc1).."\n圆弧的值 : "..lvgl.arc_get_value(Arc1))
+    lvgl.obj_align(Label1,nil,lvgl.ALIGN_CENTER,-140,-160)
     lvgl.obj_add_style(Label1, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
 
     Arc2 = lvgl.arc_create(lvgl.scr_act(), nil)
@@ -44,6 +44,7 @@ function ArcInit()
     lvgl.obj_set_size(Arc3, 200, 200)
     lvgl.obj_add_style(Arc3, lvgl.ARC_PART_BG, demo_ThemeStyle_Bg)
     lvgl.obj_align(Arc3, father, lvgl.ALIGN_IN_LEFT_MID, 0, 0)
+    lvgl.arc_set_adjustable(Arc3,true)
 
     Label3 = lvgl.label_create(lvgl.scr_act(),nil)
     lvgl.label_set_text(Label3,"圆弧的起始角度 : "..lvgl.arc_get_angle_start(Arc3).."\n圆弧的结束角度 : "..lvgl.arc_get_angle_end(Arc3).."\n圆弧背景的起始角度 : "..lvgl.arc_get_bg_angle_start(Arc3).."\n圆弧背景的结束角度 : "..lvgl.arc_get_bg_angle_end(Arc3).."\n圆弧的类型 : "..lvgl.arc_get_type(Arc3).."\n圆弧的值 : "..lvgl.arc_get_value(Arc3).."\n圆弧的最小值"..lvgl.arc_get_min_value(Arc3).."\n圆弧的最大值"..lvgl.arc_get_max_value(Arc3))
