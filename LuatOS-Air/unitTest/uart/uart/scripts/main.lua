@@ -24,6 +24,7 @@ end
 -- 串口配置
 local baud = 921600
 local databits = 8
+local conut1, count2, count3, count4 = 0, 0, 0, 0
 
 local function read1()
     local uartData = ""
@@ -65,6 +66,22 @@ local function read4()
     log.info(tag .. ".receive4", uartData)
     uart.write(4, uartData)
 end
+local function sent1()
+    conut1 = conut1 + 1
+    log.info("conut1", conut1)
+end
+local function sent2()
+    count2 = count2 + 1
+    log.info("count2", count2)
+end
+local function sent3()
+    count3 = count3 + 1
+    log.info("count3", count3)
+end
+local function sent4()
+    count4 = count4 + 1
+    log.info("count4", count4)
+end
 
 -- UART相关的测试必须要防止模块休眠，不然会有串口收发数据的问题
 pm.wake(tag)
@@ -72,16 +89,22 @@ pm.wake(tag)
 for _, v in pairs(uartList) do
     uart.setup(v, baud, databits, uart.PAR_NONE, uart.STOP_1)
     local readFun
+    local sentFun
     if v == 1 then
         readFun = read1
+        sentFun = sent1
     elseif v == 2 then
         readFun = read2
+        sentFun = sent2
     elseif v == 3 then
         readFun = read3
+        sentFun = sent3
     elseif v == 4 then
         readFun = read4
+        sentFun = sent4
     end
     uart.on(v, "receive", readFun)
+    uart.on(v, "sent", sentFun)
 end
 
 sys.init(0, 0)

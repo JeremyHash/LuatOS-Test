@@ -2,7 +2,7 @@
 ## 网卡
 ### 1.1 ecm/rndis切换
     AT+SETUSB=2 设置成ECM网卡
-    AT+SETUSB=2 设置成RNDIS网卡
+    AT+SETUSB=1 设置成RNDIS网卡
 ### 1.2 up/down
     up
         (1) testserver服务器 /home/testserver/文档 路径下

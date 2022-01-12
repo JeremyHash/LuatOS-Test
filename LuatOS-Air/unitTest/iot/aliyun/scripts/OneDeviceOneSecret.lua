@@ -17,9 +17,3 @@ AliyunInfo = {
 --     ["DEVICE_NAME"] = "866262047559884",
 --     ["DEVICE_SECRET"] = "63dedd45a60a18c0ebd921145ef10572"
 -- }
-
--- AliyunInfo = {
---     ["PRODUCT_KEY"] = "a1HvZlnlln9",
---     ["DEVICE_NAME"] = "862167059989081",
---     ["DEVICE_SECRET"] = "b3a852584f90ebe52532d00c7f93c856"
--- }
