@@ -13,7 +13,7 @@ function BtnmatrixInit()
     lvgl.btnmatrix_clear_btn_ctrl(Btnmatrix1,6,lvgl.BTNMATRIX_CTRL_HIDDEN)
     
     Label1 = lvgl.label_create(lvgl.scr_act(),nil)
-    lvgl.label_set_text(Label1,"是否可以使用重新着色 : "..tostring(lvgl.btnmatrix_get_recolor(Btnmatrix1)).."\n焦点按钮的索引 : "..lvgl.btnmatrix_get_focused_btn(Btnmatrix1).."\n按钮的文本 : "..lvgl.btnmatrix_get_btn_text(Btnmatrix1).."\n按钮矩阵的按钮是否启用或禁用控件值 : "..tostring(lvgl.btnmatrix_get_btn_ctrl(Btnmatrix1)).."\n是否启用了“one toggle”模式 : "..tostring(lvgl.btnmatrix_get_one_check(Btnmatrix1)).."\n获取对齐属性 : "..lvgl.btnmatrix_get_align(Btnmatrix1))
+    lvgl.label_set_text(Label1,"是否可以使用重新着色 : "..tostring(lvgl.btnmatrix_get_recolor(Btnmatrix1)).."\n焦点按钮的索引 : "..lvgl.btnmatrix_get_focused_btn(Btnmatrix1).."\n按钮的文本 : "..lvgl.btnmatrix_get_btn_text(Btnmatrix1).."\n按钮矩阵的按钮是否启用或禁用控件值 : "..tostring(lvgl.btnmatrix_get_btn_ctrl(Btnmatrix1,5,lvgl.BTNMATRIX_CTRL_HIDDEN)).."\n是否启用了“one toggle”模式 : "..tostring(lvgl.btnmatrix_get_one_check(Btnmatrix1)).."\n获取对齐属性 : "..lvgl.btnmatrix_get_align(Btnmatrix1))
     lvgl.obj_align(Label1,Father,lvgl.ALIGN_IN_TOP_MID,0,160)
     lvgl.obj_add_style(Label1, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
 
@@ -29,7 +29,7 @@ function BtnmatrixInit()
     lvgl.btnmatrix_clear_btn_ctrl_all(Btnmatrix2,lvgl.BTNMATRIX_CTRL_CHECKABLE)
     
     Label2 = lvgl.label_create(lvgl.scr_act(),nil)
-    lvgl.label_set_text(Label2,"是否可以使用重新着色 : "..tostring(lvgl.btnmatrix_get_recolor(Btnmatrix2)).."\n焦点按钮的索引 : "..lvgl.btnmatrix_get_focused_btn(Btnmatrix2).."\n按钮的文本 : "..lvgl.btnmatrix_get_btn_text(Btnmatrix2).."\n按钮矩阵的按钮是否启用或禁用控件值 : "..tostring(lvgl.btnmatrix_get_btn_ctrl(Btnmatrix2)).."\n是否启用了“one toggle”模式 : "..tostring(lvgl.btnmatrix_get_one_check(Btnmatrix2)).."\n获取对齐属性 : "..lvgl.btnmatrix_get_align(Btnmatrix2))
+    lvgl.label_set_text(Label2,"是否可以使用重新着色 : "..tostring(lvgl.btnmatrix_get_recolor(Btnmatrix2)).."\n焦点按钮的索引 : "..lvgl.btnmatrix_get_focused_btn(Btnmatrix2).."\n按钮的文本 : "..lvgl.btnmatrix_get_btn_text(Btnmatrix2).."\n按钮矩阵的按钮是否启用或禁用控件值 : "..tostring(lvgl.btnmatrix_get_btn_ctrl(Btnmatrix2,5,lvgl.BTNMATRIX_CTRL_HIDDEN)).."\n是否启用了“one toggle”模式 : "..tostring(lvgl.btnmatrix_get_one_check(Btnmatrix2)).."\n获取对齐属性 : "..lvgl.btnmatrix_get_align(Btnmatrix2))
     lvgl.obj_align(Label2,Father,lvgl.ALIGN_IN_TOP_MID,0,430)
     lvgl.obj_add_style(Label2, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
 
@@ -52,7 +52,7 @@ function BtnmatrixInit()
     lvgl.btnmatrix_set_btn_ctrl(Btnmatrix3, 6, lvgl.BTNMATRIX_CTRL_CHECK_STATE)
 
     Label3 = lvgl.label_create(lvgl.scr_act(),nil)
-    lvgl.label_set_text(Label3,"是否可以使用重新着色 : "..tostring(lvgl.btnmatrix_get_recolor(Btnmatrix3)).."\n焦点按钮的索引 : "..lvgl.btnmatrix_get_focused_btn(Btnmatrix3).."\n按钮的文本 : "..lvgl.btnmatrix_get_btn_text(Btnmatrix3).."\n按钮矩阵的按钮是否启用或禁用控件值 : "..tostring(lvgl.btnmatrix_get_btn_ctrl(Btnmatrix3)).."\n是否启用了“one toggle”模式 : "..tostring(lvgl.btnmatrix_get_one_check(Btnmatrix3)).."\n获取对齐属性 : "..lvgl.btnmatrix_get_align(Btnmatrix3))
+    lvgl.label_set_text(Label3,"是否可以使用重新着色 : "..tostring(lvgl.btnmatrix_get_recolor(Btnmatrix3)).."\n焦点按钮的索引 : "..lvgl.btnmatrix_get_focused_btn(Btnmatrix3).."\n按钮的文本 : "..lvgl.btnmatrix_get_btn_text(Btnmatrix3).."\n按钮矩阵的按钮是否启用或禁用控件值 : "..tostring(lvgl.btnmatrix_get_btn_ctrl(Btnmatrix3,5,lvgl.BTNMATRIX_CTRL_HIDDEN)).."\n是否启用了“one toggle”模式 : "..tostring(lvgl.btnmatrix_get_one_check(Btnmatrix3)).."\n获取对齐属性 : "..lvgl.btnmatrix_get_align(Btnmatrix3))
     lvgl.obj_align(Label3,Father,lvgl.ALIGN_IN_TOP_MID,0,700)
     lvgl.obj_add_style(Label3, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
 
