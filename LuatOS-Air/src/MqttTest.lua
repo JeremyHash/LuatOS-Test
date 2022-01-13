@@ -113,7 +113,7 @@ sys.taskInit(function()
         mqttTestTask()
     elseif testConfig.testMode == "loop" then
         while true do
-            if socket.isReady then mqttTestTask() end
+            if socket.isReady() then mqttTestTask() end
             sys.wait(5000)
         end
     end
