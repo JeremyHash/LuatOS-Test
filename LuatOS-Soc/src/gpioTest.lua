@@ -1,4 +1,4 @@
-gpioTest = {}
+local gpioTest = {}
 
 local tag = "gpioTest"
 local gpioList = {}

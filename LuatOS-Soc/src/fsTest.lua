@@ -1,4 +1,4 @@
-fsTest = {}
+local fsTest = {}
 
 local tag = "fsTest"
 

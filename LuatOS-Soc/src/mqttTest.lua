@@ -1,4 +1,4 @@
-mqttTest = {}
+local mqttTest = {}
 
 local tag = "mqttTest"
 
