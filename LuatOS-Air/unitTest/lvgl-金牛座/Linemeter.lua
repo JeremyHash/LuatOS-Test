@@ -1,22 +1,35 @@
 function LinemeterInit()
      Linemeter1 = lvgl.linemeter_create(lvgl.scr_act(),nil)
      lvgl.obj_set_size(Linemeter1,200,200)
-     lvgl.obj_align(Linemeter1,Father,lvgl.ALIGN_CENTER,0,-300)
+     lvgl.obj_align(Linemeter1,Father,lvgl.ALIGN_IN_TOP_LEFT,0,0)
      lvgl.linemeter_set_value(Linemeter1,40)
      lvgl.linemeter_set_mirror(Linemeter1,true)
 
-
+     Label1 = lvgl.label_create(lvgl.scr_act(),nil)
+     lvgl.label_set_text(Label1,"获取线表的值:"..lvgl.linemeter_get_value(Linemeter1).."\n获取线表的最小值:"..lvgl.linemeter_get_min_value(Linemeter1).."\n获取线表的最大值:"..lvgl.linemeter_get_max_value(Linemeter1).."\n获取线表的刻度数:"..lvgl.linemeter_get_line_count(Linemeter1).."\n获取线表的刻度角度:"..lvgl.linemeter_get_scale_angle(Linemeter1).."\n获取线表的偏移量:"..lvgl.linemeter_get_angle_offset(Linemeter1).."\n获取线表的镜像设置:"..tostring(lvgl.linemeter_get_mirror(Linemeter1)))
+     lvgl.obj_align(Label1,nil,lvgl.ALIGN_IN_TOP_RIGHT,-40,40)
+     lvgl.obj_add_style(Label1, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
 
      Linemeter2 = lvgl.linemeter_create(lvgl.scr_act(),nil)
      lvgl.obj_set_size(Linemeter2,200,200)
-     lvgl.obj_align(Linemeter2,Father,lvgl.ALIGN_CENTER,0,0)
+     lvgl.obj_align(Linemeter2,Father,lvgl.ALIGN_IN_LEFT_MID,0,0)
      lvgl.linemeter_set_value(Linemeter2,40)
      lvgl.linemeter_set_range(Linemeter2,0,140)
 
+     Label2 = lvgl.label_create(lvgl.scr_act(),nil)
+     lvgl.label_set_text(Label2,"获取线表的值:"..lvgl.linemeter_get_value(Linemeter2).."\n获取线表的最小值:"..lvgl.linemeter_get_min_value(Linemeter2).."\n获取线表的最大值:"..lvgl.linemeter_get_max_value(Linemeter2).."\n获取线表的刻度数:"..lvgl.linemeter_get_line_count(Linemeter2).."\n获取线表的刻度角度:"..lvgl.linemeter_get_scale_angle(Linemeter2).."\n获取线表的偏移量:"..lvgl.linemeter_get_angle_offset(Linemeter2).."\n获取线表的镜像设置:"..tostring(lvgl.linemeter_get_mirror(Linemeter2)))
+     lvgl.obj_align(Label2,nil,lvgl.ALIGN_IN_RIGHT_MID,-40,0)
+     lvgl.obj_add_style(Label2, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
+
      Linemeter3 = lvgl.linemeter_create(lvgl.scr_act(),nil)
      lvgl.obj_set_size(Linemeter3,200,200)
-     lvgl.obj_align(Linemeter3,Father,lvgl.ALIGN_CENTER,0,300)
+     lvgl.obj_align(Linemeter3,Father,lvgl.ALIGN_IN_BOTTOM_LEFT,0,0)
      lvgl.linemeter_set_value(Linemeter3,40)
      lvgl.linemeter_set_scale(Linemeter3,360,10)
      lvgl.linemeter_set_angle_offset(Linemeter3,180)
+
+     Label3 = lvgl.label_create(lvgl.scr_act(),nil)
+     lvgl.label_set_text(Label3,"获取线表的值:"..lvgl.linemeter_get_value(Linemeter3).."\n获取线表的最小值:"..lvgl.linemeter_get_min_value(Linemeter3).."\n获取线表的最大值:"..lvgl.linemeter_get_max_value(Linemeter3).."\n获取线表的刻度数:"..lvgl.linemeter_get_line_count(Linemeter3).."\n获取线表的刻度角度:"..lvgl.linemeter_get_scale_angle(Linemeter3).."\n获取线表的偏移量:"..lvgl.linemeter_get_angle_offset(Linemeter3).."\n获取线表的镜像设置:"..tostring(lvgl.linemeter_get_mirror(Linemeter3)))
+     lvgl.obj_align(Label3,nil,lvgl.ALIGN_IN_BOTTOM_RIGHT,-40,-40)
+     lvgl.obj_add_style(Label3, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
 end
