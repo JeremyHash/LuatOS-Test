@@ -61,6 +61,12 @@ demo_LineStyle_Green = lvgl.style_t()
 lvgl.style_init(demo_LineStyle_Green)
 lvgl.style_set_line_color(demo_LineStyle_Green, lvgl.STATE_DEFAULT, lvgl.color_hex(0x00FF00))
 
+--Line的样式
+demo_LineStyle = lvgl.style_t()
+lvgl.style_init(demo_LineStyle)
+lvgl.style_set_line_width(demo_LineStyle, lvgl.STATE_DEFAULT, 4)
+lvgl.style_set_line_color(demo_LineStyle, lvgl.STATE_DEFAULT, lvgl.color_hex(0x0000ff))
+
 --LineMeter样式
 demo_LineMeterStyle = lvgl.style_t()
 lvgl.style_init(demo_LineMeterStyle)
