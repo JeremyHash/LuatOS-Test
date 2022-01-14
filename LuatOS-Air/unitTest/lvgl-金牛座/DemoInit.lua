@@ -39,6 +39,7 @@ require "Keyboard"
 require "Label"
 require "LEDl"
 require "List"
+require "Line"
 require "Linemeter"
 require "Msgbox"
 require "Page"
@@ -107,6 +108,7 @@ function demoInit()
 		-- LabelInit()
 		-- LEDInit()
         -- ListInit()
+		-- LineInit()
 		-- LinemeterInit()
 		-- MsgboxInit()
 		-- PageInit()
@@ -269,6 +271,12 @@ function demoInit()
 				 lvgl.obj_del(Label1)
 				 lvgl.obj_del(Label2)
 				 lvgl.obj_del(Label3)
+				 LineInit()
+				 sys.wait(waitTime)
+				 lvgl.obj_del(line1)
+				 lvgl.obj_del(line2)
+				 lvgl.obj_del(Label1)
+				 lvgl.obj_del(Label2)
 				 LinemeterInit()
 				 sys.wait(waitTime)
 				 lvgl.obj_del(Linemeter1)
