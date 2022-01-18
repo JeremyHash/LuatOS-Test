@@ -20,7 +20,7 @@ function PageInit()
      lvgl.page_set_scrollbar_mode(Page1,lvgl.SCROLLBAR_MODE_OFF)
 
 	 Label1 = lvgl.label_create(lvgl.scr_act(),nil)
-	 lvgl.label_set_text(Label1,"在页面上设置滚动条模式: "..lvgl.page_get_scrollbar_mode(Page1).."\n获取滚动传播属性: "..tostring(lvgl.page_get_scroll_propagation(Page1)).."\n获取边缘闪光效果属性: "..tostring(lvgl.page_get_edge_flash(Page1)).."\n获取可以设置给孩子的宽度仍然不会导致溢出: "..lvgl.page_get_width_fit(Page1).."\n获取可以设置给孩子的高度仍然不会导致溢出: "..lvgl.page_get_height_fit(Page1).."\n除以对象的宽度并获得给定数量的列的宽度:"..lvgl.page_get_width_grid(Page1).."\n除以对象的高度并获得给定数量的列的宽度: "..lvgl.page_get_height_grid(Page1).."\n获取页面可滚动部分的宽度: "..lvgl.page_get_scrl_width(Page1).."\n获取页面可滚动部分的高度: "..lvgl.page_get_scrl_height(Page1).."\n获取页面可滚动部分的布局: "..lvgl.page_get_scrl_layout(Page1).."\n获取最适合的模式: "..lvgl.page_get_scrl_fit_top(Page1).."\n获取底部贴合模式: "..lvgl.page_get_scrl_fit_bottom(Page1))
+	 lvgl.label_set_text(Label1,"在页面上设置滚动条模式: "..lvgl.page_get_scrollbar_mode(Page1).."\n获取滚动传播属性: "..tostring(lvgl.page_get_scroll_propagation(Page1)).."\n获取边缘闪光效果属性: "..tostring(lvgl.page_get_edge_flash(Page1)).."\n获取可以设置给孩子的宽度仍然不会导致溢出: "..lvgl.page_get_width_fit(Page1).."\n获取可以设置给孩子的高度仍然不会导致溢出: "..lvgl.page_get_height_fit(Page1).."\n除以对象的宽度并获得给定数量的列的宽度:"..lvgl.page_get_width_grid(Page1).."\n除以对象的高度并获得给定数量的列的宽度: "..lvgl.page_get_height_grid(Page1).."\n获取页面可滚动部分的宽度: "..lvgl.page_get_scrl_width(Page1).."\n获取页面可滚动部分的高度: "..lvgl.page_get_scrl_height(Page1).."\n获取页面可滚动部分的布局: "..lvgl.page_get_scrl_layout(Page1).."\n获取最适合的模式: "..lvgl.page_get_scrl_fit_top(Page1).."\n获取底部贴合模式: "..lvgl.page_get_scrl_fit_bottom(Page1).."\n获取动画时间: "..lvgl.page_get_anim_time(Page1))
 	 lvgl.obj_align(Label1,nil,lvgl.ALIGN_IN_TOP_RIGHT,0,0)
 	 lvgl.obj_add_style(Label1, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
      
@@ -47,7 +47,7 @@ function PageInit()
 	 lvgl.page_set_anim_time(Page2,500)
 
 	 Label2 = lvgl.label_create(lvgl.scr_act(),nil)
-	 lvgl.label_set_text(Label2,"在页面上设置滚动条模式: "..lvgl.page_get_scrollbar_mode(Page2).."\n获取滚动传播属性: "..tostring(lvgl.page_get_scroll_propagation(Page2)).."\n获取边缘闪光效果属性: "..tostring(lvgl.page_get_edge_flash(Page2)).."\n获取可以设置给孩子的宽度仍然不会导致溢出: "..lvgl.page_get_width_fit(Page2).."\n获取可以设置给孩子的高度仍然不会导致溢出: "..lvgl.page_get_height_fit(Page2).."\n除以对象的宽度并获得给定数量的列的宽度:"..lvgl.page_get_width_grid(Page2).."\n除以对象的高度并获得给定数量的列的宽度: "..lvgl.page_get_height_grid(Page2).."\n获取页面可滚动部分的宽度: "..lvgl.page_get_scrl_width(Page2).."\n获取页面可滚动部分的高度: "..lvgl.page_get_scrl_height(Page2).."\n获取页面可滚动部分的布局: "..lvgl.page_get_scrl_layout(Page2).."\n获取最适合的模式: "..lvgl.page_get_scrl_fit_top(Page2).."\n获取底部贴合模式: "..lvgl.page_get_scrl_fit_bottom(Page2))
+	 lvgl.label_set_text(Label2,"在页面上设置滚动条模式: "..lvgl.page_get_scrollbar_mode(Page2).."\n获取滚动传播属性: "..tostring(lvgl.page_get_scroll_propagation(Page2)).."\n获取边缘闪光效果属性: "..tostring(lvgl.page_get_edge_flash(Page2)).."\n获取可以设置给孩子的宽度仍然不会导致溢出: "..lvgl.page_get_width_fit(Page2).."\n获取可以设置给孩子的高度仍然不会导致溢出: "..lvgl.page_get_height_fit(Page2).."\n除以对象的宽度并获得给定数量的列的宽度:"..lvgl.page_get_width_grid(Page2).."\n除以对象的高度并获得给定数量的列的宽度: "..lvgl.page_get_height_grid(Page2).."\n获取页面可滚动部分的宽度: "..lvgl.page_get_scrl_width(Page2).."\n获取页面可滚动部分的高度: "..lvgl.page_get_scrl_height(Page2).."\n获取页面可滚动部分的布局: "..lvgl.page_get_scrl_layout(Page2).."\n获取最适合的模式: "..lvgl.page_get_scrl_fit_top(Page2).."\n获取底部贴合模式: "..lvgl.page_get_scrl_fit_bottom(Page2).."\n获取动画时间: "..lvgl.page_get_anim_time(Page2))
 	 lvgl.obj_align(Label2,nil,lvgl.ALIGN_IN_TOP_RIGHT,0,300)
 	 lvgl.obj_add_style(Label2, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
 
@@ -74,7 +74,7 @@ function PageInit()
     --  lvgl.page_set_scrollable_fit(Page3,lvgl.LAYOUT_COLUMN_RIGHT)
 
 	Label3 = lvgl.label_create(lvgl.scr_act(),nil)
-	lvgl.label_set_text(Label3,"在页面上设置滚动条模式: "..lvgl.page_get_scrollbar_mode(Page3).."\n获取滚动传播属性: "..tostring(lvgl.page_get_scroll_propagation(Page3)).."\n获取边缘闪光效果属性: "..tostring(lvgl.page_get_edge_flash(Page3)).."\n获取可以设置给孩子的宽度仍然不会导致溢出: "..lvgl.page_get_width_fit(Page3).."\n获取可以设置给孩子的高度仍然不会导致溢出: "..lvgl.page_get_height_fit(Page3).."\n除以对象的宽度并获得给定数量的列的宽度:"..lvgl.page_get_width_grid(Page3).."\n除以对象的高度并获得给定数量的列的宽度: "..lvgl.page_get_height_grid(Page3).."\n获取页面可滚动部分的宽度: "..lvgl.page_get_scrl_width(Page3).."\n获取页面可滚动部分的高度: "..lvgl.page_get_scrl_height(Page3).."\n获取页面可滚动部分的布局: "..lvgl.page_get_scrl_layout(Page3).."\n获取最适合的模式: "..lvgl.page_get_scrl_fit_top(Page3).."\n获取底部贴合模式: "..lvgl.page_get_scrl_fit_bottom(Page3))
+	lvgl.label_set_text(Label3,"在页面上设置滚动条模式: "..lvgl.page_get_scrollbar_mode(Page3).."\n获取滚动传播属性: "..tostring(lvgl.page_get_scroll_propagation(Page3)).."\n获取边缘闪光效果属性: "..tostring(lvgl.page_get_edge_flash(Page3)).."\n获取可以设置给孩子的宽度仍然不会导致溢出: "..lvgl.page_get_width_fit(Page3).."\n获取可以设置给孩子的高度仍然不会导致溢出: "..lvgl.page_get_height_fit(Page3).."\n除以对象的宽度并获得给定数量的列的宽度:"..lvgl.page_get_width_grid(Page3).."\n除以对象的高度并获得给定数量的列的宽度: "..lvgl.page_get_height_grid(Page3).."\n获取页面可滚动部分的宽度: "..lvgl.page_get_scrl_width(Page3).."\n获取页面可滚动部分的高度: "..lvgl.page_get_scrl_height(Page3).."\n获取页面可滚动部分的布局: "..lvgl.page_get_scrl_layout(Page3).."\n获取最适合的模式: "..lvgl.page_get_scrl_fit_top(Page3).."\n获取底部贴合模式: "..lvgl.page_get_scrl_fit_bottom(Page3).."\n获取动画时间: "..lvgl.page_get_anim_time(Page3))
 	lvgl.obj_align(Label3,nil,lvgl.ALIGN_IN_TOP_RIGHT,0,600)
 	lvgl.obj_add_style(Label3, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
 end
