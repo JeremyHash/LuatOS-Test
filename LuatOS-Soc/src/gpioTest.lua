@@ -38,7 +38,7 @@ function gpioTest.test()
         assert(gpio.setDefaultPull(1) == true, tag .. ".setDefaultPull ERROR")
         gpio.setup(v, function()
             log.info(tag .. ".int-" .. v, gpio.get(v))
-        end)
+        end, gpio.PULLUP)
         gpio.close(v)
     end
     log.info(tag, "DONE")
