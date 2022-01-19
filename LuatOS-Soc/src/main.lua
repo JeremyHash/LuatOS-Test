@@ -49,6 +49,7 @@ sys.taskInit(function()
     require("espnowTest").test()
     require("cameraTest").test()
     require("uartTest").test()
+    require("lvglTest").test()
 end)
 
 sys.run()
