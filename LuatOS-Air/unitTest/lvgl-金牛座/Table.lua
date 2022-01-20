@@ -14,10 +14,15 @@ function TableInit()
      lvgl.table_set_cell_value(Table1, 1, 2, "巨蟹座")
      lvgl.table_set_cell_value(Table1, 2, 2, "天蝎座")
 	 lvgl.table_set_cell_value(Table1, 3, 2, "金牛座")
-	 lvgl.obj_align(Table1,Father,lvgl.ALIGN_CENTER,0,-200)
+	 lvgl.obj_align(Table1,Father,lvgl.ALIGN_IN_TOP_MID,0,0)
      lvgl.table_set_cell_align(Table1,0,2,lvgl.LABEL_ALIGN_RIGHT)
 	 lvgl.table_set_cell_align(Table1,1,2,lvgl.LABEL_ALIGN_LEFT)
 	 lvgl.table_set_cell_align(Table1,2,2,lvgl.LABEL_ALIGN_CENTER)
+
+	 Label1 = lvgl.label_create(lvgl.scr_act(),nil)
+	 lvgl.label_set_text(Label1,"获取单元格(0,0)的值: "..lvgl.table_get_cell_value(Table1,0,0).."\n获取行数: "..lvgl.table_get_row_cnt(Table1).."\n获取列数: "..lvgl.table_get_col_cnt(Table1).."\n获取第一列的列宽: "..lvgl.table_get_col_width(Table1,0).."\n获取第二列的列宽: "..lvgl.table_get_col_width(Table1,1).."\n获取单元格(0,2)的文本对齐方式: "..lvgl.table_get_cell_align(Table1,0,2).."\n获取单元格(0,2)类型: "..lvgl.table_get_cell_type(Table1,0,2).."\n获取单元格(0,2)的裁剪属性: "..lvgl.table_get_cell_crop(Table1,0,2).."\n获取单元格(3,0)合并属性: "..tostring(lvgl.table_get_cell_merge_right(Table1,3,0)))
+	 lvgl.obj_align(Label1,nil,lvgl.ALIGN_IN_TOP_MID,0,200)
+	 lvgl.obj_add_style(Label1, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
 
 	 Table2 = lvgl.table_create(lvgl.scr_act(),nil)
      lvgl.table_set_row_cnt(Table2,4)
@@ -35,19 +40,17 @@ function TableInit()
      lvgl.table_set_cell_value(Table2, 1, 2, "巨蟹座")
      lvgl.table_set_cell_value(Table2, 2, 2, "天蝎座")
 	 lvgl.table_set_cell_value(Table2, 3, 2, "金牛座")
-	 lvgl.obj_align(Table2,Father,lvgl.ALIGN_CENTER,0,200)
-	 --没什么效果
+	 lvgl.obj_align(Table2,Father,lvgl.ALIGN_IN_TOP_MID,0,350)
+	 lvgl.obj_add_style(Table2,lvgl.TABLE_PART_CELL3,demo_ThemeStyle_IndicAndFont)
 	 lvgl.table_set_cell_type(Table2,0,2,1)
 	 lvgl.table_set_cell_type(Table2,1,2,2)
 	 lvgl.table_set_cell_type(Table2,2,2,3)
 	 lvgl.table_set_cell_type(Table2,3,2,4)
 	 lvgl.table_set_cell_merge_right(Table2,3,0,true)
 
-
-
-
-
-
-
+	 Label2 = lvgl.label_create(lvgl.scr_act(),nil)
+	 lvgl.label_set_text(Label2,"获取单元格(0,1)的值: "..lvgl.table_get_cell_value(Table2,0,1).."\n获取行数: "..lvgl.table_get_row_cnt(Table2).."\n获取列数: "..lvgl.table_get_col_cnt(Table2).."\n获取第一列的列宽: "..lvgl.table_get_col_width(Table2,0).."\n获取第二列的列宽: "..lvgl.table_get_col_width(Table2,1).."\n获取单元格(0,2)的文本对齐方式: "..lvgl.table_get_cell_align(Table2,0,2).."\n获取单元格(1,2)类型: "..lvgl.table_get_cell_type(Table2,1,2).."\n获取单元格(0,2)的裁剪属性: "..lvgl.table_get_cell_crop(Table2,0,2).."\n获取单元格(3,0)合并属性: "..tostring(lvgl.table_get_cell_merge_right(Table2,3,0)))
+	 lvgl.obj_align(Label2,nil,lvgl.ALIGN_IN_TOP_MID,0,650)
+	 lvgl.obj_add_style(Label2, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
 
 end
