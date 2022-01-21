@@ -4,20 +4,14 @@
 -- UpdateDate:20211104
 module(..., package.seeall)
 
-local value = true
-
 local tag = "FsTest"
 
 local function readFile(filename)
     local filehandle = io.open(filename, "r")
     if filehandle then
         local fileval = filehandle:read("*all")
-        if fileval then
-            log.info(tag .. ".readFile." .. filename, fileval)
-            filehandle:close()
-        else
-            log.info(tag .. ".readFile." .. filename, "文件内容为空")
-        end
+        filehandle:close()
+        return fileval
     else
         log.error(tag .. ".readFile." .. filename,
                   "文件不存在或文件输入格式不正确")
@@ -46,7 +40,7 @@ local function writeFileW(filename, value)
     end
 end
 
-local function deleteFile(filename) os.remove(filename) end
+local function deleteFile(filename) return os.remove(filename) end
 
 local getDirContent
 getDirContent = function(dirPath, level)
@@ -139,7 +133,7 @@ local function fsTestTask()
     log.info(tag .. ".getDirContent", "/")
     getDirContent("/")
     local testPath = "/FsTestPath"
-    os.remove(testPath)
+    deleteFile(testPath)
     if rtos.make_dir(testPath) == true then
         log.info(tag .. ".make_dir", "SUCCESS")
         while true do
@@ -147,14 +141,14 @@ local function fsTestTask()
             log.info(tag .. "." .. testPath .. "/FsWriteTest1.txt.fileSize",
                      io.fileSize(testPath .. "/FsWriteTest1.txt") .. "Bytes")
             writeFileW(testPath .. "/FsWriteTest2.txt", "This is a FsWriteWTest")
-            readFile(testPath .. "/FsWriteTest2.txt")
             log.info(tag .. ".readFile." .. testPath .. "/FsWriteTest2.txt",
+                     readFile(testPath .. "/FsWriteTest2.txt"))
+            log.info(tag .. ".io.readFile." .. testPath .. "/FsWriteTest2.txt",
                      io.readFile(testPath .. "/FsWriteTest2.txt"))
             if io.fileSize(testPath .. "/FsWriteTest1.txt") > 200 then
                 log.info(tag .. "." .. testPath .. "/FsWriteTest1.txt",
                          "文件大小超过200byte，清空文件内容")
                 deleteFile(testPath .. "/FsWriteTest1.txt")
-                outPutTestRes("FsTest.insideFlashTest  PASS")
                 break
             end
         end
