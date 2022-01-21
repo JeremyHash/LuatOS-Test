@@ -5,9 +5,9 @@ local tag = "uartTest"
 local uartList = {}
 
 if MOD_TYPE == "air101" then
-    uartList = {}
+    uartList = {1, 2, 3, 4}
 elseif MOD_TYPE == "air103" then
-    uartList = {}
+    uartList = {1, 2, 3, 4, 5}
 elseif MOD_TYPE == "air105" then
     uartList = {1, 2, 3}
 elseif MOD_TYPE == "ESP32C3" then

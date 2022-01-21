@@ -1,19 +1,11 @@
--- CryptoTest
+-- cryptoTest
 -- Author:openluat
--- CreateDate:20211217
--- UpdateDate:20211217
+-- CreateDate:20220121
+-- UpdateDate:20220121
 module(..., package.seeall)
 
---[[
-加解密算法结果，可对照
-http://tool.oschina.net/encrypt?type=2
-http://www.ip33.com/crc.html
-http://tool.chacuo.net/cryptaes
-进行测试
-]]
-
 local slen = string.len
-local tag = "CryptoTest"
+local tag = "cryptoTest"
 local modType = testConfig.modType
 
 -- base64加解密算法测试
@@ -22,11 +14,8 @@ local function base64Test()
         "123456crypto.base64_encodemodule(...,package.seeall)sys.timerStart(test,5000)jdklasdjklaskdjklsa"
     local encodeStr = crypto.base64_encode(originStr, slen(originStr))
     log.info(tag .. ".base64_encode", encodeStr)
-    if crypto.base64_decode(encodeStr, slen(encodeStr)) == originStr then
-        log.info(tag .. ".base64_decode", "SUCCESS")
-    else
-        log.info(tag .. ".base64_decode", "FAIL")
-    end
+    assert(crypto.base64_decode(encodeStr, slen(encodeStr)) == originStr,
+           tag .. ".base64_decode ERROR")
 end
 
 -- hmac_md5算法测试
@@ -45,11 +34,7 @@ local function xxteaTest()
     log.info(tag .. ".xxtea_encrypt", encrypt_data)
     log.info(tag .. ".xxtea_encrypt.hex", string.toHex(encrypt_data))
     local decrypt_data = crypto.xxtea_decrypt(encrypt_data, key)
-    if decrypt_data == text then
-        log.info(tag .. ".xxtea_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".xxtea_decrypt", "FAIL")
-    end
+    assert(decrypt_data == text, tag .. ".xxtea_decrypt ERROR")
 end
 
 -- 流式sm3算法测试
@@ -138,373 +123,273 @@ local function aesTest()
     -- 加密模式：ECB；填充方式：ZeroPadding；密钥：1234567890123456；密钥长度：128 bit
     local encodeStr = crypto.aes_encrypt("ECB", "ZERO", originStr,
                                          "1234567890123456")
-    if crypto.aes_decrypt("ECB", "ZERO", encodeStr, "1234567890123456") ==
-        originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("ECB", "ZERO", encodeStr, "1234567890123456") ==
+               originStr, tag .. ".aes_decrypt ERROR")
 
     originStr = "AES128 ECB ZeroP"
     -- 加密模式：ECB；填充方式：Pkcs5Padding；密钥：1234567890123456；密钥长度：128 bit
     encodeStr =
         crypto.aes_encrypt("ECB", "PKCS5", originStr, "1234567890123456")
-    if crypto.aes_decrypt("ECB", "PKCS5", encodeStr, "1234567890123456") ==
-        originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("ECB", "PKCS5", encodeStr, "1234567890123456") ==
+               originStr, tag .. ".aes_decrypt ERROR")
 
     originStr = "AES128 ECB ZeroPt"
     -- 加密模式：ECB；填充方式：Pkcs7Padding；密钥：1234567890123456；密钥长度：128 bit
     encodeStr =
         crypto.aes_encrypt("ECB", "PKCS7", originStr, "1234567890123456")
-    if crypto.aes_decrypt("ECB", "PKCS7", encodeStr, "1234567890123456") ==
-        originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("ECB", "PKCS7", encodeStr, "1234567890123456") ==
+               originStr, tag .. ".aes_decrypt ERROR")
 
     originStr = "AES128  ECB  NonePadding test st"
     -- 加密模式：ECB；填充方式：NonePadding；密钥：1234567890123456；密钥长度：128 bit
     encodeStr = crypto.aes_encrypt("ECB", "NONE", originStr, "1234567890123456")
-    if crypto.aes_decrypt("ECB", "NONE", encodeStr, "1234567890123456") ==
-        originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("ECB", "NONE", encodeStr, "1234567890123456") ==
+               originStr, tag .. ".aes_decrypt ERROR")
 
     originStr = "AES192 ECB ZeroPadding test"
     -- 加密模式：ECB；填充方式：ZeroPadding；密钥：123456789012345678901234；密钥长度：192 bit
     local encodeStr = crypto.aes_encrypt("ECB", "ZERO", originStr,
                                          "123456789012345678901234")
-    if crypto.aes_decrypt("ECB", "ZERO", encodeStr, "123456789012345678901234") ==
-        originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("ECB", "ZERO", encodeStr,
+                              "123456789012345678901234") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES192 ECB Pkcs5Padding test"
     -- 加密模式：ECB；填充方式：Pkcs5Padding；密钥：123456789012345678901234；密钥长度：192 bit
     encodeStr = crypto.aes_encrypt("ECB", "PKCS5", originStr,
                                    "123456789012345678901234")
-    if crypto.aes_decrypt("ECB", "PKCS5", encodeStr, "123456789012345678901234") ==
-        originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("ECB", "PKCS5", encodeStr,
+                              "123456789012345678901234") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES192 ECB Pkcs7Padding test"
     -- 加密模式：ECB；填充方式：Pkcs7Padding；密钥：123456789012345678901234；密钥长度：192 bit
     encodeStr = crypto.aes_encrypt("ECB", "PKCS7", originStr,
                                    "123456789012345678901234")
-    if crypto.aes_decrypt("ECB", "PKCS7", encodeStr, "123456789012345678901234") ==
-        originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("ECB", "PKCS7", encodeStr,
+                              "123456789012345678901234") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES256 ECB ZeroPadding test"
     -- 加密模式：ECB；填充方式：ZeroPadding；密钥：12345678901234567890123456789012；密钥长度：256 bit
     local encodeStr = crypto.aes_encrypt("ECB", "ZERO", originStr,
                                          "12345678901234567890123456789012")
-    if crypto.aes_decrypt("ECB", "ZERO", encodeStr,
-                          "12345678901234567890123456789012") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("ECB", "ZERO", encodeStr,
+                              "12345678901234567890123456789012") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES256 ECB Pkcs5Padding test"
     -- 加密模式：ECB；填充方式：Pkcs5Padding；密钥：12345678901234567890123456789012；密钥长度：256 bit
     encodeStr = crypto.aes_encrypt("ECB", "PKCS5", originStr,
                                    "12345678901234567890123456789012")
-    if crypto.aes_decrypt("ECB", "PKCS5", encodeStr,
-                          "12345678901234567890123456789012") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("ECB", "PKCS5", encodeStr,
+                              "12345678901234567890123456789012") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES256 ECB Pkcs7Padding test"
     -- 加密模式：ECB；填充方式：Pkcs7Padding；密钥：12345678901234567890123456789012；密钥长度：256 bit
     encodeStr = crypto.aes_encrypt("ECB", "PKCS7", originStr,
                                    "12345678901234567890123456789012")
-    if crypto.aes_decrypt("ECB", "PKCS7", encodeStr,
-                          "12345678901234567890123456789012") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("ECB", "PKCS7", encodeStr,
+                              "12345678901234567890123456789012") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES128 CBC ZeroPadding test"
     -- 加密模式：CBC；填充方式：ZeroPadding；密钥：1234567890123456；密钥长度：128 bit；偏移量：1234567890666666
     local encodeStr = crypto.aes_encrypt("CBC", "ZERO", originStr,
                                          "1234567890123456", "1234567890666666")
-    if crypto.aes_decrypt("CBC", "ZERO", encodeStr, "1234567890123456",
-                          "1234567890666666") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CBC", "ZERO", encodeStr, "1234567890123456",
+                              "1234567890666666") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES128 CBC Pkcs5Padding test"
     -- 加密模式：CBC；填充方式：Pkcs5Padding；密钥：1234567890123456；密钥长度：128 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CBC", "PKCS5", originStr,
                                    "1234567890123456", "1234567890666666")
-    if crypto.aes_decrypt("CBC", "PKCS5", encodeStr, "1234567890123456",
-                          "1234567890666666") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CBC", "PKCS5", encodeStr, "1234567890123456",
+                              "1234567890666666") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES128 CBC Pkcs7Padding test"
     -- 加密模式：CBC；填充方式：Pkcs7Padding；密钥：1234567890123456；密钥长度：128 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CBC", "PKCS7", originStr,
                                    "1234567890123456", "1234567890666666")
-    if crypto.aes_decrypt("CBC", "PKCS7", encodeStr, "1234567890123456",
-                          "1234567890666666") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CBC", "PKCS7", encodeStr, "1234567890123456",
+                              "1234567890666666") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES128  CBC  NonePadding test st"
     -- 加密模式：CBC；填充方式：NonePadding；密钥：1234567890123456；密钥长度：128 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CBC", "NONE", originStr, "1234567890123456",
                                    "1234567890666666")
-    if crypto.aes_decrypt("CBC", "NONE", encodeStr, "1234567890123456",
-                          "1234567890666666") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CBC", "NONE", encodeStr, "1234567890123456",
+                              "1234567890666666") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES192 CBC ZeroPadding test"
     -- 加密模式：CBC；填充方式：ZeroPadding；密钥：123456789012345678901234；密钥长度：192 bit；偏移量：1234567890666666
     local encodeStr = crypto.aes_encrypt("CBC", "ZERO", originStr,
                                          "123456789012345678901234",
                                          "1234567890666666")
-    if crypto.aes_decrypt("CBC", "ZERO", encodeStr, "123456789012345678901234",
-                          "1234567890666666") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CBC", "ZERO", encodeStr,
+                              "123456789012345678901234", "1234567890666666") ==
+               originStr, tag .. ".aes_decrypt ERROR")
 
     originStr = "AES192 CBC Pkcs5Padding test"
     -- 加密模式：CBC；填充方式：Pkcs5Padding；密钥：123456789012345678901234；密钥长度：192 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CBC", "PKCS5", originStr,
                                    "123456789012345678901234",
                                    "1234567890666666")
-    if crypto.aes_decrypt("CBC", "PKCS5", encodeStr, "123456789012345678901234",
-                          "1234567890666666") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CBC", "PKCS5", encodeStr,
+                              "123456789012345678901234", "1234567890666666") ==
+               originStr, tag .. ".aes_decrypt ERROR")
 
     originStr = "AES192 CBC Pkcs7Padding test"
     -- 加密模式：CBC；填充方式：Pkcs7Padding；密钥：123456789012345678901234；密钥长度：192 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CBC", "PKCS7", originStr,
                                    "123456789012345678901234",
                                    "1234567890666666")
-    if crypto.aes_decrypt("CBC", "PKCS7", encodeStr, "123456789012345678901234",
-                          "1234567890666666") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CBC", "PKCS7", encodeStr,
+                              "123456789012345678901234", "1234567890666666") ==
+               originStr, tag .. ".aes_decrypt ERROR")
 
     originStr = "AES256 CBC ZeroPadding test"
     -- 加密模式：CBC；填充方式：ZeroPadding；密钥：12345678901234567890123456789012；密钥长度：256 bit；偏移量：1234567890666666
     local encodeStr = crypto.aes_encrypt("CBC", "ZERO", originStr,
                                          "12345678901234567890123456789012",
                                          "1234567890666666")
-    if crypto.aes_decrypt("CBC", "ZERO", encodeStr,
-                          "12345678901234567890123456789012", "1234567890666666") ==
-        originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CBC", "ZERO", encodeStr,
+                              "12345678901234567890123456789012",
+                              "1234567890666666") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES256 CBC Pkcs5Padding test"
     -- 加密模式：CBC；填充方式：Pkcs5Padding；密钥：12345678901234567890123456789012；密钥长度：256 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CBC", "PKCS5", originStr,
                                    "12345678901234567890123456789012",
                                    "1234567890666666")
-    if crypto.aes_decrypt("CBC", "PKCS5", encodeStr,
-                          "12345678901234567890123456789012", "1234567890666666") ==
-        originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CBC", "PKCS5", encodeStr,
+                              "12345678901234567890123456789012",
+                              "1234567890666666") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES256 CBC Pkcs7Padding test"
     -- 加密模式：CBC；填充方式：Pkcs7Padding；密钥：12345678901234567890123456789012；密钥长度：256 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CBC", "PKCS7", originStr,
                                    "12345678901234567890123456789012",
                                    "1234567890666666")
-    if crypto.aes_decrypt("CBC", "PKCS7", encodeStr,
-                          "12345678901234567890123456789012", "1234567890666666") ==
-        originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CBC", "PKCS7", encodeStr,
+                              "12345678901234567890123456789012",
+                              "1234567890666666") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES128 CTR ZeroPadding test"
     -- 加密模式：CTR；填充方式：ZeroPadding；密钥：1234567890123456；密钥长度：128 bit；偏移量：1234567890666666
     local encodeStr = crypto.aes_encrypt("CTR", "ZERO", originStr,
                                          "1234567890123456", "1234567890666666")
-    if crypto.aes_decrypt("CTR", "ZERO", encodeStr, "1234567890123456",
-                          "1234567890666666") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CTR", "ZERO", encodeStr, "1234567890123456",
+                              "1234567890666666") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES128 CTR Pkcs5Padding test"
     -- 加密模式：CTR；填充方式：Pkcs5Padding；密钥：1234567890123456；密钥长度：128 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CTR", "PKCS5", originStr,
                                    "1234567890123456", "1234567890666666")
-    if crypto.aes_decrypt("CTR", "PKCS5", encodeStr, "1234567890123456",
-                          "1234567890666666") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CTR", "PKCS5", encodeStr, "1234567890123456",
+                              "1234567890666666") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES128 CTR Pkcs7Padding test"
     -- 加密模式：CTR；填充方式：Pkcs7Padding；密钥：1234567890123456；密钥长度：128 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CTR", "PKCS7", originStr,
                                    "1234567890123456", "1234567890666666")
-    if crypto.aes_decrypt("CTR", "PKCS7", encodeStr, "1234567890123456",
-                          "1234567890666666") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CTR", "PKCS7", encodeStr, "1234567890123456",
+                              "1234567890666666") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES128 CTR NonePadding test tttt"
     -- 加密模式：CTR；填充方式：NonePadding；密钥：1234567890123456；密钥长度：128 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CTR", "NONE", originStr, "1234567890123456",
                                    "1234567890666666")
-    if crypto.aes_decrypt("CTR", "NONE", encodeStr, "1234567890123456",
-                          "1234567890666666") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CTR", "NONE", encodeStr, "1234567890123456",
+                              "1234567890666666") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES192 CTR ZeroPadding test"
     -- 加密模式：CTR；填充方式：ZeroPadding；密钥：123456789012345678901234；密钥长度：192 bit；偏移量：1234567890666666
     local encodeStr = crypto.aes_encrypt("CTR", "ZERO", originStr,
                                          "123456789012345678901234",
                                          "1234567890666666")
-    if crypto.aes_decrypt("CTR", "ZERO", encodeStr, "123456789012345678901234",
-                          "1234567890666666") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CTR", "ZERO", encodeStr,
+                              "123456789012345678901234", "1234567890666666") ==
+               originStr, tag .. ".aes_decrypt ERROR")
 
     originStr = "AES192 CTR Pkcs5Padding test"
     -- 加密模式：CTR；填充方式：Pkcs5Padding；密钥：123456789012345678901234；密钥长度：192 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CTR", "PKCS5", originStr,
                                    "123456789012345678901234",
                                    "1234567890666666")
-    if crypto.aes_decrypt("CTR", "PKCS5", encodeStr, "123456789012345678901234",
-                          "1234567890666666") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CTR", "PKCS5", encodeStr,
+                              "123456789012345678901234", "1234567890666666") ==
+               originStr, tag .. ".aes_decrypt ERROR")
 
     originStr = "AES192 CTR Pkcs7Padding test"
     -- 加密模式：CTR；填充方式：Pkcs7Padding；密钥：123456789012345678901234；密钥长度：192 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CTR", "PKCS7", originStr,
                                    "123456789012345678901234",
                                    "1234567890666666")
-    if crypto.aes_decrypt("CTR", "PKCS7", encodeStr, "123456789012345678901234",
-                          "1234567890666666") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CTR", "PKCS7", encodeStr,
+                              "123456789012345678901234", "1234567890666666") ==
+               originStr, tag .. ".aes_decrypt ERROR")
 
     originStr = "AES192 CTR NonePadding test tttt"
     -- 加密模式：CTR；填充方式：NonePadding；密钥：123456789012345678901234；密钥长度：192 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CTR", "NONE", originStr,
                                    "123456789012345678901234",
                                    "1234567890666666")
-    if crypto.aes_decrypt("CTR", "NONE", encodeStr, "123456789012345678901234",
-                          "1234567890666666") == originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CTR", "NONE", encodeStr,
+                              "123456789012345678901234", "1234567890666666") ==
+               originStr, tag .. ".aes_decrypt ERROR")
 
     originStr = "AES256 CTR ZeroPadding test"
     -- 加密模式：CTR；填充方式：ZeroPadding；密钥：12345678901234567890123456789012；密钥长度：256 bit；偏移量：1234567890666666
     local encodeStr = crypto.aes_encrypt("CTR", "ZERO", originStr,
                                          "12345678901234567890123456789012",
                                          "1234567890666666")
-    if crypto.aes_decrypt("CTR", "ZERO", encodeStr,
-                          "12345678901234567890123456789012", "1234567890666666") ==
-        originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CTR", "ZERO", encodeStr,
+                              "12345678901234567890123456789012",
+                              "1234567890666666") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES256 CTR Pkcs5Padding test"
     -- 加密模式：CTR；填充方式：Pkcs5Padding；密钥：12345678901234567890123456789012；密钥长度：256 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CTR", "PKCS5", originStr,
                                    "12345678901234567890123456789012",
                                    "1234567890666666")
-    if crypto.aes_decrypt("CTR", "PKCS5", encodeStr,
-                          "12345678901234567890123456789012", "1234567890666666") ==
-        originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CTR", "PKCS5", encodeStr,
+                              "12345678901234567890123456789012",
+                              "1234567890666666") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES256 CTR Pkcs7Padding test"
     -- 加密模式：CTR；填充方式：Pkcs7Padding；密钥：12345678901234567890123456789012；密钥长度：256 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CTR", "PKCS7", originStr,
                                    "12345678901234567890123456789012",
                                    "1234567890666666")
-    if crypto.aes_decrypt("CTR", "PKCS7", encodeStr,
-                          "12345678901234567890123456789012", "1234567890666666") ==
-        originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CTR", "PKCS7", encodeStr,
+                              "12345678901234567890123456789012",
+                              "1234567890666666") == originStr,
+           tag .. ".aes_decrypt ERROR")
 
     originStr = "AES256 CTR NonePadding test tttt"
     -- 加密模式：CTR；填充方式：NonePadding；密钥：12345678901234567890123456789012；密钥长度：256 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CTR", "NONE", originStr,
                                    "12345678901234567890123456789012",
                                    "1234567890666666")
-    if crypto.aes_decrypt("CTR", "NONE", encodeStr,
-                          "12345678901234567890123456789012", "1234567890666666") ==
-        originStr then
-        log.info(tag .. ".aes_decrypt", "SUCCESS")
-    else
-        log.info(tag .. ".aes_decrypt", "FAIL")
-    end
+    assert(crypto.aes_decrypt("CTR", "NONE", encodeStr,
+                              "12345678901234567890123456789012",
+                              "1234567890666666") == originStr,
+           tag .. ".aes_decrypt ERROR")
 end
 
 -- rsa算法测试
@@ -520,11 +405,7 @@ local function rsaTest()
     local decryptStr = crypto.rsa_decrypt("PRIVATE_KEY",
                                           io.readFile("/lua/private.key"), 2048,
                                           "PRIVATE_CRYPT", encryptStr)
-    if decryptStr == plainStr then
-        log.info(tag .. ".rsa_decrypt", "SUCCESS")
-    else
-        log.error(tag .. ".rsa_decrypt", "FAIL")
-    end
+    assert(decryptStr == plainStr, tag .. ".rsa_decrypt ERROR")
 
     -- 私钥签名(2048bit，这个bit与实际私钥的bit要保持一致)
     local signStr = crypto.rsa_sha256_sign("PRIVATE_KEY",
@@ -562,82 +443,60 @@ local function desTest()
     -- 加密模式：ECB；填充方式：ZeroPadding；密钥：12345678；密钥长度：64 bit
     local encodeStr = crypto.des_encrypt("ECB", "ZERO", originStr, "12345678")
 
-    if crypto.des_decrypt("ECB", "ZERO", encodeStr, "12345678") == originStr then
-        log.info(tag .. ".des_decrypt", "SUCCESS")
-    else
-        log.error(tag .. ".des_decrypt", "FAIL")
-    end
+    assert(
+        crypto.des_decrypt("ECB", "ZERO", encodeStr, "12345678") == originStr,
+        tag .. ".des_decrypt ERROR")
 
     originStr = "DES ECB PKcs5Padding test"
     -- 加密模式：ECB；填充方式：Pkcs5Padding；密钥：12345678；密钥长度：64 bit
     encodeStr = crypto.des_encrypt("ECB", "PKCS5", originStr, "12345678")
-    if crypto.des_decrypt("ECB", "PKCS5", encodeStr, "12345678") == originStr then
-        log.info(tag .. ".des_decrypt", "SUCCESS")
-    else
-        log.error(tag .. ".des_decrypt", "FAIL")
-    end
+    assert(crypto.des_decrypt("ECB", "PKCS5", encodeStr, "12345678") ==
+               originStr, tag .. ".des_decrypt ERROR")
 
     originStr = "DES ECB PKcs7Padding test"
     -- 加密模式：ECB；填充方式：Pkcs7Padding；密钥：12345678；密钥长度：64 bit
     encodeStr = crypto.des_encrypt("ECB", "PKCS7", originStr, "12345678")
-    if crypto.des_decrypt("ECB", "PKCS7", encodeStr, "12345678") == originStr then
-        log.info(tag .. ".des_decrypt", "SUCCESS")
-    else
-        log.error(tag .. ".des_decrypt", "FAIL")
-    end
+    assert(crypto.des_decrypt("ECB", "PKCS7", encodeStr, "12345678") ==
+               originStr, tag .. ".des_decrypt ERROR")
 
     originStr = "DES ECB NonePadding test"
     -- 加密模式：ECB；填充方式：NonePadding；密钥：12345678；密钥长度：64 bit
     encodeStr = crypto.des_encrypt("ECB", "NONE", originStr, "12345678")
-    if crypto.des_decrypt("ECB", "NONE", encodeStr, "12345678") == originStr then
-        log.info(tag .. ".des_decrypt", "SUCCESS")
-    else
-        log.error(tag .. ".des_decrypt", "FAIL")
-    end
+    assert(
+        crypto.des_decrypt("ECB", "NONE", encodeStr, "12345678") == originStr,
+        tag .. ".des_decrypt ERROR")
 
     originStr = "DES CBC ZeroPadding test"
     -- 加密模式：CBC；填充方式：ZeroPadding；密钥：12345678；密钥长度：64 bit；偏移量：12345678
     encodeStr = crypto.des_encrypt("CBC", "ZERO", originStr, "12345678",
                                    "12345678")
-    if crypto.des_decrypt("CBC", "ZERO", encodeStr, "12345678", "12345678") ==
-        originStr then
-        log.info(tag .. ".des_decrypt", "SUCCESS")
-    else
-        log.error(tag .. ".des_decrypt", "FAIL")
-    end
+    assert(
+        crypto.des_decrypt("CBC", "ZERO", encodeStr, "12345678", "12345678") ==
+            originStr, tag .. ".des_decrypt ERROR")
 
     originStr = "DES CBC Pkcs5Padding test"
     -- 加密模式：CBC；填充方式：Pkcs5Padding；密钥：12345678；密钥长度：64 bit；偏移量：12345678
     encodeStr = crypto.des_encrypt("CBC", "PKCS5", originStr, "12345678",
                                    "12345678")
-    if crypto.des_decrypt("CBC", "PKCS5", encodeStr, "12345678", "12345678") ==
-        originStr then
-        log.info(tag .. ".des_decrypt", "SUCCESS")
-    else
-        log.error(tag .. ".des_decrypt", "FAIL")
-    end
+    assert(
+        crypto.des_decrypt("CBC", "PKCS5", encodeStr, "12345678", "12345678") ==
+            originStr, tag .. ".des_decrypt ERROR")
 
     originStr = "DES CBC Pkcs7Padding test"
     -- 加密模式：CBC；填充方式：Pkcs7Padding；密钥：12345678；密钥长度：64 bit；偏移量：12345678
     encodeStr = crypto.des_encrypt("CBC", "PKCS7", originStr, "12345678",
                                    "12345678")
-    if crypto.des_decrypt("CBC", "PKCS7", encodeStr, "12345678", "12345678") ==
-        originStr then
-        log.info(tag .. ".des_decrypt", "SUCCESS")
-    else
-        log.error(tag .. ".des_decrypt", "FAIL")
-    end
+    assert(
+        crypto.des_decrypt("CBC", "PKCS7", encodeStr, "12345678", "12345678") ==
+            originStr, tag .. ".des_decrypt ERROR")
 
     originStr = "DES CBC NonePadding test"
     -- 加密模式：CBC；填充方式：NonePadding；密钥：12345678；密钥长度：64 bit: 偏移量：12345678
     encodeStr = crypto.des_encrypt("CBC", "NONE", originStr, "12345678",
                                    "12345678")
-    if crypto.des_decrypt("CBC", "NONE", encodeStr, "12345678", "12345678") ==
-        originStr then
-        log.info(tag .. ".des_decrypt", "SUCCESS")
-    else
-        log.error(tag .. ".des_decrypt", "FAIL")
-    end
+    assert(
+        crypto.des_decrypt("CBC", "NONE", encodeStr, "12345678", "12345678") ==
+            originStr, tag .. ".des_decrypt ERROR")
 end
 
 -- DES3算法测试
@@ -646,54 +505,47 @@ local function des3Test()
     -- 加密模式：DES3 EBC；填充方式：ZEROPadding；密钥：123456781234567812345678; 偏移：12345678
     encodeStr = crypto.des3_encrypt("ECB", "ZERO", originStr,
                                     "123456781234567812345678", "12345678")
-    if crypto.des3_decrypt("ECB", "ZERO", encodeStr, "123456781234567812345678",
-                           "12345678") == originStr then
-        log.info(tag .. ".des3_decrypt", "SUCCESS")
-    else
-        log.error(tag .. ".des3_decrypt", "FAIL")
-    end
+    assert(crypto.des3_decrypt("ECB", "ZERO", encodeStr,
+                               "123456781234567812345678", "12345678") ==
+               originStr, tag .. ".des3_decrypt ERROR")
 
     originStr = "DES3 ECB PKcs5Padding test"
     -- 加密模式：DES3 EBC；填充方式：Pkcs5Padding；密钥：123456781234567812345678; 偏移：12345678
     encodeStr = crypto.des3_encrypt("ECB", "PKCS5", originStr,
                                     "123456781234567812345678", "12345678")
-    if crypto.des3_decrypt("ECB", "PKCS5", encodeStr,
-                           "123456781234567812345678", "12345678") == originStr then
-        log.info(tag .. ".des3_decrypt", "SUCCESS")
-    else
-        log.error(tag .. ".des3_decrypt", "FAIL")
-    end
+    assert(crypto.des3_decrypt("ECB", "PKCS5", encodeStr,
+                               "123456781234567812345678", "12345678") ==
+               originStr, tag .. ".des3_decrypt ERROR")
 
     originStr = "DES3 ECB PKcs7Padding test"
     -- 加密模式：DES3 ECB；填充方式：Pkcs7Padding；密钥：123456781234567812345678;偏移：123456781234567812345678
     encodeStr = crypto.des3_encrypt("ECB", "PKCS7", originStr,
                                     "123456781234567812345678",
                                     "123456781234567812345678")
-    if crypto.des3_decrypt("ECB", "PKCS7", encodeStr, "123456781234567812345678") ==
-        originStr then
-        log.info(tag .. ".des3_decrypt", "SUCCESS")
-    else
-        log.error(tag .. ".des3_decrypt", "FAIL")
-    end
+    assert(crypto.des3_decrypt("ECB", "PKCS7", encodeStr,
+                               "123456781234567812345678") == originStr,
+           tag .. ".des3_decrypt ERROR")
 
     originStr = "DES3 ECB NonePadding test succes"
     -- 加密模式：DES3 ECB；填充方式：NonePadding；密钥：123456781234567812345678；密钥长度：64 bit: 偏移量：123456781234567812345678
     encodeStr = crypto.des3_encrypt("ECB", "NONE", originStr,
                                     "123456781234567812345678",
                                     "123456781234567812345678")
-    if crypto.des3_decrypt("ECB", "NONE", encodeStr, "123456781234567812345678") ==
-        originStr then
-        log.info(tag .. ".des3_decrypt", "SUCCESS")
-    else
-        log.error(tag .. ".des3_decrypt", "FAIL")
-    end
+    assert(crypto.des3_decrypt("ECB", "NONE", encodeStr,
+                               "123456781234567812345678") == originStr,
+           tag .. ".des3_decrypt ERROR")
 end
 
-local function cryptoTestTask()
+function test()
+    if crypto == nil then
+        log.error(tag, "this fireware is not support crypto")
+        return
+    end
+    log.info(tag, "START")
     base64Test()
     hmacMd5Test()
     xxteaTest()
-    if modType == "8910" then flowSm3Test() end
+    if testConfig.modType == "8910" then flowSm3Test() end
     flowMd5Test()
     md5Test()
     hmacSha1Test()
@@ -705,16 +557,5 @@ local function cryptoTestTask()
     rsaTest()
     desTest()
     des3Test()
+    log.info(tag, "DONE")
 end
-
-sys.taskInit(function()
-    log.info(tag, "CryptoTest Start")
-    if testConfig.testMode == "single" then
-        cryptoTestTask()
-    elseif testConfig.testMode == "loop" then
-        while true do
-            cryptoTestTask()
-            sys.wait(100)
-        end
-    end
-end)

@@ -6,178 +6,6 @@ module(..., package.seeall)
 
 local function lteTestTask()
     local tag
-    tag = "LteTest.BitTest"
-    -- 左移运算
-    -- 0001 -> 0100 
-    for i = 0, 31 do
-        local res = bit.bit(i)
-        if res == 2 ^ i then
-            log.info("BitTest.bit", "SUCCESS")
-            outPutTestRes("LteTest.BitTest.left PASS")
-        else
-            log.info("BitTest.bit", "FAIL")
-            outPutTestRes("LteTest.BitTest.left FAIL")
-        end
-    end
-
-    -- 测试位数是否被置1
-    -- 第一个参数是是测试数字，第二个是测试位置。从右向左数0到7。是1返回true，否则返回false
-    -- 0101
-    for i = 0, 31 do
-        if bit.isset(0xFFFFFFFF, i) == true then
-            log.info("BitTest.isset", "SUCCESS")
-            outPutTestRes("LteTest.BitTest.isset1 PASS")
-        else
-            log.error("BitTest.isset", "FAIL")
-            outPutTestRes("LteTest.BitTest.isset1 FAIL")
-        end
-        if bit.isset(0x00000000, i) == false then
-            log.info("BitTest.isset", "SUCCESS")
-            outPutTestRes("LteTest.BitTest.isset2 PASS")
-        else
-            log.error("BitTest.isset", "FAIL")
-            outPutTestRes("LteTest.BitTest.isset2 FAIL")
-        end
-    end
-
-    -- 测试位数是否被置0
-    for i = 0, 31 do
-        if bit.isclear(0xFFFFFFFF, i) == false then
-            log.info("BitTest.isclear", "SUCCESS")
-            outPutTestRes("LteTest.BitTest.isclear1 PASS")
-        else
-            log.error("BitTest.isclear", "FAIL")
-            outPutTestRes("LteTest.BitTest.isclear1 FAIL")
-        end
-        if bit.isclear(0x00000000, i) == true then
-            log.info("BitTest.isclear", "SUCCESS")
-            outPutTestRes("LteTest.BitTest.isclear2 PASS")
-        else
-            log.error("BitTest.isclear", "FAIL")
-            outPutTestRes("LteTest.BitTest.isclear2 FAIL")
-        end
-    end
-
-    -- 在相应的位数置1
-    -- 0000 -> 1111
-    if bit.set(0, 0, 1, 2, 3, 4, 5, 6, 7) == 255 then
-        log.info("BitTest.set", "SUCCESS")
-        outPutTestRes("LteTest.BitTest.set1 PASS")
-    else
-        log.error("BitTest.set", "FAIL")
-        outPutTestRes("LteTest.BitTest.set1 FAIL")
-    end
-
-    if bit.set(0, 6, 3, 2, 1, 7, 5, 0, 4) == 255 then
-        log.info("BitTest.set", "SUCCESS")
-        outPutTestRes("LteTest.BitTest.set2 PASS")
-    else
-        log.error("BitTest.set", "FAIL")
-        outPutTestRes("LteTest.BitTest.set2 FAIL")
-    end
-
-    -- 在相应的位置置0
-    -- 0101 -> 0000
-    if bit.clear(0xFF, 0, 1, 2, 3, 4, 5, 6, 7) == 0 then
-        log.info("BitTest.clear", "SUCCESS")
-        outPutTestRes("LteTest.BitTest.clear1 PASS")
-    else
-        log.error("BitTest.clear", "FAIL")
-        outPutTestRes("LteTest.BitTest.clear1 FAIL")
-    end
-
-    if bit.clear(0xFF, 6, 3, 2, 1, 7, 5, 0, 4) == 0 then
-        log.info("BitTest.clear", "SUCCESS")
-        outPutTestRes("LteTest.BitTest.clear2 PASS")
-    else
-        log.error("BitTest.clear", "FAIL")
-        outPutTestRes("LteTest.BitTest.clear2 FAIL")
-    end
-
-    -- 按位取反
-    -- 0101 -> 1010
-    if bit.bnot(0xFFFFFFFF) == 0 then
-        log.info("BitTest.bnot", "SUCCESS")
-        outPutTestRes("LteTest.BitTest.bnot1 PASS")
-    else
-        log.error("BitTest.bnot", "FAIL")
-        outPutTestRes("LteTest.BitTest.bnot1 FAIL")
-    end
-    if bit.bnot(0x00000000) == 0xFFFFFFFF then
-        log.info("BitTest.bnot", "SUCCESS")
-        outPutTestRes("LteTest.BitTest.bnot2 PASS")
-    else
-        log.error("BitTest.bnot", "FAIL")
-        outPutTestRes("LteTest.BitTest.bnot2 FAIL")
-    end
-    if bit.bnot(0xF0F0F0F0) == 0x0F0F0F0F then
-        log.info("BitTest.bnot", "SUCCESS")
-        outPutTestRes("LteTest.BitTest.bnot3 PASS")
-    else
-        log.error("BitTest.bnot", "FAIL")
-        outPutTestRes("LteTest.BitTest.bnot3 FAIL")
-    end
-
-    -- 与
-    -- 0001 && 0001 -> 0001
-    if bit.band(0xAAA, 0xAA0, 0xA00) == 0xA00 then
-        log.info("BitTest.band", "SUCCESS")
-        outPutTestRes("LteTest.BitTest.band PASS")
-    else
-        log.error("BitTest.band", "FAIL")
-        outPutTestRes("LteTest.BitTest.band FAIL")
-    end
-
-    -- 或
-    -- 0001 | 0010 -> 0011
-    if bit.bor(0xA00, 0x0A0, 0x00A) == 0xAAA then
-        log.info("BitTest.bor", "SUCCESS")
-        outPutTestRes("LteTest.BitTest.bor PASS")
-    else
-        log.error("BitTest.bor", "FAIL")
-        outPutTestRes("LteTest.BitTest.bor FAIL")
-    end
-
-    -- 异或,相同为0，不同为1
-    -- 0001 ⊕ 0010 -> 0011
-    if bit.bxor(0x01, 0x02, 0x04, 0x08) == 0x0F then
-        log.info("BitTest.bxor", "SUCCESS")
-        outPutTestRes("LteTest.BitTest.bxor PASS")
-    else
-        log.error("BitTest.bxor", "FAIL")
-        outPutTestRes("LteTest.BitTest.bxor FAIL")
-    end
-
-    -- 逻辑左移
-    -- 0001 -> 0100
-    if bit.lshift(0xFFFFFFFF, 1) == -2 then
-        log.info("BitTest.lshift", "SUCCESS")
-        outPutTestRes("LteTest.BitTest.lshift PASS")
-    else
-        log.error("BitTest.lshift", "FAIL")
-        outPutTestRes("LteTest.BitTest.lshift FAIL")
-    end
-
-    -- 逻辑右移，“001”
-    -- 0100 -> 0001
-    if bit.rshift(0xFFFFFFFF, 1) == 0x7FFFFFFF then
-        log.info("BitTest.rshift", "SUCCESS")
-        outPutTestRes("LteTest.BitTest.rshift PASS")
-    else
-        log.error("BitTest.rshift", "FAIL")
-        outPutTestRes("LteTest.BitTest.rshift FAIL")
-    end
-
-    -- 算数右移，左边添加的数与符号有关
-    -- 0010 -> 0000
-    if bit.arshift(0xFFFFFFFF, 1) == -1 then
-        log.info("BitTest.arshift", "SUCCESS")
-        outPutTestRes("LteTest.BitTest.arshift PASS")
-    else
-        log.error("BitTest.arshift", "FAIL")
-        outPutTestRes("LteTest.BitTest.arshift FAIL")
-    end
-
     tag = "LteTest.PackTest"
     local res1, res2 = string.toHex(pack.pack(">H", 0x3234))
     if res1 == "3234" and res2 == 2 then
@@ -698,14 +526,13 @@ local function lteTestTask()
 
     tag = "LteTest.JsonTest"
 
-    local torigin =
-    {
+    local torigin = {
         KEY1 = "VALUE1",
         KEY2 = "VALUE2",
         KEY3 = "VALUE3",
         KEY4 = "VALUE4",
         KEY5 = {KEY5_1 = "VALUE5_1", KEY5_2 = "VALUE5_2"},
-        KEY6 = {1, 2, 3},
+        KEY6 = {1, 2, 3}
     }
     local jsondata = json.encode(torigin)
     if type(jsondata) == "string" then
@@ -715,7 +542,8 @@ local function lteTestTask()
         log.error("LteTest.JsonTest.encode", "FAIL")
         outPutTestRes("LteTest.JsonTest.encode   FAIL")
     end
-    local origin = "{\"KEY3\":\"VALUE3\",\"KEY4\":\"VALUE4\",\"KEY2\":\"VALUE2\",\"KEY1\":\"VALUE1\",\"KEY5\":{\"KEY5_2\":\"VALUE5_2\",\"KEY5_1\":\"VALUE5_1\"},\"KEY6\":[1,2,3]}"
+    local origin =
+        "{\"KEY3\":\"VALUE3\",\"KEY4\":\"VALUE4\",\"KEY2\":\"VALUE2\",\"KEY1\":\"VALUE1\",\"KEY5\":{\"KEY5_2\":\"VALUE5_2\",\"KEY5_1\":\"VALUE5_1\"},\"KEY6\":[1,2,3]}"
     local tjsondata, result, errinfo = json.decode(origin)
     if result and type(tjsondata) == "table" then
         log.info("LteTest.JsonTest.decode", "SUCCESS")
@@ -742,7 +570,7 @@ local function lteTestTask()
         log.error("LteTest.RtosTest.RemoveDir", "FAIL")
         outPutTestRes("LteTest.RtosTest.RemoveDir   FAIL")
     end
-    local res1,res2 = string.toHex(rtos.toint64("12345678", "little"))
+    local res1, res2 = string.toHex(rtos.toint64("12345678", "little"))
     if res1 == "4E61BC0000000000" and res2 == 8 then
         log.info("LteTest.RtosTest.Toint64.little", "SUCCESS")
         outPutTestRes("LteTest.RtosTest.Toint64.little  PASS")
@@ -750,7 +578,7 @@ local function lteTestTask()
         log.error("LteTest.RtosTest.Toint64.little", "FAIL")
         outPutTestRes("LteTest.RtosTest.Toint64.little   FAIL")
     end
-    res1,res2 = string.toHex(rtos.toint64("12345678", "big"))
+    res1, res2 = string.toHex(rtos.toint64("12345678", "big"))
     if res1 == "0000000000BC614E" and res2 == 8 then
         log.info("LteTest.RtosTest.Toint64.big", "SUCCESS")
         outPutTestRes("LteTest.RtosTest.Toint64.big  PASS")
@@ -761,71 +589,71 @@ local function lteTestTask()
 
     tag = "LteTest.MathTest"
 
-    if math.abs(-10086) == 10086  then
+    if math.abs(-10086) == 10086 then
         log.info("LteTest.MathTest.Abs", "SUCCESS")
         outPutTestRes("LteTest.MathTest.Abs  PASS")
     else
         log.error("LteTest.MathTest.Abs", "FAIL")
         outPutTestRes("LteTest.MathTest.Abs   FAIL")
     end
-    if  math.fmod(10, 3) == 1  then
+    if math.fmod(10, 3) == 1 then
         log.info("LteTest.MathTest.Fmod", "SUCCESS")
         outPutTestRes("LteTest.MathTest.Fmod  PASS")
     else
         log.error("LteTest.MathTest.Fmod", "FAIL")
         outPutTestRes("LteTest.MathTest.Fmod   FAIL")
     end
-    if  type(math.huge) == "number"  then
+    if type(math.huge) == "number" then
         log.info("LteTest.MathTest.Huge", "SUCCESS")
         outPutTestRes("LteTest.MathTest.Huge  PASS")
     else
         log.error("LteTest.MathTest.Huge", "FAIL")
         outPutTestRes("LteTest.MathTest.Huge   FAIL")
     end
-    if  type(math.pi) == "number"  then 
+    if type(math.pi) == "number" then
         log.info("LteTest.MathTest.Pi", "SUCCESS")
         outPutTestRes("LteTest.MathTest.Pi  PASS")
     else
         log.error("LteTest.MathTest.Pi", "FAIL")
         outPutTestRes("LteTest.MathTest.Pi   FAIL")
     end
-    if  math.sqrt(9) == 3  then
+    if math.sqrt(9) == 3 then
         log.info("LteTest.MathTest.Sqrt", "SUCCESS")
         outPutTestRes("LteTest.MathTest.Sqrt  PASS")
     else
         log.error("LteTest.MathTest.Sqrt", "FAIL")
         outPutTestRes("LteTest.MathTest.Sqrt   FAIL")
     end
-    if  math.ceil(101.456) == 102  then
+    if math.ceil(101.456) == 102 then
         log.info("LteTest.MathTest.Ceil", "SUCCESS")
         outPutTestRes("LteTest.MathTest.Ceil  PASS")
     else
         log.error("LteTest.MathTest.Ceil", "FAIL")
         outPutTestRes("LteTest.MathTest.Ceil   FAIL")
     end
-    if  math.floor(101.456) == 101  then
+    if math.floor(101.456) == 101 then
         log.info("LteTest.MathTest.Floor", "SUCCESS")
         outPutTestRes("LteTest.MathTest.Floor  PASS")
     else
         log.error("LteTest.MathTest.Floor", "FAIL")
         outPutTestRes("LteTest.MathTest.Floor   FAIL")
     end
-    if  math.max(1, 2, 3, 4.15, 5.78) == 5.78  then
+    if math.max(1, 2, 3, 4.15, 5.78) == 5.78 then
         log.info("LteTest.MathTest.Max", "SUCCESS")
         outPutTestRes("LteTest.MathTest.Max  PASS")
     else
         log.error("LteTest.MathTest.Max", "FAIL")
         outPutTestRes("LteTest.MathTest.Max   FAIL")
     end
-    if  math.min(1, 2, 3, 4.15, 5.78) == 1  then
+    if math.min(1, 2, 3, 4.15, 5.78) == 1 then
         log.info("LteTest.MathTest.Min", "SUCCESS")
         outPutTestRes("LteTest.MathTest.Min  PASS")
     else
         log.error("LteTest.MathTest.Min", "FAIL")
         outPutTestRes("LteTest.MathTest.Min   FAIL")
     end
-    res1,res2 = math.modf(1.15)
-    if  res1 == 1 then
+    res1, res2 = math.modf(1.15)
+    if res1 == 1 then
         log.info("LteTest.MathTest.Modf", "SUCCESS")
         outPutTestRes("LteTest.MathTest.Modf  PASS")
     else

@@ -12,16 +12,18 @@ LOG_LEVEL = log.LOGLEVEL_INFO
 -- 测试配置 设置为true代表开启此项测试
 testConfig = {
     -- 8910 1603S 1603E
-    modType = "8910",
+    modType = "1603E",
     -- single loop
     testMode = "loop",
     netLed = true,
+    adcTest = true,
+    bitTest = true,
+    cryptoTest = true,
     consoleTest = false,
     lteTest = false,
     socketTest = false,
     httpTest = false,
     mqttTest = false,
-    cryptoTest = false,
     fsTest = false,
     lbsLocTest = false
 }
@@ -100,25 +102,34 @@ if testConfig.netLed == true then
 end
 
 if testConfig.consoleTest == true then
-    pm.wake("LuatOSTest")
+    pm.wake(PROJECT)
 
     require "console"
     console.setup(uart.USB, 921600)
 end
 
-if testConfig.lteTest == true then require "LteTest" end
+function testTask()
+    if testConfig.adcTest == true then require"adcTest".test() end
+    if testConfig.bitTest == true then require"bitTest".test() end
+    if testConfig.lteTest == true then require "LteTest" end
+    if testConfig.socketTest == true then require "SocketTest" end
+    if testConfig.httpTest == true then require "HttpTest" end
+    if testConfig.mqttTest == true then require "MqttTest" end
+    if testConfig.cryptoTest == true then require"cryptoTest".test() end
+    if testConfig.fsTest == true then require "FsTest" end
+    if testConfig.lbsLocTest == true then require "LbsLocTest" end
+end
 
-if testConfig.socketTest == true then require "SocketTest" end
-
-if testConfig.httpTest == true then require "HttpTest" end
-
-if testConfig.mqttTest == true then require "MqttTest" end
-
-if testConfig.cryptoTest == true then require "CryptoTest" end
-
-if testConfig.fsTest == true then require "FsTest" end
-
-if testConfig.lbsLocTest == true then require "LbsLocTest" end
+sys.taskInit(function()
+    if testConfig.testMode == "single" then
+        testTask()
+    elseif testConfig.testMode == "loop" then
+        while true do
+            testTask()
+            sys.wait(100)
+        end
+    end
+end)
 
 sys.taskInit(function()
     while true do
