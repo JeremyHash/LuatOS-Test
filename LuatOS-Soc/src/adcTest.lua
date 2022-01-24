@@ -6,6 +6,8 @@ local adcChannels = {}
 
 if MOD_TYPE == "air101" then
     adcChannels = {0, 1, 10}
+elseif MOD_TYPE == "air103" then
+    adcChannels = {0, 1, 2, 3}
 elseif MOD_TYPE == "air105" then
     adcChannels = {1, 2, 4, 5, 6}
 elseif MOD_TYPE == "ESP32C3" then
