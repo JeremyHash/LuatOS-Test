@@ -25,8 +25,11 @@ testConfig = {
     ntpTest = true,
     tableTest = true,
     uartTest = true,
+    simTest = true,
+    jsonTest = true,
+    mathTest = true,
+    rtosTest = true,
     consoleTest = false,
-    lteTest = false,
     socketTest = false,
     httpTest = false,
     mqttTest = false,
@@ -117,7 +120,6 @@ end
 function testTask()
     if testConfig.adcTest == true then require"adcTest".test() end
     if testConfig.bitTest == true then require"bitTest".test() end
-    if testConfig.lteTest == true then require "LteTest" end
     if testConfig.socketTest == true then require "SocketTest" end
     if testConfig.httpTest == true then require "HttpTest" end
     if testConfig.mqttTest == true then require "MqttTest" end
@@ -128,11 +130,16 @@ function testTask()
     if testConfig.ntpTest == true then require"ntpTest".test() end
     if testConfig.tableTest == true then require"tableTest".test() end
     if testConfig.uartTest == true then require"uartTest".test() end
+    if testConfig.simTest == true then require"simTest".test() end
+    if testConfig.jsonTest == true then require"jsonTest".test() end
+    if testConfig.mathTest == true then require"mathTest".test() end
+    if testConfig.rtosTest == true then require"rtosTest".test() end
     if testConfig.fsTest == true then require "FsTest" end
     if testConfig.lbsLocTest == true then require "LbsLocTest" end
 end
 
 sys.taskInit(function()
+    sys.wait(5000)
     if testConfig.testMode == "single" then
         testTask()
     elseif testConfig.testMode == "loop" then
