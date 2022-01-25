@@ -52,6 +52,7 @@ require "Table"
 require "Tabview"
 require "Textarea"
 require "Window"
+require "Qrcode"
 
 DEMO_BASE_CONT = nil
 
@@ -121,6 +122,7 @@ function demoInit()
 		-- TabviewInit()
 		-- TextareaInit()
 		-- WindowInit()
+		-- QrcodeInit()
 	end
 	if type == "loop" then 
 	    sys.taskInit(function ()
@@ -357,6 +359,9 @@ function demoInit()
 				 sys.wait(waitTime)
 				 lvgl.obj_del(Window)
 				 lvgl.obj_del(Label1)
+				 QrcodeInit()
+				 sys.wait(waitTime)
+				 lvgl.obj_del(Qrcode)
 				 count = count + 1
 			end
 	    end)
