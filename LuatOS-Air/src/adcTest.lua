@@ -4,7 +4,6 @@
 -- UpdateDate:20220121
 module(..., package.seeall)
 
-local ADC0, ADC1
 local tag = "adcTest"
 local adcList = {}
 
