@@ -356,6 +356,7 @@ function demoInit()
 				 WindowInit()
 				 sys.wait(waitTime)
 				 lvgl.obj_del(Window)
+				 lvgl.obj_del(Label1)
 				 count = count + 1
 			end
 	    end)
