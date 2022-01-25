@@ -21,6 +21,7 @@ testConfig = {
     cryptoTest = true,
     packTest = true,
     stringTest = true,
+    commonTest = true,
     consoleTest = false,
     lteTest = false,
     socketTest = false,
@@ -120,6 +121,7 @@ function testTask()
     if testConfig.cryptoTest == true then require"cryptoTest".test() end
     if testConfig.packTest == true then require"packTest".test() end
     if testConfig.stringTest == true then require"stringTest".test() end
+    if testConfig.commonTest == true then require"commonTest".test() end
     if testConfig.fsTest == true then require "FsTest" end
     if testConfig.lbsLocTest == true then require "LbsLocTest" end
 end
