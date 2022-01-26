@@ -14,7 +14,6 @@ elseif testConfig.modType == "1603S" or testConfig.modType == "1603E" then
     uartList = {1, 2, 3, 4}
 end
 
-local receiveBuff = {}
 local testData = string.rep(tag, 10)
 
 local function getSerialData(id)
@@ -29,9 +28,8 @@ function test()
         return
     end
     log.info(tag, "START")
-    receiveBuff = {}
+    local receiveBuff = {}
     for _, v in pairs(uartList) do
-        receiveBuff[v] = ""
         assert(uart.setup(v, 115200, 8, uart.PAR_NONE, uart.STOP_1) == 115200,
                tag .. ".setup ERROR")
         uart.on(v, "receive", function()
@@ -42,15 +40,13 @@ function test()
                 if not tmp or string.len(tmp) == 0 then break end
                 uartData = uartData .. tmp
             end
-            receiveBuff[v] = receiveBuff[v] .. uartData
-            sys.publish("UART_RECEIVE_" .. v)
+            receiveBuff[v] = uartData
         end)
         uart.write(v, testData)
-        -- sys.waitUntil("UART_RECEIVE_" .. v)
         sys.wait(500)
-        printTable(receiveBuff)
-        assert(receiveBuff[v] == testData)
+        assert(receiveBuff[v] == testData, tag .. ".uart" .. v .. " ERROR")
         uart.close(v)
     end
+    printTable(receiveBuff)
     log.info(tag, "DONE")
 end
