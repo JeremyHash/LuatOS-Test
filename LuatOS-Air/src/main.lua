@@ -12,11 +12,13 @@ LOG_LEVEL = log.LOGLEVEL_INFO
 -- 测试配置 设置为true代表开启此项测试
 testConfig = {
     -- 8910 1603S 1603E
-    modType = "1603E",
+    modType = "8910",
     -- single loop
     testMode = "loop",
     netLed = true,
     adcTest = true,
+    i2cTest = true,
+    spiTest = true,
     bitTest = true,
     cryptoTest = true,
     packTest = true,
@@ -119,10 +121,9 @@ end
 
 function testTask()
     if testConfig.adcTest == true then require"adcTest".test() end
+    if testConfig.i2cTest == true then require"i2cTest".test() end
+    if testConfig.spiTest == true then require"spiTest".test() end
     if testConfig.bitTest == true then require"bitTest".test() end
-    if testConfig.socketTest == true then require "SocketTest" end
-    if testConfig.httpTest == true then require "HttpTest" end
-    if testConfig.mqttTest == true then require "MqttTest" end
     if testConfig.cryptoTest == true then require"cryptoTest".test() end
     if testConfig.packTest == true then require"packTest".test() end
     if testConfig.stringTest == true then require"stringTest".test() end
@@ -134,6 +135,9 @@ function testTask()
     if testConfig.jsonTest == true then require"jsonTest".test() end
     if testConfig.mathTest == true then require"mathTest".test() end
     if testConfig.rtosTest == true then require"rtosTest".test() end
+    if testConfig.socketTest == true then require "SocketTest" end
+    if testConfig.httpTest == true then require "HttpTest" end
+    if testConfig.mqttTest == true then require "MqttTest" end
     if testConfig.fsTest == true then require "FsTest" end
     if testConfig.lbsLocTest == true then require "LbsLocTest" end
 end
