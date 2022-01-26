@@ -119,6 +119,10 @@ if testConfig.consoleTest == true then
     console.setup(uart.USB, 921600)
 end
 
+if testConfig.socketTest == true then require "SocketTest" end
+if testConfig.httpTest == true then require "HttpTest" end
+if testConfig.mqttTest == true then require "MqttTest" end
+
 function testTask()
     if testConfig.adcTest == true then require"adcTest".test() end
     if testConfig.i2cTest == true then require"i2cTest".test() end
@@ -135,9 +139,6 @@ function testTask()
     if testConfig.jsonTest == true then require"jsonTest".test() end
     if testConfig.mathTest == true then require"mathTest".test() end
     if testConfig.rtosTest == true then require"rtosTest".test() end
-    if testConfig.socketTest == true then require "SocketTest" end
-    if testConfig.httpTest == true then require "HttpTest" end
-    if testConfig.mqttTest == true then require "MqttTest" end
     if testConfig.fsTest == true then require "FsTest" end
     if testConfig.lbsLocTest == true then require "LbsLocTest" end
 end

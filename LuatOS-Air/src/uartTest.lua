@@ -43,10 +43,10 @@ function test()
             receiveBuff[v] = uartData
         end)
         uart.write(v, testData)
-        sys.wait(500)
+        sys.wait(1000)
+        printTable(receiveBuff)
         assert(receiveBuff[v] == testData, tag .. ".uart" .. v .. " ERROR")
         uart.close(v)
     end
-    printTable(receiveBuff)
     log.info(tag, "DONE")
 end
