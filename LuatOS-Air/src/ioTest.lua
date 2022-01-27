@@ -134,15 +134,17 @@ function test()
         return
     end
     log.info(tag, "START")
-    local sdcardPath = "/sdcard0"
-    assert(io.mount(io.SDCARD) == 1, tag .. ".mount ERROR")
-    log.info(tag .. ".totalSize", rtos.get_fs_total_size(1, 1) .. " KB")
-    log.info(tag .. ".freeSize", rtos.get_fs_free_size(1, 1) .. " KB")
-    log.info(tag .. ".getDirContent", sdcardPath)
-    getDirContent(sdcardPath)
-    local testPath = sdcardPath .. "/FsTestPath"
-    fsTest(testPath)
-    assert(io.unmount(io.SDCARD) == 1, tag .. ".unmount ERROR")
+    if testConfig.SDCARD_TEST_ENABLE == true then
+        local sdcardPath = "/sdcard0"
+        assert(io.mount(io.SDCARD) == 1, tag .. ".mount ERROR")
+        log.info(tag .. ".totalSize", rtos.get_fs_total_size(1, 1) .. " KB")
+        log.info(tag .. ".freeSize", rtos.get_fs_free_size(1, 1) .. " KB")
+        log.info(tag .. ".getDirContent", sdcardPath)
+        getDirContent(sdcardPath)
+        local testPath = sdcardPath .. "/FsTestPath"
+        fsTest(testPath)
+        assert(io.unmount(io.SDCARD) == 1, tag .. ".unmount ERROR")
+    end
     log.info(tag .. ".getDirContent", "/")
     getDirContent("/")
     local testPath = "/FsTestPath"

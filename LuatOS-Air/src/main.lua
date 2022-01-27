@@ -15,6 +15,7 @@ testConfig = {
     modType = "8910",
     -- single loop
     testMode = "loop",
+    SDCARD_TEST_ENABLE = false,
     netLed = true,
     adcTest = true,
     i2cTest = true,
