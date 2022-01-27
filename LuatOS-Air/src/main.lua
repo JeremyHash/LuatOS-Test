@@ -31,12 +31,12 @@ testConfig = {
     jsonTest = true,
     mathTest = true,
     rtosTest = true,
+    ioTest = true,
+    lbsLocTest = true,
     consoleTest = false,
-    socketTest = false,
-    httpTest = false,
-    mqttTest = false,
-    fsTest = false,
-    lbsLocTest = false
+    socketTest = true,
+    httpTest = true,
+    mqttTest = false
 }
 
 require "sys"
@@ -122,6 +122,7 @@ end
 if testConfig.socketTest == true then require "SocketTest" end
 if testConfig.httpTest == true then require "HttpTest" end
 if testConfig.mqttTest == true then require "MqttTest" end
+if testConfig.lbsLocTest == true then require "LbsLocTest" end
 
 function testTask()
     if testConfig.adcTest == true then require"adcTest".test() end
@@ -139,8 +140,7 @@ function testTask()
     if testConfig.jsonTest == true then require"jsonTest".test() end
     if testConfig.mathTest == true then require"mathTest".test() end
     if testConfig.rtosTest == true then require"rtosTest".test() end
-    if testConfig.fsTest == true then require "FsTest" end
-    if testConfig.lbsLocTest == true then require "LbsLocTest" end
+    if testConfig.ioTest == true then require"ioTest".test() end
 end
 
 sys.taskInit(function()
