@@ -34,6 +34,7 @@ testConfig = {
     rtosTest = true,
     ioTest = true,
     lbsLocTest = true,
+    bluetoothTest = true,
     consoleTest = false,
     socketTest = true,
     httpTest = true,
@@ -124,6 +125,7 @@ if testConfig.socketTest == true then require "SocketTest" end
 if testConfig.httpTest == true then require "HttpTest" end
 if testConfig.mqttTest == true then require "MqttTest" end
 if testConfig.lbsLocTest == true then require "lbsLocTest" end
+if testConfig.bluetoothTest == true then require "bluetoothTest" end
 
 function testTask()
     if testConfig.adcTest == true then require"adcTest".test() end
