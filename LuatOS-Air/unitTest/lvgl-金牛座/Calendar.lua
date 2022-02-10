@@ -9,11 +9,7 @@ function CalendarInit()
     today.day = 15
     lvgl.calendar_set_today_date(Calendar, today)
     lvgl.calendar_set_showed_date(Calendar, today)
-    highlightDate = lvgl.calendar_date_t()
-    highlightDate.year = 2021
-    highlightDate.month = 11
-    highlightDate.day = 21
-    lvgl.calendar_set_highlighted_dates(Calendar, highlightDate, 1)
+    lvgl.calendar_set_highlighted_dates(Calendar, {{year = 2021,month = 11,day = 21},{year = 2021,month = 11,day =23},{year = 2021,month = 11,day = 25},{year = 2021,month = 11,day = 29}})
     days = {"#日", "mon", "二", "周三", "四", "星期五", "六"}
     lvgl.calendar_set_day_names(Calendar, days)
     months = {
