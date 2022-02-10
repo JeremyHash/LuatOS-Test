@@ -54,7 +54,9 @@ function GaugeInit()
      lvgl.gauge_set_value(Gauge4,0,30)
      lvgl.gauge_set_angle_offset(Gauge4,90)
     --  lvgl.gauge_set_needle_img(Gauge4,lvgl)
-    -- lvgl.gauge_set_formatter_cb(Gauge4,x) 
+    lvgl.gauge_set_formatter_cb(Gauge4,function(obj,size)
+        return "a "..tostring(size).." b"
+    end) 
 
     Label4 = lvgl.label_create(lvgl.scr_act(),nil)
     lvgl.label_set_text(Label4,"获取针的值:"..lvgl.gauge_get_value(Gauge4).."\n获取针的个数:"..lvgl.gauge_get_needle_count(Gauge4).."\n仪表的最小值:"..lvgl.gauge_get_min_value(Gauge4).."\n仪表的最大值:"..lvgl.gauge_get_max_value(Gauge4).."\n获取临界值:"..lvgl.gauge_get_critical_value(Gauge4).."\n获取标签数量:"..lvgl.gauge_get_label_count(Gauge4).."\n获取仪表刻度线:"..lvgl.gauge_get_line_count(Gauge4).."\n获取仪表的刻度角度:"..lvgl.gauge_get_scale_angle(Gauge4).."\n获取仪表的偏移量:"..lvgl.gauge_get_angle_offset(Gauge4).."\n获取旋转中心的坐标:("..lvgl.gauge_get_needle_img_pivot_x(Gauge4)..","..lvgl.gauge_get_needle_img_pivot_y(Gauge4)..")")
