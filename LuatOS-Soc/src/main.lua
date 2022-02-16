@@ -65,6 +65,7 @@ sys.taskInit(function()
         require("bleTest").test()
         require("esp32Test").test()
         require("espnowTest").test()
+        sys.wait(1000)
     end
 end)
 
