@@ -27,5 +27,11 @@ function MsgboxInit()
 	lvgl.obj_align(Label2,nil,lvgl.ALIGN_CENTER,0,200)
 	lvgl.obj_add_style(Label2, lvgl.LABEL_PART_MAIN, demo_ThemeStyle_IndicAndFont)
 
+	btns = {"Apple","Close",""}
+	Msgbox3 = lvgl.msgbox_create(lvgl.scr_act(),nil)
+	lvgl.msgbox_set_text(Msgbox3,"hahaha0")
+	lvgl.msgbox_add_btns(Msgbox3,btns)
+	lvgl.obj_set_width(Msgbox3,200)
+	lvgl.obj_align(Msgbox3,nil,lvgl.ALIGN_CENTER,0,250)
 
 end
