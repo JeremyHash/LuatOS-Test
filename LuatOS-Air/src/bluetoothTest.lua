@@ -161,20 +161,20 @@ local function BluetoothTest()
                             local _, result = sys.waitUntil(
                                                   "BT_FIND_SERVICE_IND")
                             assert(result == 1, tag .. ".findservice ERROR")
-                            -- assert(btcore.findcharacteristic(0xfee0),
+                            -- assert(btcore.findcharacteristic(0xfee0) == 0,
                             --        tag .. ".findcharacteristic ERROR")
                             -- local _, result = sys.waitUntil("BT_FIND_CHARACTERISTIC_IND")
                             assert(btcore.findcharacteristic(
-                                       "9ecadc240ee5a9e093f3a3b50100406e"),
+                                       "00000000000000b000405104301100f0") == 0,
                                    tag .. ".findcharacteristic ERROR")
                             local _, result = sys.waitUntil(
                                                   "BT_FIND_CHARACTERISTIC_IND")
                             assert(result == 1,
                                    tag .. ".findcharacteristic ERROR")
-                            -- assert(btcore.opennotification(0xfee2),
+                            -- assert(btcore.opennotification(0xfee2) == 0,
                             --        tag .. ".opennotification ERROR")
                             assert(btcore.opennotification(
-                                       "9ecadc240ee5a9e093f3a3b50200406e"),
+                                       "9ecadc240ee5a9e093f3a3b50200406e") == 0,
                                    tag .. ".opennotification ERROR")
                             local data = "masterTest"
                             while true do
@@ -183,11 +183,11 @@ local function BluetoothTest()
                                     reConnectSlave = true
                                     break
                                 else
-                                    -- assert(btcore.readvalue(0xfee2),
+                                    -- assert(btcore.readvalue(0xfee2) == 0,
                                     --        tag .. ".readvalue ERROR")
                                     assert(btcore.readvalue(
-                                               "9ecadc240ee5a9e093f3a3b50200406e"),
-                                           tag .. ".readvalue ERROR")
+                                               "00000000000000b000405104311100f0") ==
+                                               0, tag .. ".readvalue ERROR")
                                     -- assert(
                                     --     btcore.send(data, 0xfee1,
                                     --                 bt_connect.handle) == 0,
@@ -241,19 +241,19 @@ local function BluetoothTest()
                     {{0x2902, 0x0001}, {0x2901, "123456"}}
                 }, {"9ecadc240ee5a9e093f3a3b50300406e", 0x0c, 0x0002}
             }
-            assert(btcore.setadvdata(string.fromHex("02010604ff000203")),
+            assert(btcore.setadvdata(string.fromHex("02010604ff000203")) == 0,
                    tag .. ".setadvdata ERROR")
-            assert(btcore.setscanrspdata(string.fromHex("04ff000203")),
+            assert(btcore.setscanrspdata(string.fromHex("04ff000203")) == 0,
                    tag .. ".setscanrspdata ERROR")
             -- service(0xfee0, struct1)
             service("9ecadc240ee5a9e093f3a3b50100406e", struct2)
-            -- assert(btcore.setvalue("1234567890", 0xfee2),
+            -- assert(btcore.setvalue("1234567890", 0xfee2) == 0,
             --        tag .. ".setvalue ERROR")
             assert(btcore.setvalue("1234567890",
-                                   "9ecadc240ee5a9e093f3a3b50200406e"),
+                                   "9ecadc240ee5a9e093f3a3b50200406e") == 0,
                    tag .. ".setvalue ERROR")
             assert(btcore.setadvparam(0x80, 0xa0, 0, 0, 0x07, 0, 0,
-                                      "11:22:33:44:55:66"),
+                                      "11:22:33:44:55:66") == 0,
                    tag .. ".setadvparam ERROR")
             -- # 白名单
             -- assert(btcore.setadvparam(0x80, 0xa0, 0, 0, 0x07, 2) == 0,
@@ -286,11 +286,12 @@ local function BluetoothTest()
                         assert(data == "masterTest", tag .. ".recvData ERROR")
                         assert(len == 10, tag .. ".recvDataLen ERROR")
                         local data = "slaveTest"
-                        -- assert(btcore.send(data, 0xfee2, msgData.handle),
+                        -- assert(btcore.send(data, 0xfee2, msgData.handle) == 0,
                         --        tag .. ".send ERROR")
                         assert(btcore.send(data,
                                            "9ecadc240ee5a9e093f3a3b50200406e",
-                                           msgData.handle), tag .. ".send ERROR")
+                                           msgData.handle) == 0,
+                               tag .. ".send ERROR")
                     end
                 end
             end
@@ -315,7 +316,9 @@ local function BluetoothTest()
         msgRes, msgData = sys.waitUntil("BT_OPEN", waitTime)
         assert(msgRes == true and msgData == 0, tag .. ".open ERROR")
         log.info(tag, "打开蓝牙SUCCESS")
-        btcore.setscanparam(1, 50 / 0.625, 100 / 0.625, 0, 0)
+        assert(btcore.setscanparam(1, 50 / 0.625, 100 / 0.625, 0, 0) == 0,
+               tag .. ".setscanparam ERROR")
+        log.info(tag, "设置扫描参数SUCCESS")
         assert(btcore.scan(1) == 0, tag .. ".scan ERROR")
         msgRes, msgData = sys.waitUntil("BT_SCAN_CNF", 50000)
         assert(msgRes == true and msgData == 0, tag .. ".scan ERROR")
@@ -416,6 +419,4 @@ local function BluetoothTest()
     end
 end
 
-sys.taskInit(function()
-    BluetoothTest()
-end)
+sys.taskInit(function() BluetoothTest() end)
