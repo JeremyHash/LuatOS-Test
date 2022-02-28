@@ -175,7 +175,7 @@ local function audioTestTask()
     log.info(tag .. ".micVol", micVol)
 
     local setVolRes = audio.setVolume(playVol)
-    if setVolRes == 1 then
+    if setVolRes == true then
         log.info(tag .. ".setVolume", "SUCCESS")
     else
         log.error(tag .. ".setVolume", "FAIL")

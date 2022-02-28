@@ -45,8 +45,11 @@ rtos.on(rtos.MSG_BLUETOOTH, function(msg)
         sys.publish("BT_OPEN", msg.result)
     elseif msg.event == btcore.MSG_BLE_CONNECT_CNF then
         log.info(tag, "连接到从设备成功")
-        sys.publish("BT_CONNECT_IND",
-                    {["handle"] = msg.handle, ["result"] = msg.result})
+        sys.publish("BT_CONNECT_IND", {
+            ["handle"] = msg.handle,
+            ["result"] = msg.result,
+            ["addr"] = msg.addr
+        })
         slaveStatus = true
     elseif msg.event == btcore.MSG_BT_AVRCP_CONNECT_IND then
         sys.publish("BT_AVRCP_CONNECT_IND",
