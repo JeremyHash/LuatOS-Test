@@ -30,7 +30,7 @@ function spiTest.test()
     local CS = gpio.setup(CS_GPIO, 1)
     assert(spi.setup(spiID, CS_GPIO, 0, 0, 8, 100000) == 0,
            tag .. ".setup ERROR")
-    log.info(tag .. "CHIP_ID", string.toHex(
+    log.info(tag .. ".CHIP_ID", string.toHex(
                  sendAndRecv(spiID, CS, string.char(0x90, 0, 0, 0), 2)))
 
     sendAndRecv(spiID, CS, string.char(0x02, 0x00, 0x00, 0x01) .. tag)
