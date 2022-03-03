@@ -2,15 +2,15 @@ local spiTest = {}
 
 local tag = "spiTest"
 
-function sendAndRecv(spiID, CS, data, len)
-    CS(0)
+function sendAndRecv(spiID, CSPin, data, len)
+    CSPin(0)
     spi.send(spiID, data)
     if len then
         local res = spi.recv(spiID, len)
-        CS(1)
+        CSPin(1)
         return res
     end
-    CS(1)
+    CSPin(1)
 end
 
 function spiTest.test()
@@ -30,16 +30,8 @@ function spiTest.test()
     local CS = gpio.setup(CS_GPIO, 1)
     assert(spi.setup(spiID, CS_GPIO, 0, 0, 8, 100000) == 0,
            tag .. ".setup ERROR")
-    -- local chip = sendAndRecv(spiID, CS, string.char(0x90, 0, 0, 0, 0, 0), 6)
-    -- if chip == string.char(0xef, 0x40, 0x16) then
-    --     log.info("spi", "chip id read ok 0xef,0x40,0x16")
-    -- else
-    --     log.info("spi", "chip id read error")
-    --     for i = 1, #chip do print(chip:byte(i)) end
-    --     -- return
-    -- end
-
-    sendAndRecv(spiID, CS, string.char(0x06))
+    log.info(tag .. "CHIP_ID", string.toHex(
+                 sendAndRecv(spiID, CS, string.char(0x90, 0, 0, 0), 2)))
 
     sendAndRecv(spiID, CS, string.char(0x02, 0x00, 0x00, 0x01) .. tag)
 
