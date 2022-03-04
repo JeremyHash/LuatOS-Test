@@ -168,7 +168,7 @@ local function BluetoothTest()
                             --        tag .. ".findcharacteristic ERROR")
                             -- local _, result = sys.waitUntil("BT_FIND_CHARACTERISTIC_IND")
                             assert(btcore.findcharacteristic(
-                                       "00000000000000b000405104301100f0") == 0,
+                                       "9ecadc240ee5a9e093f3a3b50100406e") == 0,
                                    tag .. ".findcharacteristic ERROR")
                             local _, result = sys.waitUntil(
                                                   "BT_FIND_CHARACTERISTIC_IND")
@@ -189,7 +189,7 @@ local function BluetoothTest()
                                     -- assert(btcore.readvalue(0xfee2) == 0,
                                     --        tag .. ".readvalue ERROR")
                                     assert(btcore.readvalue(
-                                               "00000000000000b000405104311100f0") ==
+                                               "9ecadc240ee5a9e093f3a3b50200406e") ==
                                                0, tag .. ".readvalue ERROR")
                                     -- assert(
                                     --     btcore.send(data, 0xfee1,

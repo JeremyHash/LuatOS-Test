@@ -56,10 +56,19 @@ require "Qrcode"
 
 DEMO_BASE_CONT = nil
 
+-- local data = {type = lvgl.INDEV_TYPE_POINTER, state = lvgl.INDEV_STATE_PR}
 local data = {type = lvgl.INDEV_TYPE_POINTER}
 local function input()
 	if (_G.isInSimulator) then
 		if lvgl.indev_get_emu_touch ~= nil then
+			-- for i, j in pairs(lvgl.indev_get_emu_touch()) do
+			-- 	if i == "point" then
+			-- 		for n, m in pairs(j) do
+			-- 			log.info("xy", n, m)
+			-- 		end
+			-- 	end
+			-- end
+			-- return data
 			return lvgl.indev_get_emu_touch()
 		end
 	end
@@ -131,6 +140,10 @@ function demoInit()
 				 log.info("lvgl-icool测试第"..count.."次")
 				 ArcInit()
 				 sys.wait(waitTime)
+				--  data.point ={x=82,y=25}
+				--  sys.wait(waitTime)
+				--  data.point ={x=25,y=83}
+				--  sys.wait(waitTime)
 				 lvgl.obj_del(Arc1)
 				 lvgl.obj_del(Arc2)
 				 lvgl.obj_del(Arc3)
@@ -149,6 +162,8 @@ function demoInit()
 				 lvgl.obj_del(Label3)
 				 BtnInit()
 				 sys.wait(waitTime)
+				--  data.point ={x=235,y=222}
+				--  sys.wait(waitTime)
 				 lvgl.obj_del(Btn1)
 				 lvgl.obj_del(Btn2)
 				 lvgl.obj_del(Label1)
@@ -193,6 +208,10 @@ function demoInit()
 				 lvgl.obj_del(Container4)
 				 ColorpickerInit()
 				 sys.wait(waitTime)
+				--  data.point ={x=189,y=164}
+				--  sys.wait(waitTime)
+				--  data.point ={x=119,y=207}
+				--  sys.wait(waitTime)
 				 lvgl.obj_del(Colorpicker1)
 				 lvgl.obj_del(Colorpicker2)
 				 lvgl.obj_del(Colorpicker3)
