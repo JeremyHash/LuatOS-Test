@@ -34,28 +34,39 @@ function lvglTest.test()
     if MOD_TYPE == "air101" then
     elseif MOD_TYPE == "air105" then
     elseif MOD_TYPE == "ESP32C3" then
-        -- assert(lcd.init("gc9306", {
-        --     port = "device",
-        --     pin_dc = 6,
-        --     pin_rst = 10,
-        --     pin_pwr = 11,
-        --     direction = 0,
-        --     w = 240,
-        --     h = 320,
-        --     xoffset = 0,
-        --     yoffset = 0
-        -- }, spi_lcd) == true, tag .. ".lcd.init ERROR")
-        assert(lcd.init("st7735", {
+        assert(lcd.init("gc9306", {
             port = "device",
             pin_dc = 6,
             pin_rst = 10,
             pin_pwr = 11,
             direction = 0,
-            w = 128,
-            h = 160,
-            xoffset = 2,
-            yoffset = 1
+            w = 240,
+            h = 320,
+            xoffset = 0,
+            yoffset = 0
         }, spi_lcd) == true, tag .. ".lcd.init ERROR")
+        -- assert(lcd.init("gc9106l", {
+        --     port = "device",
+        --     pin_dc = 6,
+        --     pin_rst = 10,
+        --     pin_pwr = 11,
+        --     direction = 0,
+        --     w = 128,
+        --     h = 160,
+        --     xoffset = 0,
+        --     yoffset = 0
+        -- }, spi_lcd) == true, tag .. ".lcd.init ERROR")
+        -- assert(lcd.init("st7735", {
+        --     port = "device",
+        --     pin_dc = 6,
+        --     pin_rst = 10,
+        --     pin_pwr = 11,
+        --     direction = 0,
+        --     w = 128,
+        --     h = 160,
+        --     xoffset = 2,
+        --     yoffset = 1
+        -- }, spi_lcd) == true, tag .. ".lcd.init ERROR")
     end
     -- log.info("lcd.init",
     -- lcd.init("ili9341",{port = "device",pin_dc = pin.PC12, pin_rst = pin.PC05,pin_pwr = pin.PC04,direction = 0,w = 240,h = 320,xoffset = 0,yoffset = 0},spi_lcd))

@@ -25,10 +25,10 @@ function spiTest.test()
         CS_GPIO = 17
     elseif MOD_TYPE == "ESP32C3" then
         spiID = 2
-        CS_GPIO = 6
+        CS_GPIO = 11
     end
     local CS = gpio.setup(CS_GPIO, 1)
-    assert(spi.setup(spiID, CS_GPIO, 0, 0, 8, 100000) == 0,
+    assert(spi.setup(spiID, CS_GPIO, 0, 0, 8, 40 * 1000 * 1000) == 0,
            tag .. ".setup ERROR")
     CS(0)
     log.info(tag .. ".transfer", string.toHex(
@@ -53,17 +53,10 @@ function spiTest.test()
     assert(readRes == tag, tag .. ".sendAndRecv ERROR")
     sendAndRecv(spiID, CS, string.char(0x04))
     spi.close(spiID)
-    local spiFlash = spi.deviceSetup(2, 6, 0, 0, 8, 100 * 1000, spi.MSB, 1, 1)
-    CS(0)
+    local spiFlash = spi.deviceSetup(spiID, CS_GPIO, 0, 0, 8, 40 * 1000 * 1000,
+                                     spi.MSB, 1, 1)
     log.info(tag .. ".device_transfer",
              string.toHex(spiFlash:transfer(string.char(0x90, 0, 0, 0), 4, 2)))
-    CS(1)
-    CS(0)
-    log.info(tag .. ".device_send", spiFlash:send(string.char(0x90, 0, 0, 0), 4))
-    CS(1)
-    CS(0)
-    log.info(tag .. ".device_recv", string.toHex(spiFlash:recv(2)))
-    CS(1)
     log.info(tag .. ".device_close", spiFlash:close())
     log.info(tag, "DONE")
 end
