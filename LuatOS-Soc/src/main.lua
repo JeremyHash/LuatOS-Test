@@ -61,7 +61,6 @@ sys.taskInit(function()
         require("wdtTest").test()
         require("zbuffTest").test()
         require("zlibTest").test()
-
         require("esphttpTest").test()
         require("mqttTest").test()
         require("bleTest").test()
