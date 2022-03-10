@@ -215,7 +215,7 @@ local function audioTestTask()
     -- 播放冲突1
     -- 循环播放来电铃声
     log.info("AudioTest.AudioPlayTest.PlayConflictTest1", "优先级: ", CALL)
-    audio.play(CALL, "FILE", "/lua/sms.mp3", playVol, audioPlayTestCb, true)
+    audio.play(CALL, "FILE", "/lua/tip.amr", playVol, audioPlayTestCb, true)
     sys.wait(waitTime2)
     -- 3秒钟后，播放开机铃声
     log.info("AudioTest.AudioPlayTest.PlayConflictTest1",
