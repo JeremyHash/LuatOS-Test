@@ -92,7 +92,6 @@ end
 local function fsTest(testPath)
     rtos.remove_dir(testPath)
     assert(rtos.make_dir(testPath) == true, tag .. ".make_dir ERROR")
-
     while true do
         assert(writeFileA(testPath .. "/FsWriteTest1.txt",
                           "This is a FsWriteATest") == true,
@@ -110,7 +109,6 @@ local function fsTest(testPath)
             break
         end
     end
-
     local pathTable = io.pathInfo(testPath .. "/FsWriteTest2.txt")
     printTable(pathTable)
     writeFileW("/FileSeekTest.txt", "FileSeekTest")
@@ -153,7 +151,6 @@ function test()
     for k, v in pairs(dirTable) do
         log.info(tag, v)
         getDirContent(v)
-        log.info("HEX", string.toHex("HELLOWORLD"))
     end
     log.info(tag, "DONE")
 end

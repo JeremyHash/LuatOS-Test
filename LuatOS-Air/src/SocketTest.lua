@@ -267,6 +267,11 @@ local function socketTestTask()
     end
     udpClient2:close()
 
+    -- socket接收数据的另一种方式
+    -- sys.subscribe("SOCKET_RECV", function(id)
+    --     if client.id == id then local data = client:asyncRecv() end
+    -- end)
+
     tag = "SocketTest.webSocketTest"
     local ws = websocket.new("ws://" .. ip .. ":2900/websocket")
     ws:on("message", function(msg)
