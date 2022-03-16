@@ -22,10 +22,10 @@ local databits = 8
 local function read()
     local uartData = ""
     while true do
-        log.info(tag, "ready read")
         local tmp = uart.read(uartId, "*l")
-        log.info(tag, "finish read")
-        if not tmp or string.len(tmp) == 0 then break end
+        if not tmp or string.len(tmp) == 0 then
+            break
+        end
         uartData = uartData .. tmp
     end
     log.info(tag .. ".receive", uartData)
@@ -35,7 +35,7 @@ end
 -- UART相关的测试必须要防止模块休眠，不然会有串口收发数据的问题
 pm.wake(tag)
 
-uart.setup(uartId, baud, databits, uart.PAR_NONE, uart.STOP_1)
+uart.setup(uartId, baud, databits, uart.PAR_NONE, uart.STOP_1, nil, 1)
 uart.set_rs485_oe(uartId, 23, 1, 5)
 uart.on(uartId, "receive", read)
 

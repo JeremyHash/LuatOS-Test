@@ -5,14 +5,11 @@ local tag = "lvglTest"
 function lvglTest.test()
     local spi_lcd
     if MOD_TYPE == "air101" then
-        spi_lcd = spi.deviceSetup(5, pin.PC14, 0, 0, 8, 96 * 1000 * 1000,
-                                  spi.MSB, 1, 1)
+        spi_lcd = spi.deviceSetup(5, pin.PC14, 0, 0, 8, 96 * 1000 * 1000, spi.MSB, 1, 1)
     elseif MOD_TYPE == "air105" then
-        spi_lcd = spi.deviceSetup(5, pin.PC14, 0, 0, 8, 96 * 1000 * 1000,
-                                  spi.MSB, 1, 1)
+        spi_lcd = spi.deviceSetup(5, pin.PC14, 0, 0, 8, 96 * 1000 * 1000, spi.MSB, 1, 1)
     elseif MOD_TYPE == "ESP32C3" then
-        spi_lcd =
-            spi.deviceSetup(2, 7, 0, 0, 8, 60 * 1000 * 1000, spi.MSB, 1, 1)
+        spi_lcd = spi.deviceSetup(2, 7, 0, 0, 8, 60 * 1000 * 1000, spi.MSB, 1, 1)
     end
     assert(spi_lcd ~= nil, tag .. ".deviceSetup ERROR")
     -- log.info("lcd.init",
@@ -34,17 +31,17 @@ function lvglTest.test()
     if MOD_TYPE == "air101" then
     elseif MOD_TYPE == "air105" then
     elseif MOD_TYPE == "ESP32C3" then
-        assert(lcd.init("gc9306", {
-            port = "device",
-            pin_dc = 6,
-            pin_rst = 10,
-            pin_pwr = 11,
-            direction = 0,
-            w = 240,
-            h = 320,
-            xoffset = 0,
-            yoffset = 0
-        }, spi_lcd) == true, tag .. ".lcd.init ERROR")
+        -- assert(lcd.init("gc9306", {
+        --     port = "device",
+        --     pin_dc = 6,
+        --     pin_rst = 10,
+        --     pin_pwr = 11,
+        --     direction = 0,
+        --     w = 240,
+        --     h = 320,
+        --     xoffset = 0,
+        --     yoffset = 0
+        -- }, spi_lcd) == true, tag .. ".lcd.init ERROR")
         -- assert(lcd.init("gc9106l", {
         --     port = "device",
         --     pin_dc = 6,
@@ -67,6 +64,17 @@ function lvglTest.test()
         --     xoffset = 2,
         --     yoffset = 1
         -- }, spi_lcd) == true, tag .. ".lcd.init ERROR")
+        assert(lcd.init("st7735v", {
+            port = "device",
+            pin_dc = 6,
+            pin_rst = 10,
+            pin_pwr = 11,
+            direction = 1,
+            w = 160,
+            h = 80,
+            xoffset = 0,
+            yoffset = 20
+        }, spi_lcd) == true, tag .. ".lcd.init ERROR")
     end
     -- log.info("lcd.init",
     -- lcd.init("ili9341",{port = "device",pin_dc = pin.PC12, pin_rst = pin.PC05,pin_pwr = pin.PC04,direction = 0,w = 240,h = 320,xoffset = 0,yoffset = 0},spi_lcd))

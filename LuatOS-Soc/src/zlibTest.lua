@@ -20,9 +20,10 @@ function zlibTest.test()
         return
     end
     log.info(tag, "START")
+    -- 由于内存不足，所以加密在现在的芯片上不太方便测试
     -- assert(zlib.c("/luadb/main.luac", "/main.zlib") == true, tag .. ".c ERROR")
-    assert(zlib.d("/luadb/res.zlib", "/res.py") == true, tag .. ".d ERROR")
-    log.info(tag .. ".FILE", readFile("/res.py"))
+    assert(zlib.d("/luadb/res.zlib", "/res.txt") == true, tag .. ".d ERROR")
+    assert(readFile("/res.txt") == "1234567890", tag .. ".d ERROR")
     log.info(tag, "DONE")
 end
 

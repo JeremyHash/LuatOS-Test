@@ -7,7 +7,9 @@ function printTable(tbl, lv)
     lv = lv and lv .. "\t" or ""
     print(lv .. "{")
     for k, v in pairs(tbl) do
-        if type(k) == "string" then k = "\"" .. k .. "\"" end
+        if type(k) == "string" then
+            k = "\"" .. k .. "\""
+        end
         if "string" == type(v) then
             local qv = string.match(string.format("%q", v), ".(.*).")
             v = qv == v and '"' .. v .. '"' or "'" .. v:toHex() .. "'"
@@ -27,6 +29,7 @@ sys = require("sys")
 
 sys.taskInit(function()
     while true do
+        require("audioTest").test()
         require("adcTest").test()
         require("cameraTest").test()
         require("cryptoTest").test()
