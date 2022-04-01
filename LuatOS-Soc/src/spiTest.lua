@@ -23,21 +23,21 @@ function spiTest.test()
     if MOD_TYPE == "air101" then
         spiID = 0
         CS_GPIO = 17
+    elseif MOD_TYPE == "air105" then
+        spiID = 5
+        CS_GPIO = 46
     elseif MOD_TYPE == "ESP32C3" then
         spiID = 2
-        CS_GPIO = 11
+        CS_GPIO = 7
     end
+    assert(spi.setup(spiID, 255, 0, 0, 8, 1 * 1000 * 1000) == 0, tag .. ".setup ERROR")
     local CS = gpio.setup(CS_GPIO, 1)
-    assert(spi.setup(spiID, CS_GPIO, 0, 0, 8, 40 * 1000 * 1000) == 0,
-           tag .. ".setup ERROR")
     CS(0)
-    log.info(tag .. ".transfer", string.toHex(
-                 spi.transfer(spiID, string.char(0x90, 0, 0, 0), 4, 2)))
+    log.info(tag .. ".transfer", string.toHex(spi.transfer(spiID, string.char(0x90, 0, 0, 0), 4, 2)))
     CS(1)
-    log.info(tag .. ".CHIP_ID_90H", string.toHex(
-                 sendAndRecv(spiID, CS, string.char(0x90, 0, 0, 0), 2)))
-    log.info(tag .. ".CHIP_ID_9FH",
-             string.toHex(sendAndRecv(spiID, CS, string.char(0x9f), 3)))
+    log.info(tag .. ".CHIP_ID_90H", string.toHex(sendAndRecv(spiID, CS, string.char(0x90, 0, 0, 0), 2)))
+    -- C84017
+    log.info(tag .. ".CHIP_ID_9FH", string.toHex(sendAndRecv(spiID, CS, string.char(0x9f), 3)))
     sendAndRecv(spiID, CS, string.char(0x06))
     sys.wait(100)
     sendAndRecv(spiID, CS, string.char(0x20, 0x00, 0x00, 0x01))
@@ -46,17 +46,14 @@ function spiTest.test()
     sys.wait(100)
     sendAndRecv(spiID, CS, string.char(0x02, 0x00, 0x00, 0x01) .. tag)
     sys.wait(100)
-    local readRes = sendAndRecv(spiID, CS, string.char(0x03, 0x00, 0x00, 0x01),
-                                string.len(tag))
+    local readRes = sendAndRecv(spiID, CS, string.char(0x03, 0x00, 0x00, 0x01), string.len(tag))
     log.info(tag .. ".sendAndRecv_HEX", string.toHex(readRes))
     log.info(tag .. ".sendAndRecv", readRes)
     assert(readRes == tag, tag .. ".sendAndRecv ERROR")
     sendAndRecv(spiID, CS, string.char(0x04))
     spi.close(spiID)
-    local spiFlash = spi.deviceSetup(spiID, CS_GPIO, 0, 0, 8, 40 * 1000 * 1000,
-                                     spi.MSB, 1, 1)
-    log.info(tag .. ".device_transfer",
-             string.toHex(spiFlash:transfer(string.char(0x90, 0, 0, 0), 4, 2)))
+    local spiFlash = spi.deviceSetup(spiID, CS_GPIO, 0, 0, 8, 24 * 1000 * 1000, spi.MSB, 1, 1)
+    log.info(tag .. ".device_transfer", string.toHex(spiFlash:transfer(string.char(0x90, 0, 0, 0), 4, 2)))
     log.info(tag .. ".device_close", spiFlash:close())
     log.info(tag, "DONE")
 end
