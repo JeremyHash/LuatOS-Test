@@ -31,7 +31,7 @@ local recording,stoping,recordCb,stopCbFnc
 --     "FILE"表示文件录音模式，录音数据自动保存在文件中，录音结束后，执行一次cbFnc函数
 --     "STREAM"表示流录音模式，录音数据保存在内存中，每隔一段时间执行一次cbFnc函数去读取录音数据流，录音结束后再执行一次cbFnc函数
 -- @number[opt=1] quality，录音质量，0：一般质量 1：中等质量 2：高质量 3：无损质量
--- @number[opt=2] rcdType，录音类型 n:1:mic 2:voice 3:voice_dual
+-- @number[opt=2] rcdType，录音类型 n:1:mic(从麦克风录制) 2:voice(录制语音通话，录制的流与上下行通道) 3:voice_dual(在poc模式下从麦克风录制)
 -- @number[opt=3] format，录音格式，1:pcm 2:wav 3:amrnb 4:speex
 --      pcm格式：录音质量参数无效，采样率：8000，单声道，采样精度：16 bit，5秒钟录音80KB左右
 --      wav格式：录音质量参数无效，比特率：128kbps，5秒钟录音80KB左右

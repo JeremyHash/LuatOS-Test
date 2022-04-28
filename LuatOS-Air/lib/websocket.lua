@@ -33,6 +33,15 @@ local function websocket(url, cert)
     }, ws)
 end
 --- 创建 websocket 对象
+-- @string url,websocket服务器的连接地址,格式为ws(或wss)://xxx 开头
+-- @table[opt=nil] cert，ssl连接需要的证书配置，cert格式如下：
+-- {
+--     caCert = "ca.crt", --CA证书文件(Base64编码 X.509格式)，如果存在此参数，则表示客户端会对服务器的证书进行校验；不存在则不校验
+--     clientCert = "client.crt", --客户端证书文件(Base64编码 X.509格式)，服务器对客户端的证书进行校验时会用到此参数
+--     clientKey = "client.key", --客户端私钥文件(Base64编码 X.509格式)
+--     clientPassword = "123456", --客户端证书文件密码[可选]
+--     insist = 1, --证书中的域名校验失败时，是否坚持连接，默认为1，坚持连接，0为不连接
+-- }
 -- @return table：返回1个websocket对象
 -- @usage local ws = websocket.new("ws://121.40.165.18:8800")
 function new(url, cert)
@@ -49,9 +58,8 @@ function ws:on(event, callback)
 end
 
 --- websocket 与 websocket 服务器建立连接
--- @string url：websocket服务器的连接地址,格式为ws(或wss)://xxx 开头
--- @number timeout 与 websocket 服务器建立连接最长超时
--- @return  true 表示连接成功,false or nil 表示连接失败
+-- @number timeout,与 websocket 服务器建立连接最长超时
+-- @return bool,true,表示连接成功,false or nil 表示连接失败
 -- @usage while not ws:connect(20000) do sys.wait(2000) end
 function ws:connect(timeout)
     self.wss, self.host, self.port, self.path = self.url:match("(%a+)://([%w%.%-]+):?(%d*)(.*)")
@@ -111,9 +119,9 @@ local function wsmask(mask, data)
     end)
 end
 --- websocket发送帧方法
--- @boolean fin: true 表示结束帧,false表示延续帧
--- @number opcode：0x0 -- 0xF,其他值非法,代码意义参考websocket手册
--- @string data: 用户要发送的数据
+-- @bool fin, true 表示结束帧,false表示延续帧
+-- @number opcode, 0x0 -- 0xF,其他值非法,代码意义参考websocket手册
+-- @string data, 用户要发送的数据
 -- @usage self:sendFrame(true, 0x1, "www.openluat.com")
 function ws:sendFrame(fin, opcode, data)
     if not self.connected then return end
@@ -133,9 +141,9 @@ function ws:sendFrame(fin, opcode, data)
         if not self.io:send(frame:sub(i, i + self.sendsize - 1)) then break end
     end
 end
---- websocket 发送用户数据方法
+-- websocket 发送用户数据方法
 -- @string data: 用户要发送的字符串数据
--- @boole text: true 数据为文本字符串,nil或false数据为二进制数据。
+-- @bool text: true 数据为文本字符串,nil或false数据为二进制数据。
 -- @usage self:send("www.openluat.com")
 -- @usage self:send("www.openluat.com",true)
 -- @usage self:send(string.fromHex("www.openluat.com"))
@@ -154,7 +162,8 @@ function ws:send(data, text)
     self.send_text = text
     sys.publish("WEBSOCKET_SEND_DATA","send")
 end
---- websocket发送ping包
+
+-- websocket发送ping包
 -- @string data: 用户要发送的文本数据
 -- @usage self:ping("hello")
 local function ping(ws,data)
@@ -165,7 +174,8 @@ function ws:ping(data)
     table.insert(self.send_data, data)
     sys.publish("WEBSOCKET_SEND_DATA","ping")
 end
---- websocket发送文本数据方法
+
+-- websocket发送文本数据方法
 -- @string data: 用户要发送的文本数据
 -- @usage self:pone("hello")
 local function pong(ws,data)
@@ -175,6 +185,7 @@ end
 function ws:pong(data)
     self:sendFrame(true, 0xA, data)
 end
+
 -- 处理 websocket 发过来的数据并解析帧数据
 -- @return string : 返回解析后的单帧用户数据
 function ws:recvFrame()
@@ -291,8 +302,8 @@ function ws:recv()
     return true, data
 end
 --- 关闭 websocket 与服务器的链接
--- @number code: 1000 或 1002 等,请参考websocket标准
--- @string reason：关闭原因
+-- @number code,1000 或 1002 等,请参考websocket标准
+-- @string reason,关闭原因
 -- @return nil
 -- @usage ws:close()
 -- @usage ws:close(1002,"协议错误")
@@ -328,7 +339,7 @@ function exit(ws)
     sys.publish("WEBSOCKET_SEND_DATA", "EXIT_TASK"..ws.io.id)
 end
 --- 获取websocket当前状态
--- @return string: 状态值("CONNECTING","OPEN","CLOSING","CLOSED")
+-- @return string,状态值("CONNECTING","OPEN","CLOSING","CLOSED")
 -- @usage ws:state()
 function ws:state()
     return self.readyState
@@ -340,8 +351,9 @@ function ws:online()
     return self.connected
 end
 --- websocket 需要在任务中启动,带自动重连,支持心跳协议
--- @number[opt=nil] keepAlive ,websocket心跳包，建议180秒
--- @function[opt=nil] proc 处理服务器下发消息的函数
+-- @number[opt=nil] keepAlive,websocket心跳包，建议180秒
+-- @function[opt=nil] proc,处理服务器下发消息的函数
+-- @number[opt=1000] reconnTime,断开链接后的重连时间
 -- @return nil
 -- @usage sys.taskInit(ws.start,ws,180)
 -- @usage sys.taskInit(ws.start,ws,180,function(msg)u1:send(msg) end)

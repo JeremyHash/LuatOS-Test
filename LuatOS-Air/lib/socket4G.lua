@@ -17,7 +17,7 @@ local INDEX_MAX = 256
 local socketsConnected = 0
 --- SOCKET 是否有可用
 -- @return 可用true,不可用false
-socket.isReady = link.isReady
+-- socket4G.isReady = link.isReady
 
 local function errorInd(error)
     local coSuspended = {}
@@ -84,8 +84,12 @@ end
 --     clientCert = "client.crt", --客户端证书文件(Base64编码 X.509格式)，服务器对客户端的证书进行校验时会用到此参数
 --     clientKey = "client.key", --客户端私钥文件(Base64编码 X.509格式)
 --     clientPassword = "123456", --客户端证书文件密码[可选]
+--     insist = 1, --证书中的域名校验失败时，是否坚持连接，默认为1，坚持连接，0为不连接
 -- }
--- @table[opt=nil] tCoreExtPara，建立链接扩展参数，4G链接和ch395链接所需扩展参数不一样
+-- @number[opt=nil] tCoreExtPara, 建立链接扩展参数
+-- {
+--     rcvBufferSize = "num" --接收缓冲区大小，默认为0
+-- }
 -- @return client，创建成功返回socket客户端对象；创建失败返回nil
 -- @usage
 -- c = socket.tcp()
@@ -132,6 +136,7 @@ function mt:connect(address, port, timeout)
         self.id = socket_connect_fnc(0, address, port, rcvBufferSize)
     elseif self.protocol == 'TCPSSL' then
         local cert = {hostName = address}
+        local insist = 1
         if self.cert then
             if self.cert.caCert then
                 if self.cert.caCert:sub(1, 1) ~= "/" then self.cert.caCert = "/lua/" .. self.cert.caCert end
@@ -145,8 +150,9 @@ function mt:connect(address, port, timeout)
                 if self.cert.clientKey:sub(1, 1) ~= "/" then self.cert.clientKey = "/lua/" .. self.cert.clientKey end
                 cert.clientKey = io.readFile(self.cert.clientKey)
             end
+            insist = self.cert.insist == 0 and 0 or 1
         end
-        self.id = socket_connect_fnc(2, address, port, cert, rcvBufferSize)
+        self.id = socket_connect_fnc(2, address, port, cert, rcvBufferSize, insist)
     else
         self.id = socket_connect_fnc(1, address, port, rcvBufferSize)
     end

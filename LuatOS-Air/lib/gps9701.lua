@@ -5,12 +5,12 @@
 -- 3、GPS定位数据读取
 -- 4、GPS参数和功能设置
 -- 1、2、3是通用功能，除了支持合宙的Air530模块，理论上也支持其他厂家的串口GPS模块
--- 4是专用功能，仅支持合宙的Air530H、530Z和Air82x系列模块
--- @module gpsHxxt
+-- 4是专用功能，仅支持合宙的Air530模块
+-- @module gps
 -- @author openLuat
 -- @license MIT
 -- @copyright openLuat
--- @release 2021.6.19
+-- @release 2017.10.23
 require"pm"
 require"utils"
 module(..., package.seeall)
@@ -45,26 +45,29 @@ local psUtcTime,psGsv,psSn
 local powerCbFnc
 --串口配置
 uartBaudrate = 115200
-local uartID,uartDatabits,uartParity,uartStopbits = 3,8,uart.PAR_NONE,uart.STOP_1
+local uartID,uartDatabits,uartParity,uartStopbits = 2,8,uart.PAR_NONE,uart.STOP_1
 --搜星模式命令字符串，"$PGKC115," .. gps .. "," .. glonass .. "," .. beidou .. "," .. galieo .. "*"
 local aerialModeStr,aerialModeSetted = ""
---启动模式命令字符串
-local startModeStr,startModeSetted = "",""
 --运行模式命令字符串，"$PGKC105," .. mode .. "," .. rt .. "," .. st .. "*"
-local runModeStr,runModeSetted = "",""
+local runModeStr,runModeSetted = ""
 --正常运行模式下NMEA数据上报间隔命令字符串，"$PGKC101," .. interval .. "*"
 local nmeaReportStr,nmeaReportSetted = ""
 --每种NEMA数据的输出频率命令字符串
 local nmeaReportFreqStr,nmeaReportFreqSetted = ""
---NMEA数据处理模式，0表示仅gpsHxxt.lua内部处理，1表示仅用户自己处理，2表示gpsHxxt.lua和用户同时处理
+--NMEA数据处理模式，0表示仅gps.lua内部处理，1表示仅用户自己处理，2表示gps.lua和用户同时处理
 --用户处理一条NMEA数据的回调函数
 local nmeaMode,nmeaCbFnc = 0
 --NMEA数据输出间隔
 local nmeaInterval = 1000
 --运行模式
 --0，正常运行模式
---1，低功耗模式
+--1，周期超低功耗跟踪模式
+--2，周期低功耗模式
+--4，直接进入超低功耗跟踪模式
+--8，自动低功耗模式，可以通过串口唤醒
+--9, 自动超低功耗跟踪模式，需要force on来唤醒
 local runMode = 0
+
 --gps 的串口线程是否在工作；
 local taskFlag=false
 --runMode为1或者2时，GPS运行状态和休眠状态的时长
@@ -72,6 +75,11 @@ local runTime,sleepTime
 
 --检测gps是否工作正常的定时器ID
 local workAbnormalTimerId
+
+local agpsver = nil
+checkdatapack = false
+local testcoro = nil
+local i = 0
 
 --[[
 函数名：getstrength
@@ -94,7 +102,7 @@ local function getstrength(sg)
         maxSignalStrength = maxSignalStrengthVar
         maxSignalStrengthVar = 0
     end
-
+	
     local tmpstr,i = sgv_str
     for i=1,4 do
         local d1,d2,id,elevation,azimuth,strength = sfind(tmpstr,"(%d+),([%-]*%d*),(%d*),(%d*)")
@@ -134,7 +142,7 @@ local function getstrength(sg)
 end
 
 local function filterTimerFnc()
-    log.info("gpsHxxt.filterTimerFnc end")
+    log.info("gps.filterTimerFnc end")
     filteredFlag = true
 end
 
@@ -148,6 +156,19 @@ end
 local function parseNmea(s)
     if not s or s=="" then return end
     local lat,lng,spd,cog,gpsFind,gpsTime,gpsDate,locSateCnt,hdp,latTyp,lngTyp,altd
+
+    local hexStr = s:toHex()
+    if smatch(hexStr,"AAF00D0001009500039A00AA0F") then
+        sys.publish("GPS_STATE","BINARY_CMD_ACK")
+        agpsver = true
+        stopWorkAbnormalTimer()
+        i= i+1
+        return
+    elseif smatch(hexStr,"AAF00D000300") then
+        sys.publish("GPS_STATE",smatch(hexStr,"^AAF00D000300FFFF") and "WRITE_EPH_END_ACK" or "WRITE_EPH_ACK")
+        stopWorkAbnormalTimer()
+        return
+    end
 
     local fixed,workAbnormal
     if smatch(s,"GGA") then
@@ -171,7 +192,7 @@ local function parseNmea(s)
             course = cog
         else
             fixed = false
-        end  
+        end
         if psUtcTime and gpsFind == "A" and gpsTime and gpsDate and gpsTime ~= "" and gpsDate ~= "" then
             local yy,mm,dd,h,m,s = tonumber(ssub(gpsDate,5,6)),tonumber(ssub(gpsDate,3,4)),tonumber(ssub(gpsDate,1,2)),tonumber(ssub(gpsTime,1,2)),tonumber(ssub(gpsTime,3,4)),tonumber(ssub(gpsTime,5,6))
             UtcTime = {year=2000+yy,month=mm,day=dd,hour=h,min=m,sec=s}
@@ -199,7 +220,7 @@ local function parseNmea(s)
     
     if filterSeconds>0 and fixed and not fixFlag and not filteredFlag then
         if not sys.timerIsActive(filterTimerFnc) then
-            log.info("gpsHxxt.filterTimerFnc begin")
+            log.info("gps.filterTimerFnc begin")
             sys.publish("GPS_STATE","LOCATION_FILTER")
             sys.timerStart(filterTimerFnc,filterSeconds*1000)
         end        
@@ -234,13 +255,28 @@ local function taskRead()
         if openFlag then
            s= uart.read(uartID, "*l")
         end
+        if i==2 then
+            agpsver =false
+            i = 0
+        end
+        if agpsver then
+
+            if s=="" then
+                checkdatapack = true
+            else
+                sys.publish("NOEMAL_RECE")
+            end
+        end
         if s == "" then
             uart.on(uartID,"receive",function() coroutine.resume(co) end)
             coroutine.yield()
             uart.on(uartID,"receive")
         else
             cacheData = cacheData..s
-            local d1,d2,nemaStr = sfind(cacheData,"\r\n")
+            if cacheData:toHex()=="AAF00D0001009500039A00AA0F"  or smatch(cacheData:toHex(),"AAF00D000300") then
+                cacheData = cacheData.."\r\n"
+            end
+            local d1,d2,nemaStr = sfind(cacheData,"\r\n")--截取串口收到的数据
             while d1 do
                 writePendingCmds()
                 nemaStr = ssub(cacheData,1,d2)
@@ -259,73 +295,46 @@ local function taskRead()
     end
 end
 
-function writeData(data)  
-    uart.write(uartID,data)
-    log.info("gpsHxxt.writeData",data:toHex())
-end
-
-
--- GPS串口写命令操作
--- @number class，消息类
--- @number is，消息编号
--- @string payload，有效载荷
--- @return nil
--- @usage gpsHxxt.writeCmd(cmd)
-function writeCasic(class,id,payload)
-    local tmp = pack.pack("<bbHbbA",0xBA,0xCE,payload:len(),class,id,payload)
-    
-    local checkSum = bit.lshift(id,24)+bit.lshift(class,16)+payload:len()
-    for i=1,payload:len(),4 do
-        checkSum = checkSum + payload:byte(i) + bit.lshift(payload:byte(i+1),8) + bit.lshift(payload:byte(i+2),16) + bit.lshift(payload:byte(i+3),24)
-    end
-    
-    tmp = tmp..pack.pack("<I",checkSum)
-    
-    uart.write(uartID,tmp)
-    --log.info("gpsZkw.writeCasic",tmp)
-    log.info("gpsHxxt.writeCasic",tmp:toHex())
-end
-
 -- GPS串口写命令操作
 -- @string cmd，GPS指令(cmd格式："$PGKC149,1,115200*"或者"$PGKC149,1,115200*XX\r\n")
 -- @bool isFull，cmd是否为完整的指令格式，包括校验和以及\r\n；true表示完整，false或者nil为不完整
 -- @return nil
--- @usage gpsHxxt.writeCmd(cmd)
+-- @usage gps.writeCmd(cmd)
 function writeCmd(cmd,isFull)
     local tmp = cmd
+    -- log.info("星历数据5",tmp:toHex())
     if not isFull then
         tmp = 0
         for i=2,cmd:len()-1 do
             tmp = bit.bxor(tmp,cmd:byte(i))
         end
-        --tmp = cmd..(string.format("%02X",tmp)):upper().."\r\n"
-        tmp = cmd.."\r\n"
+        tmp = cmd..(string.format("%02X",tmp)):upper().."\r\n"
     end
-
+    -- sys.timerStart(function() uart.write(uartID,tmp) end, 100)
     uart.write(uartID,tmp)
-    log.info("gpsHxxt.writecmd",tmp)
-    --log.info("gpsHxxt.writecmd:toHex",tmp:toHex())
+    -- log.info("gps.writecmd",tmp)
+    log.info("gps.writecmd:toHex",uartID, tmp:toHex())
 end
 
 function writePendingCmds()
     if not aerialModeSetted and aerialModeStr~="" then writeCmd(aerialModeStr) aerialModeSetted=true end
-    --if not runModeSetted and runModeStr~="" then writeCmd(runModeStr) runModeSetted=true end
+    if not runModeSetted and runModeStr~="" then writeCmd(runModeStr) runModeSetted=true end
     if not nmeaReportSetted and nmeaReportStr~="" then writeCmd(nmeaReportStr) nmeaReportSetted=true end
     if not nmeaReportFreqSetted and nmeaReportFreqStr~="" then writeCmd(nmeaReportFreqStr) nmeaReportFreqSetted=true end
 end
 
 local function _open()
-    if openFlag then return end
-    pm.wake("gpsHxxt.lua")
+    if openFlag then return end--gps开启状态
+    pm.wake("gps.lua")
     uart.setup(uartID,uartBaudrate,uartDatabits,uartParity,uartStopbits)
-    if not taskFlag then
+    if not taskFlag then --串口线程
          taskFlag =true
          sys.taskInit(taskRead)
     end
     if powerCbFnc then
         powerCbFnc(true)
     else
-        pmd.ldoset(15,pmd.LDO_VIBR)
+        pmd.ldoset(15, pmd.LDO_VMMC)
         rtos.sys32k_clk_out(1)
     end
     openFlag = true
@@ -333,27 +342,29 @@ local function _open()
     sys.publish("GPS_STATE","OPEN")
     fixFlag,filteredFlag = false
     Ggalng,Ggalat,Gsv,Sep = "","",""    
-    log.info("gpsHxxt._open")
+    log.info("gps._open")
 end
+
+
 
 local function _close()
     if not openFlag then return end
     if powerCbFnc then
         powerCbFnc(false)
     else
-        pmd.ldoset(0,pmd.LDO_VIBR)
-        --rtos.sys32k_clk_out(0)
+        pmd.ldoset(0,pmd.LDO_VMMC)
+        rtos.sys32k_clk_out(0)
     end
     uart.close(uartID)
-    pm.sleep("gpsHxxt.lua")
+    pm.sleep("gps.lua")
     openFlag = false
-    sys.publish("GPS_STATE","CLOSE",fixFlag)
+    sys.publish("GPS_STATE","CLOSE",fixFlag)    
     stopWorkAbnormalTimer()
     fixFlag,filteredFlag = false
     sys.timerStop(filterTimerFnc)
     Ggalng,Ggalat,Gsv,Sep = "","",""
     aerialModeSetted,runModeSetted,nmeaReportSetted,nmeaReportFreqSetted = nil
-    log.info("gpsHxxt._close")
+    log.info("gps._close")
 end
 
 
@@ -361,7 +372,7 @@ end
 --
 -- 打开GPS后，GPS定位成功时，如果有回调函数，会调用回调函数
 --
--- 使用此应用模式调用gpsHxxt.open打开的“GPS应用”，必须主动调用gpsHxxt.close或者gpsHxxt.closeAll才能关闭此“GPS应用”,主动关闭时，即使有回调函数，也不会调用回调函数
+-- 使用此应用模式调用gps.open打开的“GPS应用”，必须主动调用gps.close或者gps.closeAll才能关闭此“GPS应用”,主动关闭时，即使有回调函数，也不会调用回调函数
 DEFAULT = 1
 --- GPS应用模式2.
 --
@@ -369,13 +380,13 @@ DEFAULT = 1
 --
 -- 打开GPS后，如果在GPS开启最大时长内，定位成功，如果有回调函数，会调用回调函数，然后自动关闭此“GPS应用”
 --
--- 打开GPS后，在自动关闭此“GPS应用”前，可以调用gpsHxxt.close或者gpsHxxt.closeAll主动关闭此“GPS应用”，主动关闭时，即使有回调函数，也不会调用回调函数
+-- 打开GPS后，在自动关闭此“GPS应用”前，可以调用gps.close或者gps.closeAll主动关闭此“GPS应用”，主动关闭时，即使有回调函数，也不会调用回调函数
 TIMERORSUC = 2
 --- GPS应用模式3.
 --
 -- 打开GPS后，在GPS开启最大时长时间到达时，无论是否定位成功，如果有回调函数，会调用回调函数，然后自动关闭此“GPS应用”
 --
--- 打开GPS后，在自动关闭此“GPS应用”前，可以调用gpsHxxt.close或者gpsHxxt.closeAll主动关闭此“GPS应用”，主动关闭时，即使有回调函数，也不会调用回调函数
+-- 打开GPS后，在自动关闭此“GPS应用”前，可以调用gps.close或者gps.closeAll主动关闭此“GPS应用”，主动关闭时，即使有回调函数，也不会调用回调函数
 TIMER = 3
 
 --“GPS应用”表
@@ -441,7 +452,7 @@ end
 local function timerFnc()
     for i=1,#tList do
         if tList[i].flag then
-            log.info("gpsHxxt.timerFnc@"..i,tList[i].mode,tList[i].para.tag,tList[i].para.val,tList[i].para.remain,tList[i].para.delay)
+            log.info("gps.timerFnc@"..i,tList[i].mode,tList[i].para.tag,tList[i].para.val,tList[i].para.remain,tList[i].para.delay)
             local rmn,dly,md,cb = tList[i].para.remain,tList[i].para.delay,tList[i].mode,tList[i].para.cb
 
             if rmn and rmn>0 then
@@ -488,7 +499,7 @@ local function statInd(evt)
     --定位成功的消息
     if evt == "LOCATION_SUCCESS" then
         for i=1,#tList do
-            log.info("gpsHxxt.statInd@"..i,tList[i].flag,tList[i].mode,tList[i].para.tag,tList[i].para.val,tList[i].para.remain,tList[i].para.delay,tList[i].para.cb)
+            log.info("gps.statInd@"..i,tList[i].flag,tList[i].mode,tList[i].para.tag,tList[i].para.val,tList[i].para.remain,tList[i].para.delay,tList[i].para.cb)
             if tList[i].flag then
                 if tList[i].mode ~= TIMER then
                     tList[i].para.delay = 1
@@ -513,21 +524,21 @@ end
 -- 2、GPS应用标记(必选)
 -- 3、GPS开启最大时长[可选]
 -- 4、回调函数[可选]
--- 例如gpsHxxt.open(gpsHxxt.TIMERORSUC,{tag="TEST",val=120,cb=testGpsCb})
--- gpsHxxt.TIMERORSUC为GPS应用模式，"TEST"为GPS应用标记，120秒为GPS开启最大时长，testGpsCb为回调函数
--- @number mode，GPS应用模式，支持gpsHxxt.DEFAULT，gpsHxxt.TIMERORSUC，gpsHxxt.TIMER三种
+-- 例如gps.open(gps.TIMERORSUC,{tag="TEST",val=120,cb=testGpsCb})
+-- gps.TIMERORSUC为GPS应用模式，"TEST"为GPS应用标记，120秒为GPS开启最大时长，testGpsCb为回调函数
+-- @number mode，GPS应用模式，支持gps.DEFAULT，gps.TIMERORSUC，gps.TIMER三种
 -- @param para，table类型，GPS应用参数
 --               para.tag：string类型，GPS应用标记
---               para.val：number类型，GPS应用开启最大时长，mode参数为gpsHxxt.TIMERORSUC或者gpsHxxt.TIMER时，此值才有意义
+--               para.val：number类型，GPS应用开启最大时长，mode参数为gps.TIMERORSUC或者gps.TIMER时，此值才有意义
 --               para.cb：GPS应用结束时的回调函数，回调函数的调用形式为para.cb(para.tag)
 -- @return nil
--- @usage gpsHxxt.open(gpsHxxt.DEFAULT,{tag="TEST1",cb=test1Cb})
--- @usage gpsHxxt.open(gpsHxxt.TIMERORSUC,{tag="TEST2",val=60,cb=test2Cb})
--- @usage gpsHxxt.open(gpsHxxt.TIMER,{tag="TEST3",val=120,cb=test3Cb})
+-- @usage gps.open(gps.DEFAULT,{tag="TEST1",cb=test1Cb})
+-- @usage gps.open(gps.TIMERORSUC,{tag="TEST2",val=60,cb=test2Cb})
+-- @usage gps.open(gps.TIMER,{tag="TEST3",val=120,cb=test3Cb})
 -- @see DEFAULT,TIMERORSUC,TIMER
 function open(mode,para)
-    assert((para and type(para) == "table" and para.tag and type(para.tag) == "string"),"gpsHxxt.open para invalid")
-    log.info("gpsHxxt.open",mode,para.tag,para.val,para.cb)
+    assert((para and type(para) == "table" and para.tag and type(para.tag) == "string"),"gps.open para invalid")
+    log.info("gps.open",mode,para.tag,para.val,para.cb)
     --如果GPS定位成功
     if isFix() then
         if mode~=TIMER then
@@ -536,7 +547,7 @@ function open(mode,para)
             if mode==TIMERORSUC then return end
         end
     end
-    addItem(mode,para)
+    addItem(mode,para)--gps应用
     --真正去打开GPS
     _open()
     --启动1秒的定时器
@@ -547,20 +558,20 @@ end
 
 --- 关闭一个“GPS应用”
 -- 只是从逻辑上关闭一个GPS应用，并不一定真正关闭GPS，是有所有的GPS应用都处于关闭状态，才回去真正关闭GPS
--- @number mode，GPS应用模式，支持gpsHxxt.DEFAULT，gpsHxxt.TIMERORSUC，gpsHxxt.TIMER三种
+-- @number mode，GPS应用模式，支持gps.DEFAULT，gps.TIMERORSUC，gps.TIMER三种
 -- @param para，table类型，GPS应用参数
 --               para.tag：string类型，GPS应用标记
---               para.val：number类型，GPS应用开启最大时长，mode参数为gpsHxxt.TIMERORSUC或者gpsHxxt.TIMER时，此值才有意义；使用close接口时，不需要传入此参数
+--               para.val：number类型，GPS应用开启最大时长，mode参数为gps.TIMERORSUC或者gps.TIMER时，此值才有意义；使用close接口时，不需要传入此参数
 --               para.cb：GPS应用结束时的回调函数，回调函数的调用形式为para.cb(para.tag)；使用close接口时，不需要传入此参数
 -- @return nil
--- @usage GPS应用模式和GPS应用标记唯一确定一个“GPS应用”，调用本接口关闭时，mode和para.tag要和gpsHxxt.open打开一个“GPS应用”时传入的mode和para.tag保持一致
--- @usage gpsHxxt.close(gpsHxxt.DEFAULT,{tag="TEST1"})
--- @usage gpsHxxt.close(gpsHxxt.TIMERORSUC,{tag="TEST2"})
--- @usage gpsHxxt.close(gpsHxxt.TIMER,{tag="TEST3"})
+-- @usage GPS应用模式和GPS应用标记唯一确定一个“GPS应用”，调用本接口关闭时，mode和para.tag要和gps.open打开一个“GPS应用”时传入的mode和para.tag保持一致
+-- @usage gps.close(gps.DEFAULT,{tag="TEST1"})
+-- @usage gps.close(gps.TIMERORSUC,{tag="TEST2"})
+-- @usage gps.close(gps.TIMER,{tag="TEST3"})
 -- @see open,DEFAULT,TIMERORSUC,TIMER
 function close(mode,para)
-    assert((para and type(para)=="table" and para.tag and type(para.tag)=="string"),"gpsHxxt.close para invalid")
-    log.info("gpsHxxt.close",mode,para.tag,para.val,para.cb)
+    assert((para and type(para)=="table" and para.tag and type(para.tag)=="string"),"gps.close para invalid")
+    log.info("gps.close",mode,para.tag,para.val,para.cb)
     --删除此“GPS应用”
     delItem(mode,para)
     local valid,i
@@ -575,7 +586,7 @@ end
 
 --- 关闭所有“GPS应用”
 -- @return nil
--- @usage gpsHxxt.closeAll()
+-- @usage gps.closeAll()
 -- @see open,DEFAULT,TIMERORSUC,TIMER
 function closeAll()
     for i=1,#tList do
@@ -585,19 +596,19 @@ function closeAll()
 end
 
 --- 判断一个“GPS应用”是否处于激活状态
--- @number mode，GPS应用模式，支持gpsHxxt.DEFAULT，gpsHxxt.TIMERORSUC，gpsHxxt.TIMER三种
+-- @number mode，GPS应用模式，支持gps.DEFAULT，gps.TIMERORSUC，gps.TIMER三种
 -- @param para，table类型，GPS应用参数
 --               para.tag：string类型，GPS应用标记
---               para.val：number类型，GPS应用开启最大时长，mode参数为gpsHxxt.TIMERORSUC或者gpsHxxt.TIMER时，此值才有意义；使用isActive接口时，不需要传入此参数
+--               para.val：number类型，GPS应用开启最大时长，mode参数为gps.TIMERORSUC或者gps.TIMER时，此值才有意义；使用isActive接口时，不需要传入此参数
 --               para.cb：GPS应用结束时的回调函数，回调函数的调用形式为para.cb(para.tag)；使用isActive接口时，不需要传入此参数
 -- @return bool result，处于激活状态返回true，否则返回nil
--- @usage GPS应用模式和GPS应用标记唯一确定一个“GPS应用”，调用本接口查询状态时，mode和para.tag要和gpsHxxt.open打开一个“GPS应用”时传入的mode和para.tag保持一致
--- @usage gpsHxxt.isActive(gpsHxxt.DEFAULT,{tag="TEST1"})
--- @usage gpsHxxt.isActive(gpsHxxt.TIMERORSUC,{tag="TEST2"})
--- @usage gpsHxxt.isActive(gpsHxxt.TIMER,{tag="TEST3"})
+-- @usage GPS应用模式和GPS应用标记唯一确定一个“GPS应用”，调用本接口查询状态时，mode和para.tag要和gps.open打开一个“GPS应用”时传入的mode和para.tag保持一致
+-- @usage gps.isActive(gps.DEFAULT,{tag="TEST1"})
+-- @usage gps.isActive(gps.TIMERORSUC,{tag="TEST2"})
+-- @usage gps.isActive(gps.TIMER,{tag="TEST3"})
 -- @see open,DEFAULT,TIMERORSUC,TIMER
 function isActive(mode,para)
-    assert((para and type(para)=="table" and para.tag and type(para.tag)=="string"),"gpsHxxt.isActive para invalid")
+    assert((para and type(para)=="table" and para.tag and type(para.tag)=="string"),"gps.isActive para invalid")
     for i=1,#tList do
         if tList[i].flag and tList[i].mode==mode and tList[i].para.tag==para.tag then return true end
     end
@@ -605,52 +616,51 @@ end
 
 --- 设置GPS模块供电控制的回调函数
 -- 如果使用的是Air800，或者供电控制使用的是LDO_VCAM，则打开GPS应用前不需要调用此接口进行设置
--- 否则在调用gpsHxxt.open前，使用此接口，传入自定义的供电控制函数cbFnc，GPS开启时，gpsHxxt.lua自动执行cbFnc(true)，GPS关闭时，gpsHxxt.lua自动执行cbFnc(false)
+-- 否则在调用gps.open前，使用此接口，传入自定义的供电控制函数cbFnc，GPS开启时，gps.lua自动执行cbFnc(true)，GPS关闭时，gps.lua自动执行cbFnc(false)
 -- @param cbFnc，function类型，用户自定义的GPS供电控制函数
 -- @return nil
--- @usage gpsHxxt.setPowerCbFnc(cbFnc)
+-- @usage gps.setPowerCbFnc(cbFnc)
 function setPowerCbFnc(cbFnc)
     powerCbFnc = cbFnc
 end
 
 --- 设置GPS模块和GSM模块之间数据通信的串口参数
 -- 如果使用的是Air800，或者使用的UART2(波特率115200，数据位8，无检验位，停止位1)，则打开GPS应用前不需要调用此接口进行设置
--- 否则在调用gpsHxxt.open前，使用此接口，传入UART参数
+-- 否则在调用gps.open前，使用此接口，传入UART参数
 -- @number id，UART ID，支持1和2，1表示UART1，2表示UART2
 -- @number baudrate，波特率，支持1200,2400,4800,9600,10400,14400,19200,28800,38400,57600,76800,115200,230400,460800,576000,921600,1152000,4000000
 -- @number databits，数据位，支持7,8
 -- @number parity，校验位，支持uart.PAR_NONE,uart.PAR_EVEN,uart.PAR_ODD
 -- @number stopbits，停止位，支持uart.STOP_1,uart.STOP_2
 -- @return nil
--- @usage gpsHxxt.setUart(2,115200,8,uart.PAR_NONE,uart.STOP_1)
+-- @usage gps.setUart(2,115200,8,uart.PAR_NONE,uart.STOP_1)
 function setUart(id,baudrate,databits,parity,stopbits)
     uartID,uartBaudrate,uartDatabits,uartParity,uartStopbits = id,baudrate,databits,parity,stopbits
 end
 
---- 设置GPS模块搜星模式
--- 同时仅支持配置为一种搜星模式
--- @number H01  设置为GPS L1+SBAS+QZSS联合定位模式
--- @number H10  设置为BDS B1定位
--- @number H101 设置为GPS+GLONASS+GALILEO+SBAS+QZSS联合定位
--- @number H11  设置为GPS+BDS+GALILEO+SBAS+QZSS联合定位
--- @return nil  
--- @usage gpsHxxt.setAerialMode(nil,nil,1)
-function setAerialMode(H01,H10,H101,H11)
-    local H01 = H01 or 0
-    local H10 = H10 or 0
-    local H101 = H101 or 0
-    local H11 = H11 or 0
-
-    if H01~=0 then rt=H01 end
-    if H10~=0 then rt=H10 end
-    if H101~=0 then rt=H101 end
-    if H11~=0 then rt=H11 end
-    if H01+H10+H101+H11 == 0 then H11=1 end
-    if H01+H10+H101+H11>1 then 
-        log.warn("gpsHxxt.setAerialMode"," function input err")
-        return
-    end
-    local tmpStr = "$CFGSYS,"..rt
+--- 设置GPS模块搜星模式.
+-- 如果使用的是Air800或者Air530，不调用此接口配置，则默认同时开启GPS和北斗定位
+-- @number gps，GPS定位系统，1是打开，0是关闭
+-- @number beidou，中国北斗定位系统，1是打开，0是关闭
+-- @number glonass，俄罗斯Glonass定位系统，1是打开，0是关闭
+-- @number galieo，欧盟伽利略定位系统，1是打开，0是关闭
+-- @return nil
+-- @usage gps.setAeriaMode(1,1,0,0)
+function setAerialMode(gps,beidou,glonass,galieo)
+    local gps = gps or 0
+    local glonass = glonass or 0
+    local beidou = beidou or 0
+    local galieo = galieo or 0
+    if gps+glonass+beidou+galieo == 0 then gps=1 beidou=1 end
+    if gps==1 then gps=1 end
+    if glonass==1 then glonass=4 end
+    if beidou==1 then beidou= 8 end
+    if galieo==1 then galieo= 2 end
+    local searchstar=gps+glonass+beidou+galieo
+    searchstar = string.format("%X",searchstar)
+    log.info("搜星",searchstar)
+    --local tmpStr = "$PGKC115,"..gps..","..glonass..","..beidou..","..galieo.."*"
+    local tmpStr = "$PGKC121,0,"..searchstar..",0*"
     if tmpStr~=aerialModeStr then
         aerialModeStr,aerialModeSetted = tmpStr
     end
@@ -658,13 +668,13 @@ end
 
 
 --- 设置NMEA数据处理模式.
--- 如果不调用此接口配置，则默认仅gpsHxxt.lua内部处理NMEA数据
--- @number mode，NMEA数据处理模式，0表示仅gpsHxxt.lua内部处理，1表示仅用户自己处理，2表示gpsHxxt.lua和用户同时处理
+-- 如果不调用此接口配置，则默认仅gps.lua内部处理NMEA数据
+-- @number mode，NMEA数据处理模式，0表示仅gps.lua内部处理，1表示仅用户自己处理，2表示gps.lua和用户同时处理
 -- @param cbFnc，function类型，用户处理一条NMEA数据的回调函数，mode为1和2时，此值才有意义
 -- @return nil
--- @usage gpsHxxt.setNmeaMode(0)
--- @usage gpsHxxt.setNmeaMode(1,cbFnc)
--- @usage gpsHxxt.setNmeaMode(2,cbFnc)
+-- @usage gps.setNmeaMode(0)
+-- @usage gps.setNmeaMode(1,cbFnc)
+-- @usage gps.setNmeaMode(2,cbFnc)
 function setNmeaMode(mode,cbFnc)
     nmeaMode,nmeaCbFnc = mode,cbFnc
 end
@@ -673,78 +683,76 @@ end
 -- 如果不调用此接口配置，则默认为正常运行模式
 -- @number mode，运行模式
 -- 0：正常运行模式
--- 1：低功耗模式
+-- 1：周期超低功耗跟踪模式
+-- 4：直接进入超低功耗跟踪模式
+-- 8：低功耗模式，可以通过串口发送命令唤醒
+-- @number runTm，单位毫秒，mode为0时表示NEMA数据的上报间隔，mode为1时表示运行时长，其余mode时此值无意义
+-- @number sleepTm，单位毫秒，mode为1时表示运行时长，其余mode时此值无意义
 -- @return nil
--- @usage gpsHxxt.setRunMode(0)
--- @usage gpsHxxt.setRunMode(1)
-function setRunMode(mode)
-    local tmpStr = "$CFGLOWPOWER,"..mode
+-- @usage gps.setRunMode(0,1000)
+-- @usage gps.setRunMode(1,5000,2000)
+function setRunMode(mode,runTm,sleepTm)
+    local rt,st = runTm or "",sleepTm or ""
+    if mode==0 and rt then
+        if rt>10000 then rt=10000 end
+        if rt<100 then rt=100 end
+        nmeaReportStr = "$PGKC101,"..rt.."*"
+    end
+
+    local tmpStr = "$PGKC105,"..mode..((mode==1) and (","..rt..","..st) or "").."*"
     if tmpStr~=runModeStr then
-        runModeStr,runModeSetted  = tmpStr
+        runModeStr,runModeSetted = tmpStr
     end
 end
 
---设置NEMA输出语句种类
--- @string date. NEMA语句名称
--- @number flag. 0关闭1打开
--- @usage gpaHxxt.setNemaReportFreq("GSV",1)
--- 开机后需等待250ms+后发送才有效
-function setNemaReportFreq(date,flag)
-    local rt=""
-    if date=="RMC" then
-        writeCmd("$CFGMSG,0,4,"..flag)
-    elseif date=="GGA" then
-        writeCmd("$CFGMSG,0,0,"..flag)
-    elseif date=="GSA" then
-        writeCmd("$CFGMSG,0,2,"..flag)
-    elseif date=="VTG" then
-        writeCmd("$CFGMSG,0,5,"..flag)
-    elseif date=="GLL" then
-        writeCmd("$CFGMSG,0,1,"..flag)
-    elseif date=="GSV" then
-        writeCmd("$CFGMSG,0,3,"..flag)
+--- 设置NEMA语句的输出频率.
+-- @number[opt=1] rmc，单位秒，RMC语句输出频率，取值范围0到10之间的整数，0表示不输出
+-- @number[opt=1] gga，单位秒，GGA语句输出频率，取值范围0到10之间的整数，0表示不输出
+-- @number[opt=1] gsa，单位秒，GSA语句输出频率，取值范围0到10之间的整数，0表示不输出
+-- @number[opt=1] gsv，单位秒，GSV语句输出频率，取值范围0到10之间的整数，0表示不输出
+-- @number[opt=1] vtg，单位秒，VTG语句输出频率，取值范围0到10之间的整数，0表示不输出
+-- @number[opt=0] gll，单位秒，GLL语句输出频率，取值范围0到10之间的整数，0表示不输出
+-- @return nil
+-- @usage gps.setNemaReportFreq(5,0,0,0,0,0)
+function setNemaReportFreq(rmc,gga,gsa,gsv,vtg,gll)
+    local tmpStr = "$PGKC242,"..(gll or 0)..","..(rmc or 1)..","..(vtg or 1)..","..(gga or 1)..","..(gsa or 1)..","..(gsv or 1)..",0,0,0,0,0,0,0,0,0,0,0,0,0".."*"
+    if tmpStr~=nmeaReportFreqStr then
+        nmeaReportFreqStr,nmeaReportFreqSetted = tmpStr
     end
 end
 
 --- 设置GPS定位成功后经纬度的过滤时间.
 -- @number[opt=0] seconds，单位秒，GPS定位成功后，丢弃前seconds秒的位置信息
 -- @return nil
--- @usage gpsHxxt.setLocationFilter(2)
+-- @usage gps.setLocationFilter(2)
 function setLocationFilter(seconds)
     filterSeconds = seconds or 0
 end
 
 function setFastFix(lat,lng,tm)
-    local tLocation = getLocation()
-    lngType=tLocation.lngType
-    latType=tLocation.latType
-    local tm = os.date("*t")
-    local t = tm.year..","..tm.month..","..tm.day..","..tm.hour..","..tm.min..","..tm.sec..",000"
-    log.info("gpsHxxt.setFastFix",lat,lng,t)
-    writeCmd("$AIDTIME,"..t)
-    -- writeCmd("$AIDPOS,"..lat..","..latType..","..lng..","..lngType..",".."0")
+    local t = tm.year..","..tm.month..","..tm.day..","..tm.hour..","..tm.min..","..tm.sec.."*"
+    log.info("gps.setFastFix",lat,lng,t)
+    -- writeCmd("$PGKC634,"..t)
+    writeCmd("$PGKC639,"..lat..","..lng..",0,"..t)
 end
 
 --- 获取GPS模块是否处于开启状态
 -- @return bool result，true表示开启状态，false或者nil表示关闭状态
--- @usage gpsHxxt.isOpen()
+-- @usage gps.isOpen()
 function isOpen()
     return openFlag
 end
 
 --- 获取GPS模块是否定位成功
 -- @return bool result，true表示定位成功，false或者nil表示定位失败
--- @usage gpsHxxt.isFix()
+-- @usage gps.isFix()
 function isFix()
-    return  fixFlag
+    return fixFlag
 end
 
-function issFix()
-     fixFlag=false
-end
 --- 获取GPS模块是否首次定位成功过
 -- @return bool result，true表示曾经定位成功
--- @usage gpsHxxt.isOnece()
+-- @usage gps.isOnece()
 function isOnece()
     return fixOnece
 end
@@ -758,7 +766,7 @@ local function degreeMinuteToDegree(inStr)
     local integer,fraction = smatch(inStr,"(%d+)%.(%d+)")
     if integer and fraction then
         local intLen = slen(integer)
-        if intLen~=4 and intLen~=5 then log.error("gpsHxxt.degreeMinuteToDegree integer error",inStr) return "" end
+        if intLen~=4 and intLen~=5 then log.error("gps.degreeMinuteToDegree integer error",inStr) return "" end
         if slen(fraction)<5 then fraction = fraction..srep("0",5-slen(fraction)) end
         fraction = ssub(fraction,1,5)
         local temp = tonumber(ssub(integer,intLen-1,intLen)..fraction)*10
@@ -784,7 +792,7 @@ end
 -- lng：string类型，表示度格式的经度值，无效时为""
 -- latType：string类型，表示纬度类型，取值"N"，"S"
 -- lat：string类型，表示度格式的纬度值，无效时为""
--- @usage gpsHxxt.getLocation()
+-- @usage gps.getLocation()
 function getLocation(typ)
     return {
             lngType=longitudeType,
@@ -809,7 +817,7 @@ end
 
 --- 获取海拔
 -- @return number altitude，海拔，单位米
--- @usage gpsHxxt.getAltitude()
+-- @usage gps.getAltitude()
 function getAltitude()
     return tonumber(smatch(altitude,"(%d+)") or "0")
 end
@@ -817,7 +825,7 @@ end
 --- 获取速度
 -- @return number kmSpeed，第一个返回值为公里每小时的速度
 -- @return number nmSpeed，第二个返回值为海里每小时的速度
--- @usage gpsHxxt.getSpeed()
+-- @usage gps.getSpeed()
 function getSpeed()
     local integer = tonumber(smatch(speed,"(%d+)") or "0")
     return (integer*1852 - (integer*1852 %1000))/1000,integer
@@ -825,35 +833,35 @@ end
 
 --- 获取原始速度,字符串带浮点
 -- @return number speed 海里每小时的速度
--- @usage gpsHxxt.getOrgSpeed()
+-- @usage gps.getOrgSpeed()
 function getOrgSpeed()
     return speed
 end
 
 --- 获取方向角
 -- @return number course，方向角
--- @usage gpsHxxt.getCourse()
+-- @usage gps.getCourse()
 function getCourse()
     return tonumber(smatch(course,"(%d+)") or "0")
 end
 
 -- 获取所有可见卫星的最大信号强度
 -- @return number strength，最大信号强度
--- @usage gpsHxxt.getMaxSignalStrength()
+-- @usage gps.getMaxSignalStrength()
 function getMaxSignalStrength()
     return maxSignalStrength
 end
 
 --- 获取可见卫星的个数
 -- @return number count，可见卫星的个数
--- @usage gpsHxxt.getViewedSateCnt()
+-- @usage gps.getViewedSateCnt()
 function getViewedSateCnt()
     return tonumber(viewedGpsSateCnt)+tonumber(viewedBdSateCnt)
 end
 
 --- 获取定位使用的卫星个数
 -- @return number count，定位使用的卫星个数
--- @usage gpsHxxt.getUsedSateCnt()
+-- @usage gps.getUsedSateCnt()
 function getUsedSateCnt()
     return tonumber(usedSateCnt)
 end
@@ -861,7 +869,7 @@ end
 --- 获取GGA语句中度分格式的经纬度信息
 -- @return string lng，度分格式的经度值(dddmm.mmmm)，西经会添加一个-前缀，无效时为""；例如"12112.3456"表示东经121度12.3456分，"-12112.3456"表示西经121度12.3456分
 -- @return string lat，度分格式的纬度值(ddmm.mmmm)，南纬会添加一个-前缀，无效时为""；例如"3112.3456"表示北纬31度12.3456分，"-3112.3456"表示南纬31度12.3456分
--- @usage gpsHxxt.getGgaloc()
+-- @usage gps.getGgaloc()
 function getGgaloc()
 	return Ggalng or "",Ggalat or ""
 end
@@ -871,14 +879,14 @@ end
 -- 1、开启了GPS，并且定位成功
 -- 2、调用setParseItem接口，第一个参数设置为true
 -- @return table utcTime，UTC时间，nil表示无效，例如{year=2018,month=4,day=24,hour=11,min=52,sec=10}
--- @usage gpsHxxt.getUtcTime()
+-- @usage gps.getUtcTime()
 function getUtcTime()
-	return  UtcTime
+	return UtcTime
 end
 
 --- 获取定位使用的大地高
 -- @return number sep，大地高
--- @usage gpsHxxt.getSep()
+-- @usage gps.getSep()
 function getSep()
 	return tonumber(Sep or "0")
 end
@@ -888,7 +896,7 @@ end
 -- 1、开启了GPS，并且定位成功
 -- 2、调用setParseItem接口，第三个参数设置为true
 -- @return string viewedSateId，可用卫星号，""表示无效
--- @usage gpsHxxt.getSateSn()
+-- @usage gps.getSateSn()
 function getSateSn()
 	return SateSn or ""
 end
@@ -898,7 +906,7 @@ end
 -- 1、开启了GPS，并且定位成功
 -- 2、调用setParseItem接口，第二个参数设置为true
 -- @return string gsv，信噪比
--- @usage gpsHxxt.getGsv()
+-- @usage gps.getGsv()
 function getGsv()
 	return Gsv or ""
 end
@@ -907,10 +915,11 @@ end
 -- @bool[opt=nil] utcTime，是否解析RMC语句中的UTC时间，true表示解析，false或者nil不解析
 -- @bool[opt=nil] gsv，是否解析GSV语句，true表示解析，false或者nil不解析
 -- @bool[opt=nil] gsaId，是否解析GSA语句中的卫星ID，true表示解析，false或者nil不解析
--- @usage gpsHxxt.setParseItem(true,true,true)
+-- @usage gps.setParseItem(true,true,true)
 function setParseItem(utcTime,gsv,gsaId)
     psUtcTime,psGsv,psSn = utcTime,gsv,gsaId
 end
+
 
 function init()
     sys.subscribe("GPS_STATE",statInd)
@@ -922,4 +931,3 @@ function unInit()
 end
 
 init()
-

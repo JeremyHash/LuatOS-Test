@@ -328,4 +328,91 @@ end
 
 request("AT+CIND=1", nil, cindCnf)
 ril.regUrc("*CGEV", cgevurc)
-ril.regUrc("+CGDCONT", function(data) pdpCmdCnf("AT+CGDCONT?", true, "OK", data) end)
+ril.regUrc("+CGDCONT", function(data)
+    pdpCmdCnf("AT+CGDCONT?", true, "OK", data)
+end)
+
+--- 打开链路层网络类型
+-- 注意：设置网络类型后，并不会关机保存，下次开机会自动恢复为默认的link.CELLULAR类型
+-- @number[opt=link.CELLULAR] mode，取值如下：
+--              link.CELLULAR：蜂窝模组数据网络
+--              link.CH395：CH395以太网络
+--              link.W5500：W5500以太网络
+-- @table[opt=nil] para，取值如下：
+--                 当mode为link.CELLULAR时，参数para无意义，可以直接传入nil
+--                 当mode为link.CH395，para为table类型，表示以太网的配置参数，参数结构如下：
+--                para= {
+--                     mode = 1,      --1表示客户端；2表示服务器；默认为1
+--                     intPin = pio.P0_22,      --以太网芯片中断通知引脚
+--                     rstPin = pio.P0_23,      --复位以太网芯片引脚
+--                     spiCs = pio.P0_23,      --spi片选
+--                     serverAddr = "192.168.1.112",      --做服务器应用时，本机的地址
+--                     serverPort = 1888,      --做服务器应用时，本机的端口
+--                     serverGateway = "192.168.1.1",      --做服务器应用时，本机的网关地址
+--                     powerFunc=function(state) end           --控制以太网模块的供电开关函数，ret为true开启供电，false关闭供电
+--                     spi = {spi.SPI_1,0,0,8,800000},      --SPI通道参数，id,cpha,cpol,dataBits,clock，默认spi.SPI_1,0,0,8,800000
+--                 }
+-- @return true/false,执行成功返回true,失败返回false。
+-- @usage
+-- 设置为蜂窝数据网络：
+-- c = link.setNetwork(link.CELLULAR, para)
+-- 设置为CH395以太网络：
+-- link.setNetwork(link.CH395, para)
+-- 设置为w5500以太网络：
+-- link.setNetwork(link.W5500, para)
+function openNetwork(mode, para)
+    local tSocketModule = {
+        [CH395] = socketCh395,
+        [W5500] = socketW5500
+    }
+    local md = mode or CELLULAR
+        closeNetWork()
+        network = md
+        if network == CELLULAR then
+            net.switchFly(false)
+            return true
+        else
+            ipAddr=tSocketModule[network].open(para)
+            if ipAddr~="" then
+                return true
+            else
+                log.info('link','open CH395 err')
+                return false
+            end
+        end
+        return false
+end
+
+--- 关闭链路层网络类型
+-- 注意：关闭链路层网络类型，不会改变链路层网络类型，需要打开链路层网络类型配置才能切换。
+-- @return true/false,执行成功返回true,失败返回false。
+-- @usage
+-- 关闭链路层网络类型：
+-- link.closeNetWork()
+function closeNetWork()
+    local tSocketModule =  {
+        [CH395] = socketCh395,
+        [W5500] = socketW5500
+    }
+
+    if network == CELLULAR then
+        -- 飞行模式
+        net.switchFly(true)
+        return true
+    else
+        return tSocketModule[network].close()
+    end
+    return false
+end
+
+--- 获取链路层网络类型
+-- @return network，number类型，取值如下：
+--              link.CELLULAR：蜂窝模组数据网络
+--              link.CH395：CH395以太网络
+--              link.W5500：W5500以太网络
+-- @usage
+-- 获取数据网络类型：
+-- mode = link.getNetwork()
+function getNetwork()
+    return network
+end

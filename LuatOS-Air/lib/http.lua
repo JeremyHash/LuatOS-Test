@@ -58,7 +58,7 @@ local function taskClient(method,protocal,auth,host,port,path,cert,head,body,tim
 
     local client = socket.tcp(protocal=="https",cert,tCoreExtPara)
     if not client then return response(nil,cbFnc,false,"create socket error") end
-    if not client:connect(host,port,timeout) then
+    if not client:connect(host,port,timeout/1000) then
         return response(client,cbFnc,false,"connect fail")
     end
 

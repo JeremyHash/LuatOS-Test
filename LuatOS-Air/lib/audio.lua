@@ -333,6 +333,11 @@ rtos.on(rtos.MSG_TTSPLY_ERROR, function() log.info("rtos.MSG_TTSPLY_ERROR") sys.
 -- @usage audio.setVolume(7)
 function setVolume(vol)
     local result = audiocore.setvol(vol)
+    if result == 1 then
+        result = true
+    elseif result == 0 then
+        result = false
+    end
     if result then sVolume = vol end
     return result
 end
@@ -385,7 +390,6 @@ function setMicGain(mode, level)
         else
             gainHex = string.format("%02X%02X%02X%02X", level, 0, level * 2, 0)
         end
-        
 
         if mode == "call" then
             ril.request("AT+CACCP=5,1,0," .. gainHex)
@@ -393,7 +397,6 @@ function setMicGain(mode, level)
         elseif mode == "record" then
             ril.request("AT+CACCP=2,1,6," .. gainHex)
         end
-
         return true
     end
 end
