@@ -383,13 +383,13 @@ local function clientDirectTask()
 end
 
 --- 配置阿里云物联网套件的产品信息和设备信息
--- @string productKey，产品标识
--- @string[opt=nil] productSecret，产品密钥
+-- @string productKey 产品标识
+-- @string[opt=nil] productSecret 产品密钥
 -- 一机一密认证方案时，此参数传入nil
 -- 一型一密认证方案时，此参数传入真实的产品密钥
--- @function getDeviceNameFnc，获取设备名称的函数
--- @function getDeviceSecretFnc，获取设备密钥的函数
--- @function[opt=nil] setDeviceSecretFnc，设置设备密钥的函数，一型一密认证方案才需要此参数
+-- @function getDeviceNameFnc 获取设备名称的函数
+-- @function getDeviceSecretFnc 获取设备密钥的函数
+-- @function[opt=nil] setDeviceSecretFnc 设置设备密钥的函数，一型一密认证方案才需要此参数
 -- @return nil
 -- @usage
 -- aLiYun.setup("b0FMK1Ga5cp",nil,getDeviceNameFnc,getDeviceSecretFnc)
@@ -405,8 +405,8 @@ end
 
 --- 设置MQTT数据通道的参数
 -- @number[opt=1] cleanSession 1/0
--- @table[opt=nil] will 遗嘱参数，格式为{qos=, retain=, topic=, payload=}
--- @number[opt=240] keepAlive，单位秒
+-- @table[opt=nil] will 遗嘱参数，格式为{qos=,retain=,topic=,payload=}
+-- @number[opt=240] keepAlive 单位秒
 -- @return nil
 -- @usage
 -- aLiYun.setMqtt(0)
@@ -418,7 +418,7 @@ end
 
 
 --- 设置地域region id
--- @string region，地域id字符串，参考：https://help.aliyun.com/document_detail/40654.html?spm=a2c4g.11186623.2.16.c0a63f82Z7qCtA#concept-h4v-j5k-xdb
+-- @string region 地域id字符串，参考：https://help.aliyun.com/document_detail/40654.html?spm=a2c4g.11186623.2.16.c0a63f82Z7qCtA#concept-h4v-j5k-xdb
 -- @return nil
 -- @usage
 -- 设置华北1：aLiYun.setRegion("cn-qingdao")
@@ -438,13 +438,13 @@ function setInstanceId(id)
 end
 
 --- 设置连接方式
--- @string mode，连接方式，支持如下几种方式：
+-- @string mode 连接方式，支持如下几种方式：
 --                         "direct"表示MQTT-TCP直连
--- @string host，服务器地址
--- @number port，服务器端口
--- @function getClientIdFnc，获取mqtt client id的函数
--- @function getUserNameFnc，获取mqtt client userName的函数
--- @function getPasswordFnc，获取mqtt client password的函数
+-- @string host 服务器地址
+-- @number port 服务器端口
+-- @function getClientIdFnc 获取mqtt，client，id的函数
+-- @function getUserNameFnc 获取mqtt，client，userName的函数
+-- @function getPasswordFnc 获取mqtt，client，password的函数
 -- @return nil
 -- @usage
 -- 设置为MQTT-TCP直连：aLiYun.setConnectMode("direct")
@@ -458,8 +458,8 @@ function setConnectMode(mode,host,port,getClientIdFnc,getUserNameFnc,getPassword
 end
 
 --- 订阅主题
--- @param topic，string或者table类型，一个主题时为string类型，多个主题时为table类型，主题内容为UTF8编码
--- @param qos，number或者nil，topic为一个主题时，qos为number类型(0/1，默认0)；topic为多个主题时，qos为nil
+-- @param topic string或者table类型，一个主题时为string类型，多个主题时为table类型，主题内容为UTF8编码
+-- @param qos number或者nil，topic为一个主题时，qos为number类型(0/1，默认0)；topic为多个主题时，qos为nil
 -- @return nil
 -- @usage
 -- aLiYun.subscribe("/b0FMK1Ga5cp/862991234567890/get", 0)
@@ -470,12 +470,12 @@ function subscribe(topic,qos)
 end
 
 --- 发布一条消息
--- @string topic，UTF8编码的主题
--- @string payload，负载
--- @number[opt=0] qos，质量等级，0/1，默认0
--- @function[opt=nil] cbFnc，消息发布结果的回调函数
+-- @string topic UTF8编码的主题
+-- @string payload 负载
+-- @number[opt=0] qos 质量等级，0/1，默认0
+-- @function[opt=nil] cbFnc 消息发布结果的回调函数
 -- 回调函数的调用形式为：cbFnc(result,cbPara)。result为true表示发布成功，false或者nil表示订阅失败；cbPara为本接口中的第5个参数
--- @param[opt=nil] cbPara，消息发布结果回调函数的回调参数
+-- @param[opt=nil] cbPara 消息发布结果回调函数的回调参数
 -- @return nil
 -- @usage
 -- aLiYun.publish("/b0FMK1Ga5cp/862991234567890/update","test",0)
@@ -487,12 +487,12 @@ function publish(topic,payload,qos,cbFnc,cbPara)
 end
 
 --- 注册事件的处理函数
--- @string evt，事件
+-- @string evt 事件
 -- "auth"表示鉴权服务器认证结果事件
 -- "connect"表示接入服务器连接结果事件
 -- "reconnect"表示重连事件
 -- "receive"表示接收到接入服务器的消息事件
--- @function cbFnc，事件的处理函数
+-- @function cbFnc 事件的处理函数
 -- 当evt为"auth"时，cbFnc的调用形式为：cbFnc(result)，result为true表示认证成功，false或者nil表示认证失败
 -- 当evt为"connect"时，cbFnc的调用形式为：cbFnc(result)，result为true表示连接成功，false或者nil表示连接失败
 -- 当evt为"receive"时，cbFnc的调用形式为：cbFnc(topic,qos,payload)，topic为UTF8编码的主题(string类型)，qos为质量等级(number类型)，payload为原始编码的负载(string类型)
@@ -505,8 +505,8 @@ function on(evt,cbFnc)
 end
 
 --- 设置阿里云task连续一段时间工作异常的处理程序
--- @function cbFnc，异常处理函数，cbFnc的调用形式为：cbFnc()
--- @number[opt=150] tmout，连续工作异常的时间，当连续异常到达这个时间之后，会调用cbFnc()
+-- @function cbFnc 异常处理函数，cbFnc的调用形式为：cbFnc()
+-- @number[opt=150] tmout 连续工作异常的时间，当连续异常到达这个时间之后，会调用cbFnc()
 -- @return nil
 -- @usage
 -- aLiYun.setErrHandle(function() sys.restart("ALIYUN_TASK_INACTIVE") end, 300)

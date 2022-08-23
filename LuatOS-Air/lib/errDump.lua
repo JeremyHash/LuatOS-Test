@@ -57,7 +57,7 @@ end
 
 
 --- 追加错误信息到LIB_ERR_FILE文件中（文件最多允许存储5K字节的数据）
--- @string s：用户自定义的错误信息，errDump功能模块会对此错误信息做如下处理：
+-- @string s 用户自定义的错误信息，errDump功能模块会对此错误信息做如下处理：
 -- 1、重启后会通过Luat下载调试工具输出，在trace中搜索errDump.libErr，可以搜索到错误信息
 -- 2、如果用户调用errDump.request接口设置了错误信息要上报的调试服务器地址和端口，则每次重启会自动上报错误信息到调试服务器
 -- 3、如果用户调用errDump.request接口设置了定时上报，则定时上报时会上报错误信息到调试服务器
@@ -227,7 +227,7 @@ end
 
 local onceGsmRegistered,onceGprsAttached
 --- 配置网络错误日志开关
--- @bool[opt=nil] flag，是否打开网络错误日志开关，true为打开，false或者nil为关闭
+-- @bool[opt=nil] flag 是否打开网络错误日志开关，true为打开，false或者nil为关闭
 -- @usage
 -- errDump.setNetworkLog(true)
 function setNetworkLog(flag)
@@ -292,7 +292,7 @@ function setNetworkLog(flag)
 end
 
 --- 配置调试服务器地址，启动错误信息上报给调试服务器的功能，上报成功后，会清除错误信息
--- @string addr，调试服务器地址信息，支持http，udp，tcp
+-- @string addr 调试服务器地址信息，支持http，udp，tcp
 -- 1、如果调试服务器使用http协议，终端将采用POST命令，把错误信息上报到addr指定的URL中，addr的格式如下
 --   (除protocol和hostname外，其余字段可选；目前的实现不支持hash)
 --   |------------------------------------------------------------------------------|
@@ -317,8 +317,8 @@ end
 --   "   tcp    :// host.com : 8082 | 
 --   |          |||          |      |
 --   |------------------------------|
--- @number[opt=600000] period，单位毫秒，定时检查错误信息并上报的间隔
--- @bool flag，当使用合宙调试服务器时，此参数填为true；使用自定义服务器时，此参数可省略
+-- @number[opt=600000] period 单位毫秒，定时检查错误信息并上报的间隔
+-- @bool flag 当使用合宙调试服务器时，此参数填为true；使用自定义服务器时，此参数可省略
 -- @return bool result，成功返回true，失败返回nil
 -- @usage
 -- errDump.request("http://www.user_server.com/errdump")

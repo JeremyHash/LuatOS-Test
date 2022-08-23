@@ -24,7 +24,7 @@ local function loseFocus()
 end
 
 --- 新增一个窗口
--- @table wnd，窗口的元素以及消息处理函数表
+-- @table wnd 窗口的元素以及消息处理函数表
 -- @return number，窗口ID
 -- @usage uiWin.add({onUpdate = refresh})
 function add(wnd)
@@ -43,7 +43,7 @@ function add(wnd)
 end
 
 --- 移除一个窗口
--- @number winId，窗口ID
+-- @number winId 窗口ID
 -- @return nil
 -- @usage uiWin.remove(winId)
 function remove(winId)
@@ -99,7 +99,7 @@ local function onKey(key,value)
 end
 
 --- 判断一个窗口是否处于最前显示
--- @number winId，窗口ID
+-- @number winId 窗口ID
 -- @return bool，true表示最前显示，其余表示非最前显示
 -- @usage uiWin.isActive(winId)
 function isActive(winId)

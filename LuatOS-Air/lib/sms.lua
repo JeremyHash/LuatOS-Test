@@ -518,15 +518,15 @@ local function sendcnf(result)
 end
 
 --- 发送短信
--- @string num，短信接收方号码，ASCII码字符串格式
--- @string data，短信内容，GB2312编码的字符串
+-- @string num 短信接收方号码，ASCII码字符串格式
+-- @string data 短信内容，GB2312编码的字符串
 --               如果短信内容中只有ascii可见字符，则超过160个字符时，会被拆分为几条长级联短信进行发送
 --               如果短信内容中包含除ascii可见字符外的其他字符，例如包含汉字，一个汉字算作一个字符，一个ascii可见字符也算作一个字符，超过70个字符时，会被拆分为几条长级联短信进行发送
--- @function[opt=nil] cbFnc，短信发送结果异步返回时的用户回调函数，回调函数的调用形式为：
+-- @function[opt=nil] cbFnc 短信发送结果异步返回时的用户回调函数，回调函数的调用形式为：
 --              cbFnc(result,num,data)
 --              num：短信接收方的号码，ASCII码字符串格式
 --              data：短信内容，unicode大端编码的HEX字符串
--- @number[opt=nil] idx，插入短信发送缓冲表的位置，默认是插入末尾
+-- @number[opt=nil] idx 插入短信发送缓冲表的位置，默认是插入末尾
 -- @return result，true表示调用接口成功（并不是短信发送成功，短信发送结果，通过sendcnf返回，如果有cbFnc，会通知cbFnc函数）；返回false，表示调用接口失败
 -- @usage sms.send("10086","test",cbFnc)
 function send(num, data, cbFnc, idx)
@@ -582,7 +582,7 @@ end
 local newsmscb
 
 --- 设置新短信的用户处理函数
--- @function cbFnc，新短信的用户处理函数
+-- @function cbFnc 新短信的用户处理函数
 -- @return nil
 -- @usage sms.setNewSmsCb(cbFnc)
 function setNewSmsCb(cbFnc)

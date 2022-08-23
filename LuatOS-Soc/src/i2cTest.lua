@@ -3,7 +3,7 @@ local i2cTest = {}
 local tag = "i2cTest"
 local i2cId
 local I2C_MOD_TYPE = "SHT30"
-if MOD_TYPE == "air101" or MOD_TYPE == "air103" or MOD_TYPE == "air105" or MOD_TYPE == "ESP32C3" then
+if MOD_TYPE == "AIR101" or MOD_TYPE == "AIR103" or MOD_TYPE == "AIR105" or MOD_TYPE == "ESP32C3" then
     i2cId = 0
 end
 
@@ -36,6 +36,7 @@ function i2cTest.test()
         i2c.close(i2cId)
     elseif I2C_MOD_TYPE == "SHT30" then
         local addr = 0x45
+        -- local addr = 0x44
         assert(i2c.setup(i2cId) == 0, tag .. ".setup ERROR")
         assert(i2c.send(i2cId, addr, string.char(0x2C, 0x06)) == true, tag .. ".send ERROR")
         local data = i2c.recv(i2cId, addr, 6)

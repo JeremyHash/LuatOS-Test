@@ -11,7 +11,7 @@ module(..., package.seeall)
 local tinsert, ssub, sbyte, schar, sformat, slen = table.insert, string.sub, string.byte, string.char, string.format, string.len
 
 --- ascii字符串的unicode编码的16进制字符串 转化为 ascii字符串
--- @string inNum，待转换字符串
+-- @string inNum 待转换字符串
 -- @return string data，转换后的字符串
 -- @usage 
 -- local data = common.ucs2ToAscii("0031003200330034")
@@ -24,7 +24,7 @@ function ucs2ToAscii(inNum)
     return schar(unpack(tonum))
 end
 --- ascii字符串 转化为 ascii字符串的unicode编码的16进制字符串(仅支持数字和+)
--- @string inNum：待转换字符串
+-- @string inNum 待转换字符串
 -- @return string data,转换后的字符串
 -- @usage 
 -- local data = common.nstrToUcs2Hex("+1234")
@@ -44,8 +44,8 @@ function nstrToUcs2Hex(inNum)
 end
 
 --- ASCII字符串 转化为 BCD编码格式字符串(仅支持数字)
--- @string inStr，待转换字符串
--- @number destLen，转换后的字符串期望长度，如果实际不足，则填充F
+-- @string inStr 待转换字符串
+-- @number destLen 转换后的字符串期望长度，如果实际不足，则填充F
 -- @return string data,转换后的字符串
 -- @usage 
 -- local data = common.numToBcdNum("8618126324567")
@@ -80,7 +80,7 @@ function numToBcdNum(inStr,destLen)
 end
 
 --- BCD编码格式字符串 转化为 号码ASCII字符串(仅支持数字)
--- @string,num：待转换字符串
+-- @string num 待转换字符串
 -- @return string data,转换后的字符串
 -- @usage 
 -- local data = common.bcdNumToNum(common.fromHex("688121364265f7")) --表示第1个字节是0x68，第2个字节为0x81，......
@@ -104,7 +104,7 @@ function bcdNumToNum(num)
 end
 
 --- unicode小端编码 转化为 gb2312编码
--- @string ucs2s,unicode小端编码数据
+-- @string ucs2s unicode小端编码数据
 -- @return string data,gb2312编码数据
 -- @usage local data = common.ucs2ToGb2312(ucs2s)
 function ucs2ToGb2312(ucs2s)
@@ -113,7 +113,7 @@ function ucs2ToGb2312(ucs2s)
 end
 
 --- gb2312编码 转化为 unicode小端编码
--- @string gb2312s,gb2312编码数据
+-- @string gb2312s gb2312编码数据
 -- @return string data,unicode小端编码数据
 -- @usage local data = common.gb2312ToUcs2(gb2312s)
 function gb2312ToUcs2(gb2312s)
@@ -122,7 +122,7 @@ function gb2312ToUcs2(gb2312s)
 end
 
 --- unicode大端编码 转化为 gb2312编码
--- @string ucs2s,unicode大端编码数据
+-- @string ucs2s unicode大端编码数据
 -- @return string data,gb2312编码数据
 -- @usage data = common.ucs2beToGb2312(ucs2s)
 function ucs2beToGb2312(ucs2s)
@@ -131,7 +131,7 @@ function ucs2beToGb2312(ucs2s)
 end
 
 --- gb2312编码 转化为 unicode大端编码
--- @string gb2312s,gb2312编码数据
+-- @string gb2312s gb2312编码数据
 -- @return string data,unicode大端编码数据
 -- @usage local data = common.gb2312ToUcs2be(gb2312s)
 function gb2312ToUcs2be(gb2312s)
@@ -140,7 +140,7 @@ function gb2312ToUcs2be(gb2312s)
 end
 
 --- unicode小端编码 转化为 utf8编码
--- @string ucs2s,unicode小端编码数据
+-- @string ucs2s unicode小端编码数据
 -- @return string data,utf8编码数据
 -- @usage data = common.ucs2ToUtf8(ucs2s)
 function ucs2ToUtf8(ucs2s)
@@ -149,7 +149,7 @@ function ucs2ToUtf8(ucs2s)
 end
 
 --- utf8编码 转化为 unicode小端编码
--- @string utf8s,utf8编码数据
+-- @string utf8s utf8编码数据
 -- @return string data,unicode小端编码数据
 -- @usage local data = common.utf8ToUcs2(utf8s)
 function utf8ToUcs2(utf8s)
@@ -158,7 +158,7 @@ function utf8ToUcs2(utf8s)
 end
 
 --- unicode大端编码 转化为 utf8编码
--- @string ucs2s,unicode大端编码数据
+-- @string ucs2s unicode大端编码数据
 -- @return string data,utf8编码数据
 -- @usage data = common.ucs2beToUtf8(ucs2s)
 function ucs2beToUtf8(ucs2s)
@@ -167,7 +167,7 @@ function ucs2beToUtf8(ucs2s)
 end
 
 --- utf8编码 转化为 unicode大端编码
--- @string utf8s,utf8编码数据
+-- @string utf8s utf8编码数据
 -- @return string data,unicode大端编码数据
 -- @usage local data = common.utf8ToUcs2be(utf8s)
 function utf8ToUcs2be(utf8s)
@@ -176,7 +176,7 @@ function utf8ToUcs2be(utf8s)
 end
 
 --- utf8编码 转化为 gb2312编码
--- @string utf8s,utf8编码数据
+-- @string utf8s utf8编码数据
 -- @return string data,gb2312编码数据
 -- @usage local data = common.utf8ToGb2312(utf8s)
 function utf8ToGb2312(utf8s)
@@ -187,7 +187,7 @@ function utf8ToGb2312(utf8s)
 end
 
 --- gb2312编码 转化为 utf8编码
--- @string gb2312s,gb2312编码数据
+-- @string gb2312s gb2312编码数据
 -- @return string data,utf8编码数据
 -- @usage local data = common.gb2312ToUtf8(gb2312s)
 function gb2312ToUtf8(gb2312s)
@@ -283,14 +283,14 @@ local function timeSubZone(y, m, d, hh, mm, ss, zone)
 end
 
 --- 时区时间转换
--- @number y,源时区年份
--- @number m,源时区月份
--- @number d,源时区天
--- @number hh,源时区小时
--- @number mm,源时区分
--- @number ss,源时区秒
--- @number srcTimeZone,源时区
--- @number dstTimeZone,目的时区
+-- @number y 源时区年份
+-- @number m 源时区月份
+-- @number d 源时区天
+-- @number hh 源时区小时
+-- @number mm 源时区分
+-- @number ss 源时区秒
+-- @number srcTimeZone 源时区
+-- @number dstTimeZone 目的时区
 -- @return table dstZoneTime,返回目的时区对应的时间，{year,month,day,hour,min,sec}
 -- @usage
 -- local dstZoneTime = common.timeZoneConvert(2018,1,1,18,00,00,0,8)

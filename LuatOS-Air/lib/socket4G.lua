@@ -1,5 +1,5 @@
---- 模块功能：数据链路激活、SOCKET管理(创建、连接、数据收发、状态维护)
--- @module socket
+-- 模块功能：数据链路激活、socket4G管理(创建、连接、数据收发、状态维护)
+-- @module socket4G
 -- @author openLuat
 -- @license MIT
 -- @copyright openLuat
@@ -15,7 +15,8 @@ local SENDSIZE = 11200
 local INDEX_MAX = 256
 -- 是否有socket正处在链接
 local socketsConnected = 0
---- SOCKET 是否有可用
+
+-- SOCKET 是否有可用
 -- @return 可用true,不可用false
 -- socket4G.isReady = link.isReady
 
@@ -77,33 +78,34 @@ local function socket(protocol, cert, tCoreExtPara)
 end
 
 --- 创建基于TCP的socket对象
--- @bool[opt=nil] ssl，是否为ssl连接，true表示是，其余表示否
--- @table[opt=nil] cert，ssl连接需要的证书配置，只有ssl参数为true时，此参数才有意义，cert格式如下：
+-- @bool[opt=nil] ssl 是否为ssl连接，true表示是，其余表示否
+-- @table[opt=nil] cert ssl连接需要的证书配置，只有ssl参数为true时，此参数才有意义，cert格式如下：
 -- {
 --     caCert = "ca.crt", --CA证书文件(Base64编码 X.509格式)，如果存在此参数，则表示客户端会对服务器的证书进行校验；不存在则不校验
 --     clientCert = "client.crt", --客户端证书文件(Base64编码 X.509格式)，服务器对客户端的证书进行校验时会用到此参数
 --     clientKey = "client.key", --客户端私钥文件(Base64编码 X.509格式)
 --     clientPassword = "123456", --客户端证书文件密码[可选]
 --     insist = 1, --证书中的域名校验失败时，是否坚持连接，默认为1，坚持连接，0为不连接
+--     hostNameFlag = 0, --服务器域名是否上报，默认为0，不上报，1为上报
 -- }
--- @number[opt=nil] tCoreExtPara, 建立链接扩展参数
+-- @number[opt=nil] tCoreExtPara 建立链接扩展参数
 -- {
 --     rcvBufferSize = "num" --接收缓冲区大小，默认为0
 -- }
 -- @return client，创建成功返回socket客户端对象；创建失败返回nil
 -- @usage
--- c = socket.tcp()
--- c = socket.tcp(true)
--- c = socket.tcp(true, {caCert="ca.crt"})
--- c = socket.tcp(true, {caCert="ca.crt", clientCert="client.crt", clientKey="client.key"})
--- c = socket.tcp(true, {caCert="ca.crt", clientCert="client.crt", clientKey="client.key", clientPassword="123456"})
+-- c = socket4G.tcp()
+-- c = socket4G.tcp(true)
+-- c = socket4G.tcp(true, {caCert="ca.crt"})
+-- c = socket4G.tcp(true, {caCert="ca.crt", clientCert="client.crt", clientKey="client.key"})
+-- c = socket4G.tcp(true, {caCert="ca.crt", clientCert="client.crt", clientKey="client.key", clientPassword="123456"})
 function tcp(ssl, cert, tCoreExtPara)
     return socket("TCP" .. (ssl == true and "SSL" or ""), (ssl == true) and cert or nil, tCoreExtPara)
 end
 
 --- 创建基于UDP的socket对象
 -- @return client，创建成功返回socket客户端对象；创建失败返回nil
--- @usage c = socket.udp()
+-- @usage c = socket4G.udp()
 function udp()
     return socket("UDP")
 end
@@ -115,7 +117,7 @@ end
 -- @return bool result true - 成功，false - 失败
 -- @return string ,id '0' -- '8' ,返回通道ID编号
 -- @usage  
--- socketClient = socket.tcp()
+-- socketClient = socket4G.tcp()
 -- socketClient:connect("www.baidu.com","80")
 function mt:connect(address, port, timeout)
     assert(self.co == coroutine.running(), "socket:connect: coroutine mismatch")
@@ -137,6 +139,7 @@ function mt:connect(address, port, timeout)
     elseif self.protocol == 'TCPSSL' then
         local cert = {hostName = address}
         local insist = 1
+        local hostNameFlag = 0
         if self.cert then
             if self.cert.caCert then
                 if self.cert.caCert:sub(1, 1) ~= "/" then self.cert.caCert = "/lua/" .. self.cert.caCert end
@@ -151,8 +154,9 @@ function mt:connect(address, port, timeout)
                 cert.clientKey = io.readFile(self.cert.clientKey)
             end
             insist = self.cert.insist == 0 and 0 or 1
+            hostNameFlag = self.cert.hostNameFlag == 1 and 1 or 0
         end
-        self.id = socket_connect_fnc(2, address, port, cert, rcvBufferSize, insist)
+        self.id = socket_connect_fnc(2, address, port, cert, rcvBufferSize, insist, nil, hostNameFlag)
     else
         self.id = socket_connect_fnc(1, address, port, rcvBufferSize)
     end
@@ -207,11 +211,11 @@ function mt:connect(address, port, timeout)
 end
 
 --- 异步发送数据
--- @number[opt=nil] keepAlive,服务器和客户端最大通信间隔时间,也叫心跳包最大时间,单位秒
--- @string[opt=nil] pingreq,心跳包的字符串
+-- @number[opt=nil] keepAlive 服务器和客户端最大通信间隔时间,也叫心跳包最大时间,单位秒
+-- @string[opt=nil] pingreq 心跳包的字符串
 -- @return boole,false 失败，true 表示成功
 -- @usage
--- socketClient = socket.tcp()
+-- socketClient = socket4G.tcp()
 -- socketClient:connect("www.baidu.com","80")
 -- while socketClient:asyncSelect() do end
 function mt:asyncSelect(keepAlive, pingreq)
@@ -268,7 +272,7 @@ end
 -- @number[opt=nil] timeout 可选参数，发送超时时间，单位秒；为nil时表示不支持timeout
 -- @return result true - 成功，false - 失败
 -- @usage
--- socketClient = socket.tcp()
+-- socketClient = socket4G.tcp()
 -- socketClient:connect("www.baidu.com","80")
 -- socketClient:asyncSend("12345678")
 function mt:asyncSend(data, timeout)
@@ -286,7 +290,7 @@ end
 -- @return data 表示接收到的数据(如果是UDP，返回最新的一包数据；如果是TCP,返回所有收到的数据)
 --              ""表示未收到数据
 -- @usage 
--- socketClient = socket.tcp()
+-- socketClient = socket4G.tcp()
 -- socketClient:connect("www.baidu.com","80")
 -- data = socketClient:asyncRecv()
 function mt:asyncRecv()
@@ -309,7 +313,7 @@ end
 -- @number[opt=120] timeout 可选参数，发送超时时间，单位秒
 -- @return result true - 成功，false - 失败
 -- @usage
--- socketClient = socket.tcp()
+-- socketClient = socket4G.tcp()
 -- socketClient:connect("www.baidu.com","80")
 -- socketClient:send("12345678")
 function mt:send(data, timeout)
@@ -353,7 +357,7 @@ end
 --                如果result为false，PDP断开连接控制退出，data为"IP_ERROR_IND"
 -- @return param 如果是msg控制退出，param的值是msg的参数
 -- @usage 
--- socketClient = socket.tcp()
+-- socketClient = socket4G.tcp()
 -- socketClient:connect("www.baidu.com","80")
 -- result,data = socketClient:recv(60000,"APP_SOCKET_SEND_DATA")
 function mt:recv(timeout, msg, msgNoResume)
@@ -415,7 +419,7 @@ end
 --- 主动关闭并且销毁一个socket
 -- @return nil
 -- @usage
--- socketClient = socket.tcp()
+-- socketClient = socket4G.tcp()
 -- socketClient:connect("www.baidu.com","80")
 -- socketClient:close()
 function mt:close()
@@ -540,8 +544,8 @@ rtos.on(rtos.MSG_SOCK_RECV_IND, function(msg)
 end)
 
 --- 设置TCP层自动重传的参数
--- @number[opt=4] retryCnt，重传次数；取值范围0到12
--- @number[opt=16] retryMaxTimeout，限制每次重传允许的最大超时时间(单位秒)，取值范围1到16
+-- @number[opt=4] retryCnt 重传次数；取值范围0到12
+-- @number[opt=16] retryMaxTimeout 限制每次重传允许的最大超时时间(单位秒)，取值范围1到16
 -- @return nil
 -- @usage
 -- setTcpResendPara(3,8)
@@ -552,8 +556,8 @@ end
 
 --- 设置域名解析参数
 -- 注意：0027以及之后的core版本才支持此功能
--- @number[opt=4] retryCnt，重传次数；取值范围1到8
--- @number[opt=4] retryTimeoutMulti，重传超时时间倍数，取值范围1到5
+-- @number[opt=4] retryCnt 重传次数；取值范围1到8
+-- @number[opt=4] retryTimeoutMulti 重传超时时间倍数，取值范围1到5
 --                第n次重传超时时间的计算方式为：第n次的重传超时基数*retryTimeoutMulti，单位为秒
 --                重传超时基数表为{1, 1, 2, 4, 4, 4, 4, 4}
 --                第1次重传超时时间为：1*retryTimeoutMulti 秒
@@ -563,14 +567,14 @@ end
 --                第8次重传超时时间为：8*retryTimeoutMulti 秒
 -- @return nil
 -- @usage
--- socket.setDnsParsePara(8,5)
+-- socket4G.setDnsParsePara(8,5)
 function setDnsParsePara(retryCnt, retryTimeoutMulti)
     ril.request("AT*DNSTMOUT="..(retryCnt or 4)..","..(retryTimeoutMulti or 4))
 end
 
---- 打印所有socket的状态
+-- 打印所有socket的状态
 -- @return 无
--- @usage socket.printStatus()
+-- @usage socket4G.printStatus()
 function printStatus()
     for _, client in pairs(sockets) do
         for k, v in pairs(client) do
@@ -582,13 +586,13 @@ end
 --- 设置数据传输后，允许进入休眠状态的延时时长
 -- 3024版本以及之后的版本才支持此功能
 -- 此功能设置的参数，设置成功后，掉电会自动保存
--- @number tm，数据传输后，允许进入休眠状态的延时时长，单位为秒，取值范围1到20
+-- @number tm 数据传输后，允许进入休眠状态的延时时长，单位为秒，取值范围1到20
 --             注意：此时间越短，允许进入休眠状态越快，功耗越低；但是在某些网络环境中，此时间越短，可能会造成数据传输不稳定
 --                   建议在可以接受的功耗范围内，此值设置的越大越好
 --                   如果没有设置此参数，此延时时长是和基站的配置有关，一般来说是10秒左右
 -- @return nil
 -- @usage
--- socket.setLowPower(5)
+-- socket4G.setLowPower(5)
 function setLowPower(tm)
     ril.request("AT*RTIME="..tm)
 end

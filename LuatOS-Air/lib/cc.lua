@@ -63,7 +63,7 @@ function dial(num, delay)
 end
 
 --- 挂断通话
--- @string num 号码，若指定号码通话状态不对 则直接退出 不会执行挂断，若挂断时会挂断所有电话
+-- @string num 号码，若指定号码通话状态不对，则直接退出，不会执行挂断，若挂断时会挂断所有电话
 -- @return nil
 -- @usage cc.hangUp('10086')
 function hangUp(num)
@@ -74,7 +74,7 @@ function hangUp(num)
 end
 
 --- 接听电话
--- @string num 号码，若指定号码通话状态不对 则直接退出 不会接通
+-- @string num 号码，若指定号码通话状态不对，则直接退出，不会接通
 -- @return nil
 -- @usage cc.accept('10086')
 function accept(num)
@@ -85,7 +85,7 @@ function accept(num)
 end
 
 --- 通话中发送声音到对端,必须是12.2K AMR格式
--- @string data 12.2K AMR格式的数据
+-- @string data 12.2K，AMR格式的数据
 -- @bool[opt=nil] loop 是否循环发送，true为循环，其余为不循环
 -- @bool[opt=nil] downLinkPlay 声音是否在本端播放，true为播放，其余为不播放
 -- @return bool result true为成功，false为失败

@@ -15,9 +15,9 @@ local recordType = "FILE"
 local recording,stoping,recordCb,stopCbFnc
 
 --- 开始录音
--- @number seconds，录音时长，单位：秒
+-- @number seconds 录音时长，单位：秒
 --     流录音模式下，如果想长时间录音，可以将此参数设置为0x7FFFFFFF，相当于录音2147483647秒=24855天
--- @function[opt=nil] cbFnc，录音回调函数：
+-- @function[opt=nil] cbFnc 录音回调函数：
 --     当type参数为"FILE"时，回调函数的调用形式为：
 --         cbFnc(result,size)
 --               result：录音结果，true表示成功，false或者nil表示失败
@@ -27,12 +27,12 @@ local recording,stoping,recordCb,stopCbFnc
 --               result：录音结果，true表示成功，false或者nil表示失败
 --               size：number类型，每次上报的录音数据流的大小，单位是字节，在result为true时才有意义
 --               tag：string类型，"STREAM"表示录音数据流通知，"END"表示录音结束
--- @string[opt="FILE"] type，录音模式
+-- @string[opt="FILE"] type 录音模式
 --     "FILE"表示文件录音模式，录音数据自动保存在文件中，录音结束后，执行一次cbFnc函数
 --     "STREAM"表示流录音模式，录音数据保存在内存中，每隔一段时间执行一次cbFnc函数去读取录音数据流，录音结束后再执行一次cbFnc函数
--- @number[opt=1] quality，录音质量，0：一般质量 1：中等质量 2：高质量 3：无损质量
--- @number[opt=2] rcdType，录音类型 n:1:mic(从麦克风录制) 2:voice(录制语音通话，录制的流与上下行通道) 3:voice_dual(在poc模式下从麦克风录制)
--- @number[opt=3] format，录音格式，1:pcm 2:wav 3:amrnb 4:speex
+-- @number[opt=1] quality 录音质量，0：一般质量，1：中等质量，2：高质量，3：无损质量
+-- @number[opt=2] rcdType 录音类型，n:1:mic(从麦克风录制)，2:voice(录制语音通话，录制的流与上下行通道)，3:voice_dual(在poc模式下从麦克风录制)
+-- @number[opt=3] format 录音格式，1:pcm，2:wav，3:amrnb，4:speex
 --      pcm格式：录音质量参数无效，采样率：8000，单声道，采样精度：16 bit，5秒钟录音80KB左右
 --      wav格式：录音质量参数无效，比特率：128kbps，5秒钟录音80KB左右
 --      amrnb格式：录音质量参数有效
@@ -41,7 +41,7 @@ local recording,stoping,recordCb,stopCbFnc
 --                 录音质量为2时：比特率：7.95kbps，5秒钟录音4KB多
 --                 录音质量为3时：比特率：12.2kbps，5秒钟录音7KB多
 --      speex格式：录音质量参数无效，pcm格式128kbps后的压缩格式，5秒钟6KB左右
--- @number[opt=nil] streamRptLen，流录音时，每次上报的字节阀值
+-- @number[opt=nil] streamRptLen 流录音时，每次上报的字节阀值
 -- @usage 
 -- 文件录音模式，录音5秒，一般质量，amrnb格式，录音结束后执行cbFnc函数：
 -- record.start(5,cbFnc)
@@ -79,7 +79,7 @@ function start(seconds, cbFnc, type, quality, rcdType,format, streamRptLen)
 end
 
 --- 停止录音
--- @function[opt=nil] cbFnc，停止录音的回调函数(停止结果通过此函数通知用户)，回调函数的调用形式为：
+-- @function[opt=nil] cbFnc 停止录音的回调函数(停止结果通过此函数通知用户)，回调函数的调用形式为：
 --      cbFnc(result)
 --      result：number类型
 --              0表示停止成功

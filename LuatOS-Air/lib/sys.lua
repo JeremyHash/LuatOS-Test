@@ -51,7 +51,7 @@ end
 
 --- task任务延时函数
 -- 只能直接或者间接的被task任务主函数调用，如果定时器创建成功，则本task会挂起
--- @number ms，延时时间，单位毫秒，最小1，最大0x7FFFFFFF
+-- @number ms 延时时间，单位毫秒，最小1，最大0x7FFFFFFF
 --             实际上支持的最小超时时间是5毫秒，小于5毫秒的时间都会被转化为5毫秒
 -- @return result，分为如下三种情况：
 --             1、如果定时器创建失败，本task不会被挂起，直接返回nil
@@ -89,8 +89,8 @@ end
 
 --- task任务条件等待函数（支持事件消息和定时器消息）
 -- 只能直接或者间接的被task任务主函数调用，调用本接口的task会挂起
--- @string id，消息ID，建议使用string类型
--- @number[opt=nil] ms，延时时间，单位毫秒，最小1，最大0x7FFFFFFF
+-- @string id 消息ID，建议使用string类型
+-- @number[opt=nil] ms 延时时间，单位毫秒，最小1，最大0x7FFFFFFF
 --             实际上支持的最小超时时间是5毫秒，小于5毫秒的时间都会被转化为5毫秒
 -- @return result,data，分为如下三种情况：
 --             1、如果存在超时时间参数：
@@ -187,7 +187,7 @@ end
 -- 有两种方式可以唯一标识一个定时器：
 -- 1、定时器ID
 -- 2、定时器回调函数和可变参数
--- @param val，有两种形式：
+-- @param val 有两种形式：
 --             1、为number类型时，表示定时器ID
 --             2、为function类型时，表示定时器回调函数
 -- @param ... 可变参数，当val为定时器回调函数时，此可变参数才有意义，表示定时器回调函数的可变回调参数
@@ -221,7 +221,7 @@ function timerStop(val, ...)
 end
 
 --- 关闭sys.timerStart和sys.timerLoopStart创建的某个回调函数的所有定时器
--- @function fnc， 定时器回调函数
+-- @function fnc 定时器回调函数
 -- @return nil
 -- @usage 
 -- 关闭回调函数为publicTimerCbFnc的所有定时器
@@ -316,7 +316,7 @@ function timerLoopStart(fnc, ms, ...)
 end
 
 --- 判断“通过timerStart或者timerLoopStart创建的定时器”是否处于激活状态
--- @param val，定时器标识，有两种表示形式
+-- @param val 定时器标识，有两种表示形式
 --                         1、number类型，通过timerStart或者timerLoopStart创建定时器时返回的定时器ID，此情况下，不需要传入回调参数...就能唯一标识一个定时器
 --                         2、function类型，通过timerStart或者timerLoopStart创建定时器时的回调函数，此情况下，如果存在回调参数，需要传入回调参数...才能唯一标识一个定时器
 -- @param ... 回调参数，和“通过timerStart或者timerLoopStart创建定时器”的回调参数保持一致

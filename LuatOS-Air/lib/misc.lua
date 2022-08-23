@@ -124,8 +124,8 @@ function getVersion()
 end
 
 --- 设置系统时间
--- @table t,系统时间，格式参考：{year=2017,month=2,day=14,hour=14,min=2,sec=58}
--- @function[opt=nil] cbFnc，设置结果回调函数，回调函数的调用形式为：
+-- @table t 系统时间，格式参考：{year=2017,month=2,day=14,hour=14,min=2,sec=58}
+-- @function[opt=nil] cbFnc 设置结果回调函数，回调函数的调用形式为：
 --                           cbFnc(time，result)
 --                           result为true表示成功，false或者nil为失败
 --                           time表示设置之后的系统时间，table类型，例如{year=2017,month=2,day=14,hour=14,min=19,sec=23}
@@ -166,8 +166,8 @@ function getAnt()
 	return ant
 end
 --- 设置SN
--- @string s,新sn的字符串
--- @function[opt=nil] cbFnc,设置结果回调函数，回调函数的调用形式为：
+-- @string s 新sn的字符串
+-- @function[opt=nil] cbFnc 设置结果回调函数，回调函数的调用形式为：
 -- cnFnc(result)，result为true表示成功，false或者nil为失败
 -- @return nil
 -- @usage
@@ -189,8 +189,8 @@ function getSn()
     return sn or ""
 end
 --- 设置IMEI
--- @string s,新IMEI字符串
--- @function[opt=nil] cbFnc,设置结果回调函数，回调函数的调用形式为：
+-- @string s 新IMEI字符串
+-- @function[opt=nil] cbFnc 设置结果回调函数，回调函数的调用形式为：
 -- cnFnc(result)，result为true表示成功，false或者nil为失败
 -- @return nil
 -- @usage misc.setImei(”359759002514931”)
@@ -253,16 +253,14 @@ function getMuid()
 end
 
 --- 打开并且配置PWM(支持2路PWM，仅支持输出)
--- @number id，PWM输出通道，仅支持0和1
+-- @number id PWM输出通道，仅支持0和1
 -- 0使用MODULE_STATUS/GPIO_5引脚
 -- 1使用GPIO_13引脚，注意：上电的时候不要把 GPIO_13 拉高到V_GLOBAL_1V8，否则模块会进入校准模式，不正常开机
--- @number para1，
--- 当id为0时，para1表示分频系数，最大值为2047；分频系数和频率的换算关系为：频率=25000000/para1 （Hz）；例如para1为500时，频率为50000Hz
---                                          分频系数和周期的换算关系为：周期=para1/25000000　（ｓ）；例如para1为500时，周期为20ｕｓ
+-- @number para1 当id为0时，para1表示分频系数，最大值为2047；分频系数和频率的换算关系为：频率=25000000/para1（Hz）；例如para1为500时，频率为50000Hz
+--                                          分频系数和周期的换算关系为：周期=para1/25000000（ｓ）；例如para1为500时，周期为20ｕｓ
 -- 当id为1时，para1表示时钟周期，取值范围为0-7，仅支持整数
 --                                         0-7分别对应125、250、500、1000、1500、2000、2500、3000毫秒
--- @number para2，
--- 当id为0时，para2表示占空比计算系数，最大值为1023；占空比计算系数和占空比的计算关系为：占空比=para2/para1
+-- @number para2 当id为0时，para2表示占空比计算系数，最大值为1023；占空比计算系数和占空比的计算关系为：占空比=para2/para1
 -- 当id为1时，para2表示一个时钟周期内的高电平时间，取值范围为1-15，仅支持整数
 --                                                           1-15分别对应15.6、31.2、46.8、62、78、94、110、125、140、156、172、188、200、218、234毫秒
 -- @return nil
@@ -280,7 +278,7 @@ function openPwm(id, para1, para2)
 end
 
 --- 关闭PWM
--- @number id，PWM输出通道，仅支持0和1
+-- @number id PWM输出通道，仅支持0和1
 -- 0使用MODULE_STATUS/GPIO_5引脚
 -- 1使用GPIO_13引脚，注意：上电的时候不要把 GPIO_13 拉高到V_GLOBAL_1V8，否则模块会进入校准模式，不正常开机
 -- @return nil

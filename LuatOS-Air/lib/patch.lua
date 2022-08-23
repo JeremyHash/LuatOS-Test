@@ -83,7 +83,7 @@ os.clockms = function() return rtos.tick()/16 end
 if json and json.decode then oldjsondecode = json.decode end
 
 --- 封装自定义的json.decode接口
--- @string s,json格式的字符串
+-- @string s json格式的字符串
 -- @return table,第一个返回值为解析json字符串后的table
 -- @return boole,第二个返回值为解析结果(true表示成功，false失败)
 -- @return string,第三个返回值可选（只有第二个返回值为false时，才有意义），表示出错信息

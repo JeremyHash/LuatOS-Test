@@ -21,7 +21,7 @@ function string.toHex(str, separator)
     end)
 end
 --- 将HEX字符串转成Lua字符串，如"313233616263"转为"123abc", 函数里加入了过滤分隔符，可以过滤掉大部分分隔符（可参见正则表达式中\s和\p的范围）。
--- @string hex,16进制组成的串
+-- @string hex 16进制组成的串
 -- @return charstring,字符组成的串
 -- @return len,输出字符串的长度
 -- @usage
@@ -47,7 +47,7 @@ function string.toValue(str)
 end
 
 --- 返回utf8编码字符串的长度
--- @string str,utf8编码的字符串,支持中文
+-- @string str utf8编码的字符串,支持中文
 -- @return number,返回字符串长度
 -- @usage local cnt = string.utf8Len("中国a"),cnt == 3
 function string.utf8Len(str)
@@ -56,7 +56,7 @@ function string.utf8Len(str)
 end
 
 --- 返回utf8编码字符串的单个utf8字符的table
--- @string str，utf8编码的字符串,支持中文
+-- @string str utf8编码的字符串,支持中文
 -- @return table,utf8字符串的table
 -- @usage local t = string.utf8ToTable("中国2018")
 function string.utf8ToTable(str)
@@ -68,7 +68,7 @@ function string.utf8ToTable(str)
 end
 
 --- 返回字符串的 RFC3986 编码
--- @string str，要转换编码的字符串,支持UTF8编码中文
+-- @string str 要转换编码的字符串,支持UTF8编码中文
 -- @return str, RFC3986 编码的字符串
 -- @usage local str = string.rawurlEncode("####133") ,str == "%23%23%23%23133"
 -- @usage local str = string.rawurlEncode("中国2018") , str == "%e4%b8%ad%e5%9b%bd2018"
@@ -85,7 +85,7 @@ function string.rawurlEncode(str)
 end
 
 --- 返回字符串的urlEncode编码
--- @string str，要转换编码的字符串,支持UTF8编码中文
+-- @string str 要转换编码的字符串,支持UTF8编码中文
 -- @return str,urlEncode编码的字符串
 -- @usage local str = string.urlEncode("####133") ,str == "%23%23%23%23133"
 -- @usage local str = string.urlEncode("中国2018") , str == "%e4%b8%ad%e5%9b%bd2018"
@@ -102,8 +102,8 @@ function string.urlEncode(str)
 end
 
 --- 返回一个迭代器函数,每次调用函数都会返回hash表的排序后的键值对
--- @table t, 要排序的hash表
--- @param f, 自定义排序函数
+-- @table t 要排序的hash表
+-- @param f 自定义排序函数
 -- @return function.
 -- @usage test = {a=1,f=9,d=2,c=8,b=5}
 -- @usage for name,line in pairsByKeys(test) do print(name,line) end
@@ -119,7 +119,7 @@ function table.gsort(t, f)
 end
 
 --- table.concat的增强版，支持嵌套字符串数组
--- @table l,嵌套字符串数组
+-- @table l 嵌套字符串数组
 -- @return string
 -- @usage  print(table.rconcat({"a",{" nice "}," and ", {{" long "},{" list "}}}))
 function table.rconcat(l)
@@ -132,7 +132,7 @@ function table.rconcat(l)
 end
 
 --- 返回数字的千位符号格式
--- @number num,数字
+-- @number num 数字
 -- @return string，千位符号的数字字符串
 -- @usage loca s = string.formatNumberThousands(1000) ,s = "1,000"
 function string.formatNumberThousands(num)
@@ -181,7 +181,7 @@ function string.checkSum(str, num)
 end
 
 --- 判断文件是否存在
--- @string path,文件全名，例如："/lua/call.mp3"
+-- @string path 文件全名，例如："/lua/call.mp3"
 -- @return bool,存在为true,不存在为false
 -- @usage local ex = io.exists("/lua/call.mp3")
 function io.exists(path)
@@ -193,7 +193,7 @@ function io.exists(path)
     return false
 end
 --- 读取文件中的所有内容
--- @string path,文件全名，例如："/lua/call.txt"
+-- @string path 文件全名，例如："/lua/call.txt"
 -- @return string,文件的内容,文件不存在返回nil
 -- @usage local c = io.readFile("/lua/call.txt")
 function io.readFile(path)
@@ -205,9 +205,9 @@ function io.readFile(path)
     end
 end
 --- 写入文件指定的内容,默认为覆盖二进制模式
--- @string path,文件全名，例如："/lua/call.txt"
--- @string content,文件内容
--- @string mode,文件写入模式，支持如下几种（默认"w+b"）：
+-- @string path 文件全名，例如："/lua/call.txt"
+-- @string content 文件内容
+-- @string mode 文件写入模式，支持如下几种（默认"w+b"）：
 --         "w"或者"w+b"：空文件写入模式，如果文件不存在，则新建文件，然后从起始位置开始写入；如果文件存在，则删除已有内容，然后从起始位置开始写入
 --         "a"或者"a+b"：追加写入模式，如果文件不存在，则新建文件，然后从起始位置开始写入；如果文件存在，则从文件末尾开始追加写入
 -- @return boolean result,文件写入结果，true表示写入成功；false表示写入失败
@@ -224,7 +224,7 @@ function io.writeFile(path, content, mode)
     end
 end
 --- 将文件路径分解为table信息
--- @string path,文件路径全名，例如:"/lua/call.txt"
+-- @string path 文件路径全名，例如:"/lua/call.txt"
 -- @return table,{dirname="/lua/",filename="call.txt",basename="call",extname=".txt"}
 -- @usage loca p = io.pathInfo("/lua/call.txt")
 function io.pathInfo(path)
@@ -253,7 +253,7 @@ function io.pathInfo(path)
     }
 end
 --- 返回文件大小
--- @string path,文件路径全名，例如:"/lua/call.txt"
+-- @string path 文件路径全名，例如:"/lua/call.txt"
 -- @return number ,文件大小
 -- @usage locan cnt = io.fileSize("/lua/call.txt")
 function io.fileSize(path)
@@ -269,9 +269,9 @@ function io.fileSize(path)
 end
 
 --- 返回指定位置读取的字符串
--- @string path,文件路径全名，例如:"/lua/call.txt"
--- @number offset,要读取的指定位置，相对于文件开头的偏移位置
--- @number len,要读取的字节数
+-- @string path 文件路径全名，例如:"/lua/call.txt"
+-- @number offset 要读取的指定位置，相对于文件开头的偏移位置
+-- @number len 要读取的字节数
 -- @return string,返回要读取的数据,读取失败返回nil
 function io.readStream(path, offset, len)
     local file, str = io.open(path, "r")

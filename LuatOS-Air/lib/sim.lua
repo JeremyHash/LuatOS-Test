@@ -55,7 +55,7 @@ function getStatus()
 end
 
 --- 设置“是否打开查询本机号码”的功能
--- @bool flag，开启或者关闭查询功能的标志，false或者nil为关闭，其余为开启
+-- @bool flag 开启或者关闭查询功能的标志，false或者nil为关闭，其余为开启
 -- @return nil
 -- @usage sim.setQueryNumber(true)
 function setQueryNumber(flag)
@@ -149,8 +149,8 @@ function set2gSim()
 end
 
 --- 设置双卡单待sim id
--- @number id,双卡单待的sim id，仅支持0和1
--- @function[opt=nil] cbFnc,设置结果回调函数，回调函数的调用形式为：
+-- @number id 双卡单待的simid，仅支持0和1
+-- @function[opt=nil] cbFnc 设置结果回调函数，回调函数的调用形式为：
 -- cnFnc(result)，result为true表示成功，false或者nil为失败
 -- @return nil
 -- @usage

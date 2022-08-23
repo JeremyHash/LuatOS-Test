@@ -1,5 +1,5 @@
---- 模块功能：数据链路激活、SOCKET管理(创建、连接、数据收发、状态维护)
--- @module socket
+--- 模块功能：数据链路激活、socketCh395管理(创建、连接、数据收发、状态维护)
+-- @module socketCh395
 -- @author openLuat
 -- @license MIT
 -- @copyright openLuat
@@ -242,11 +242,12 @@ local function interruptProcess()
     if bit.isset(intAll, 2) then
         local statePhy = string.sub(spiSend(spi.SPI_1, '\x26\xff'), 2, -1)
         if statePhy == '\x01' then
+            sys.publish("PHY_RESULT", false)
             log.info('socketCh395', 'phy false')
             ipError()
         elseif statePhy == '\x08' then
+            sys.publish("PHY_RESULT", true)
             log.info('socketCh395', 'phy true')
-
         end
     end
     -- 处理DHCP中断
@@ -477,7 +478,7 @@ local function setInt(state)
 end
 
 --- 初始化CG395模块
--- @table para，取值如下：
+-- @table para 取值如下：
 --               para为table类型，表示以太网的配置参数，参数结构如下：
 --                 {
 --                     mode = 1,      --1表示客户端；2表示服务器；默认为1
@@ -565,6 +566,12 @@ function open(para)
         log.info('socketCh395', 'ch395 INIT err' .. stateInit:toHex())
         return ''
     end
+
+    local result, result2 = sys.waitUntil("PHY_RESULT", 60000)
+    if not result or not result2 then
+        return ''
+    end
+
     -- 设置MAC地址
     if para['CH395MAC'] and string.len(para['CH395MAC']) == 12 then
         spiSend(spi.SPI_1, '\x21' .. string.fromHex(para['CH395MAC']))
@@ -862,9 +869,9 @@ local function socket(protocol, cert, tCoreExtPara)
 end
 
 --- 创建基于TCP的socket对象
--- @bool[opt=nil] ssl，是否为ssl连接，true表示是，其余表示否
--- @table[opt=nil] cert，保留参数，ssl功能还未实现。
--- @table[opt=nil] tCoreExtPara, 建立链接扩展参数
+-- @bool[opt=nil] ssl 是否为ssl连接，true表示是，其余表示否
+-- @table[opt=nil] cert 保留参数，ssl功能还未实现。
+-- @table[opt=nil] tCoreExtPara 建立链接扩展参数
 -- {
 --     id =0, --server socket索引ID
 --     ip ="192.168.1.1", --server socket client ip
@@ -885,7 +892,7 @@ end
 
 --- 创建基于UDP的socket对象
 -- @return client，创建成功返回socket客户端对象；创建失败返回nil
--- @usage c = socket.udp()
+-- @usage c = socketCh395.udp()
 function udp(localPort)
     return socket("UDP", nil, localPort)
 end
@@ -897,7 +904,7 @@ end
 -- @return bool result true - 成功，false - 失败
 -- @return string ,id '0' -- '8' ,返回通道ID编号
 -- @usage  
--- socketClient = socket.tcp()
+-- socketClient = socketCh395.tcp()
 -- socketClient:connect("www.baidu.com","80")
 function mt:connect(address, port, timeout)
     assert(self.co == coroutine.running(), "socket:connect: coroutine mismatch")
@@ -995,11 +1002,11 @@ function mt:serverClose()
 end
 
 --- server发送数据
--- @number[opt=nil] keepAlive,服务器和客户端最大通信间隔时间,也叫心跳包最大时间,单位秒
--- @string[opt=nil] pingreq,心跳包的字符串
+-- @number[opt=nil] keepAlive 服务器和客户端最大通信间隔时间,也叫心跳包最大时间,单位秒
+-- @string[opt=nil] pingreq 心跳包的字符串
 -- @return boole,false 失败，true 表示成功
 -- @usage
--- socketClient = socket.tcp()
+-- socketClient = socketCh395.tcp()
 -- socketClient:connect("www.baidu.com","80")
 -- while socketClient:serverSelect() do end
 function mt:serverSelect(keepAlive, pingreq)
@@ -1060,11 +1067,11 @@ function mt:serverSelect(keepAlive, pingreq)
 end
 
 --- 异步发送数据
--- @number[opt=nil] keepAlive,服务器和客户端最大通信间隔时间,也叫心跳包最大时间,单位秒
--- @string[opt=nil] pingreq,心跳包的字符串
+-- @number[opt=nil] keepAlive 服务器和客户端最大通信间隔时间,也叫心跳包最大时间,单位秒
+-- @string[opt=nil] pingreq 心跳包的字符串
 -- @return boole,false 失败，true 表示成功
 -- @usage
--- socketClient = socket.tcp()
+-- socketClient = socketCh395.tcp()
 -- socketClient:connect("www.baidu.com","80")
 -- while socketClient:asyncSelect() do end
 function mt:asyncSelect(keepAlive, pingreq)
@@ -1135,7 +1142,7 @@ end
 -- @number[opt=nil] timeout 可选参数，发送超时时间，单位秒；为nil时表示不支持timeout
 -- @return result true - 成功，false - 失败
 -- @usage
--- socketClient = socket.tcp()
+-- socketClient = socketCh395.tcp()
 -- socketClient:connect("www.baidu.com","80")
 -- socketClient:serverSend("12345678")
 function mt:serverSend(data, timeout)
@@ -1155,7 +1162,7 @@ end
 -- @return data 表示接收到的数据(如果是UDP，返回最新的一包数据；如果是TCP,返回所有收到的数据)
 --              ""表示未收到数据
 -- @usage 
--- socketClient = socket.tcp()
+-- socketClient = socketCh395.tcp()
 -- socketClient:connect("www.baidu.com","80")
 -- data = socketClient:serverRecv()
 function mt:serverRecv()
@@ -1179,7 +1186,7 @@ end
 -- @number[opt=nil] timeout 可选参数，发送超时时间，单位秒；为nil时表示不支持timeout
 -- @return result true - 成功，false - 失败
 -- @usage
--- socketClient = socket.tcp()
+-- socketClient = socketCh395.tcp()
 -- socketClient:connect("www.baidu.com","80")
 -- socketClient:asyncSend("12345678")
 function mt:asyncSend(data, timeout)
@@ -1199,7 +1206,7 @@ end
 -- @return data 表示接收到的数据(如果是UDP，返回最新的一包数据；如果是TCP,返回所有收到的数据)
 --              ""表示未收到数据
 -- @usage 
--- socketClient = socket.tcp()
+-- socketClient = socketCh395.tcp()
 -- socketClient:connect("www.baidu.com","80")
 -- data = socketClient:asyncRecv()
 function mt:asyncRecv()
@@ -1226,7 +1233,7 @@ end
 -- @number[opt=120] timeout 可选参数，发送超时时间，单位秒
 -- @return result true - 成功，false - 失败
 -- @usage
--- socketClient = socket.tcp()
+-- socketClient = socketCh395.tcp()
 -- socketClient:connect("www.baidu.com","80")
 -- socketClient:send("12345678")
 function mt:send(data, timeout)
@@ -1275,7 +1282,7 @@ end
 --                如果result为false，PDP断开连接控制退出，data为"IP_ERROR_IND"
 -- @return param 如果是msg控制退出，param的值是msg的参数
 -- @usage 
--- socketClient = socket.tcp()
+-- socketClient = socketCh395.tcp()
 -- socketClient:connect("www.baidu.com","80")
 -- result,data = socketClient:recv(60000,"APP_SOCKET_SEND_DATA")
 function mt:recv(timeout, msg, msgNoResume)
@@ -1346,7 +1353,7 @@ end
 --- 主动关闭并且销毁一个socket
 -- @return nil
 -- @usage
--- socketClient = socket.tcp()
+-- socketClient = socketCh395.tcp()
 -- socketClient:connect("www.baidu.com","80")
 -- socketClient:close()
 function mt:close()
@@ -1502,9 +1509,9 @@ sys.subscribe('MSG_SOCK_RECV_IND', function(msg)
     end
 end)
 
---- 设置TCP层自动重传的参数
--- @number[opt=4] retryCnt，重传次数；取值范围0到12
--- @number[opt=16] retryMaxTimeout，限制每次重传允许的最大超时时间(单位秒)，取值范围1到16
+-- 设置TCP层自动重传的参数
+-- @number[opt=4] retryCnt 重传次数；取值范围0到12
+-- @number[opt=16] retryMaxTimeout 限制每次重传允许的最大超时时间(单位秒)，取值范围1到16
 -- @return nil
 -- @usage
 -- setTcpResendPara(3,8)
@@ -1513,10 +1520,10 @@ function setTcpResendPara(retryCnt, retryMaxTimeout)
     ril.request("AT+TCPUSERPARAM=6," .. (retryCnt or 4) .. ",7200," .. (retryMaxTimeout or 16))
 end
 
---- 设置域名解析参数
+-- 设置域名解析参数
 -- 注意：0027以及之后的core版本才支持此功能
--- @number[opt=4] retryCnt，重传次数；取值范围1到8
--- @number[opt=4] retryTimeoutMulti，重传超时时间倍数，取值范围1到5
+-- @number[opt=4] retryCnt 重传次数；取值范围1到8
+-- @number[opt=4] retryTimeoutMulti 重传超时时间倍数，取值范围1到5
 --                第n次重传超时时间的计算方式为：第n次的重传超时基数*retryTimeoutMulti，单位为秒
 --                重传超时基数表为{1, 1, 2, 4, 4, 4, 4, 4}
 --                第1次重传超时时间为：1*retryTimeoutMulti 秒
@@ -1533,7 +1540,7 @@ end
 
 --- 打印所有socket的状态
 -- @return 无
--- @usage socket.printStatus()
+-- @usage socketCh395.printStatus()
 function printStatus()
     for _, client in pairs(sockets) do
         for k, v in pairs(client) do
@@ -1542,7 +1549,7 @@ function printStatus()
     end
 end
 
---- 设置数据传输后，允许进入休眠状态的延时时长
+-- 设置数据传输后，允许进入休眠状态的延时时长
 -- 3024版本以及之后的版本才支持此功能
 -- 此功能设置的参数，设置成功后，掉电会自动保存
 -- @number tm，数据传输后，允许进入休眠状态的延时时长，单位为秒，取值范围1到20
@@ -1551,7 +1558,7 @@ end
 --                   如果没有设置此参数，此延时时长是和基站的配置有关，一般来说是10秒左右
 -- @return nil
 -- @usage
--- socket.setLowPower(5)
+-- socketCh395.setLowPower(5)
 function setLowPower(tm)
     ril.request("AT*RTIME=" .. tm)
 end

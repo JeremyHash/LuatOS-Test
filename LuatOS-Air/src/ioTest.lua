@@ -132,7 +132,7 @@ function test()
         return
     end
     log.info(tag, "START")
-    if testConfig.SDCARD_TEST_ENABLE == true then
+    if testConfig.SDCARD_EXIST == true then
         local sdcardPath = "/sdcard0"
         assert(io.mount(io.SDCARD) == 1, tag .. ".mount ERROR")
         log.info(tag .. ".totalSize", rtos.get_fs_total_size(1, 1) .. " KB")

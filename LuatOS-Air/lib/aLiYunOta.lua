@@ -160,18 +160,19 @@ end
 ]]
 function upgrade(payload)
     local result
-    local jsonData,result = json.decode(payload)
-    log.info("aLiYunOta.upgrade",result,payload)
-    if rtos.fota_start() ~=0 then 
-        log.info("fota_start fail")
-        sys.timerStart(verRpt,10000)
-        return
-    end     
+    local jsonData, result = json.decode(payload)
+    log.info("aLiYunOta.upgrade", result, payload)
     if result and jsonData.data and jsonData.data.url then
+        if rtos.fota_start() ~= 0 then
+            log.info("fota_start fail")
+            sys.timerStart(verRpt, 10000)
+            return
+        end
         flowMd5 = crypto.flow_md5()
-        sys.taskInit(downloadTask,jsonData.data.url,jsonData.data.size,jsonData.data.md5,jsonData.data.version)
+        sys.taskInit(downloadTask, jsonData.data.url, jsonData.data.size, jsonData.data.md5, jsonData.data.version)
     end
 end
+
 
 
 --[[
@@ -221,7 +222,7 @@ function isDownloading()
 end
 
 --- 设置当前的固件版本号
--- @string version，当前固件版本号
+-- @string version 当前固件版本号
 -- @return nil
 -- @usage
 -- aLiYunOta.setVer("MCU_VERSION_1.0.0")
@@ -235,7 +236,7 @@ function setVer(version)
 end
 
 --- 设置新固件保存的文件名
--- @string name，新固件下载后保存的文件名；注意此文件名并不是保存的完整路径，完整路径通过setCb设置的回调函数去获取
+-- @string name 新固件下载后保存的文件名；注意此文件名并不是保存的完整路径，完整路径通过setCb设置的回调函数去获取
 -- @return nil
 -- @usage
 -- aLiYunOta.setName("MCU_FIRMWARE.bin")
@@ -244,7 +245,7 @@ function setName(name)
 end
 
 --- 设置新固件下载后的回调函数
--- @function cbFnc，新固件下载后的回调函数
+-- @function cbFnc 新固件下载后的回调函数
 -- 回调函数的调用形式为：cbFnc(result,filePath)，result为下载结果，true表示成功，false或者nil表示失败；filePath为新固件文件保存的完整路径
 -- @return nil
 -- @usage

@@ -245,15 +245,15 @@ local function audioTask()
 end
 
 --- 播放音频
--- @number priority，音频优先级，数值越大，优先级越高
+-- @number priority 音频优先级，数值越大，优先级越高
 --                   优先级高的播放请求会终止优先级低的播放
 --                   相同优先级的播放请求，播放策略参考：audio.setStrategy接口
--- @string type，音频类型，目前仅支持"FILE"、"TTS"
--- @string path，音频文件路径，跟typ有关
+-- @string type 音频类型，目前仅支持"FILE"、"TTS"
+-- @string path 音频文件路径，跟typ有关
 --               typ为"FILE"时：表示音频文件路径
 --               typ为"TTS"时：表示要播放的UTF8编码格式的数据
--- @number[opt=4] vol，播放音量，取值范围0到7，0为静音
--- @function[opt=nil] cbFnc，音频播放结束时的回调函数，回调函数的调用形式如下：
+-- @number[opt=4] vol 播放音量，取值范围0到7，0为静音
+-- @function[opt=nil] cbFnc 音频播放结束时的回调函数，回调函数的调用形式如下：
 -- cbFnc(result)
 -- result表示播放结果：
 --                   0-播放成功结束；
@@ -262,8 +262,8 @@ end
 --                   3-传入的参数出错，没有播放
 --                   4-被新的播放请求中止
 --                   5-调用audio.stop接口主动停止
--- @bool[opt=nil] dup，是否循环播放，true循环，false或者nil不循环
--- @number[opt=0] dupInterval，循环播放间隔(单位毫秒)，dup为true时，此值才有意义
+-- @bool[opt=nil] dup 是否循环播放，true循环，false或者nil不循环
+-- @number[opt=0] dupInterval 循环播放间隔(单位毫秒)，dup为true时，此值才有意义
 -- @return result，bool或者nil类型，同步调用成功返回true，否则返回false
 -- @usage audio.play(0,"FILE","/lua/call.mp3")
 -- @usage audio.play(0,"FILE","/lua/call.mp3",7)
@@ -301,7 +301,7 @@ function play(priority,type,path,vol,cbFnc,dup,dupInterval)
 end
 
 --- 停止音频播放
--- @function[opt=nil] cbFnc，停止音频播放的回调函数(停止结果通过此函数通知用户)，回调函数的调用形式为：
+-- @function[opt=nil] cbFnc 停止音频播放的回调函数(停止结果通过此函数通知用户)，回调函数的调用形式为：
 --      cbFnc(result)
 --      result：number类型
 --              0表示停止成功
@@ -328,7 +328,7 @@ rtos.on(rtos.MSG_TTSPLY_STATUS, function() log.info("rtos.MSG_TTSPLY_STATUS") sy
 rtos.on(rtos.MSG_TTSPLY_ERROR, function() log.info("rtos.MSG_TTSPLY_ERROR") sys.publish("LIB_AUDIO_PLAY_IND","RESULT",false) end)
 
 --- 设置喇叭音量等级
--- @number vol，音量值为0-7，0为静音
+-- @number vol 音量值为0-7，0为静音
 -- @return bool result，设置成功返回true，失败返回false
 -- @usage audio.setVolume(7)
 function setVolume(vol)
@@ -343,7 +343,7 @@ function setVolume(vol)
 end
 
 --- 设置通话音量等级
--- @number vol，音量值为0-7，0为静音
+-- @number vol 音量值为0-7，0为静音
 -- @return bool result，设置成功返回true，失败返回false
 -- @usage audio.setCallVolume(7)
 function setCallVolume(vol)
@@ -374,10 +374,10 @@ end)
 --- 设置mic增益等级
 -- 通话时mic增益在通话建立成功之后设置才有效
 -- 录音mic增益设置后实时生效
--- @string mode，增益类型
+-- @string mode 增益类型
 --      "call"表示通话中mic增益
 --      "record"表示录音mic增益
--- @number level，增益等级，取值为0-7
+-- @number level 增益等级，取值为0-7
 -- @return bool result，设置成功返回true，失败返回false
 -- @usage audio.setMicGain("record",7)，设置录音时mic增益为7级
 function setMicGain(mode, level)
@@ -423,7 +423,7 @@ function getMicVolume()
 end
 
 --- 设置优先级相同时的播放策略
--- @number strategy，优先级相同时的播放策略；
+-- @number strategy 优先级相同时的播放策略；
 --                   0：表示继续播放正在播放的音频，忽略请求播放的新音频
 --                   1：表示停止正在播放的音频，播放请求播放的新音频
 -- @return nil
@@ -434,7 +434,7 @@ function setStrategy(strategy)
 end
 
 --- 设置TTS朗读速度
--- @number speed，速度范围为0-100，默认50
+-- @number speed 速度范围为0-100，默认50
 -- @return bool result，设置成功返回true，失败返回false
 -- @usage audio.setTTSSpeed(70)
 function setTTSSpeed(speed)
@@ -446,8 +446,8 @@ end
 
 --- 设置音频输入、输出通道
 -- 设置后实时生效
--- @number[opt=2] output，0：earphone听筒    1：headphone耳机    2：speaker喇叭
--- @number[opt=0] input， 0：主mic    3：耳机mic
+-- @number[opt=2] output 0：earphone听筒，1：headphone耳机，2：speaker喇叭
+-- @number[opt=0] input 0：主mic，3：耳机mic
 -- @return nil
 -- @usage
 -- 设置为听筒输出：audio.setChannel(0)

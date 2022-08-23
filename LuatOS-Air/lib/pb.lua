@@ -16,8 +16,8 @@ local storagecb,readcb,writecb,deletecb
 local curPb = "SM"
 
 --- 设置电话本存储区域
--- @string storage, 存储区域字符串，仅支持"SM"
--- @param cb, 设置后的回调函数
+-- @string storage 存储区域字符串，仅支持"SM"
+-- @param cb 设置后的回调函数
 --
 -- 回调方式为cb(result)，result为true表示成功，false或者nil表示失败
 -- @return 无
@@ -30,8 +30,8 @@ function setStorage(storage,cb)
 end
 
 --- 读取一条电话本记录
--- @number index，电话本在存储区的位置
--- @function cb，function类型，读取后的回调函数
+-- @number index 电话本在存储区的位置
+-- @function cb function类型，读取后的回调函数
 --
 -- 回调方式为cb(result,name,number)：result为true表示成功，false或者nil表示失败；name为姓名；number为号码
 -- @usage pb.read(1,cb)
@@ -44,10 +44,10 @@ function read(index,cb)
 end
 
 --- 写入一条电话本记录
--- @number index，电话本在存储区的位置
--- @string name，姓名
--- @string num，号码
--- @function cb, functionl类型，写入后的回调函数
+-- @number index 电话本在存储区的位置
+-- @string name 姓名
+-- @string num 号码
+-- @function cb functionl类型，写入后的回调函数
 --
 -- 回调方式为cb(result)：result为true表示成功，false或者nil表示失败
 -- @return 无
@@ -63,8 +63,8 @@ end
 
 
 --- 删除一条电话本记录
--- @number index, 电话本在存储区的位置
--- @function cb, function类型，删除后的回调函数
+-- @number index 电话本在存储区的位置
+-- @function cb function类型，删除后的回调函数
 --
 -- 回调方式为cb(result)：result为true表示成功，false或者nil表示失败
 -- @return 无

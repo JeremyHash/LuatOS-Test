@@ -147,12 +147,12 @@ local mqttc = {}
 mqttc.__index = mqttc
 
 --- 创建一个mqtt client实例
--- @string clientId
+-- @string clientId 确保设备唯一性
 -- @number[opt=300] keepAlive 心跳间隔(单位为秒)，默认300秒
 -- @string[opt=""] username 用户名，用户名为空配置为""或者nil
 -- @string[opt=""] password 密码，密码为空配置为""或者nil
 -- @number[opt=1] cleanSession 1/0
--- @table[opt=nil] will 遗嘱参数，格式为{qos=, retain=, topic=, payload=}
+-- @table[opt=nil] will 遗嘱参数，格式为{qos=,retain=,topic=,payload=}
 -- @string[opt="3.1.1"] version MQTT版本号，仅支持"3.1"和"3.1.1"
 -- @return table mqttc client实例
 -- @usage
@@ -302,7 +302,7 @@ end
 -- @string host 服务器地址
 -- @param port string或者number类型，服务器端口
 -- @string[opt="tcp"] transport "tcp"或者"tcp_ssl"
--- @table[opt=nil] cert，table或者nil类型，ssl证书，当transport为"tcp_ssl"时，此参数才有意义。cert格式如下：
+-- @table[opt=nil] cert table或者nil类型，ssl证书，当transport为"tcp_ssl"时，此参数才有意义。cert格式如下：
 -- {
 --     caCert = "ca.crt", --CA证书文件(Base64编码 X.509格式)，如果存在此参数，则表示客户端会对服务器的证书进行校验；不存在则不校验
 --     clientCert = "client.crt", --客户端证书文件(Base64编码 X.509格式)，服务器对客户端的证书进行校验时会用到此参数
@@ -356,8 +356,8 @@ function mqttc:connect(host, port, transport, cert, timeout)
 end
 
 --- 订阅主题
--- @param topic，string或者table类型，一个主题时为string类型，多个主题时为table类型，主题内容为UTF8编码
--- @param[opt=0] qos，number或者nil，topic为一个主题时，qos为number类型(0/1/2，默认0)；topic为多个主题时，qos为nil
+-- @param topic string或者table类型，一个主题时为string类型，多个主题时为table类型，主题内容为UTF8编码
+-- @param[opt=0] qos number或者nil，topic为一个主题时，qos为number类型(0/1/2，默认0)；topic为多个主题时，qos为nil
 -- @return bool true表示成功，false或者nil表示失败
 -- @usage
 -- mqttc:subscribe("/abc", 0) -- subscribe topic "/abc" with qos = 0
@@ -395,7 +395,7 @@ function mqttc:subscribe(topic, qos)
 end
 
 --- 取消订阅主题
--- @param topic，string或者table类型，一个主题时为string类型，多个主题时为table类型，主题内容为UTF8编码
+-- @param topic string或者table类型，一个主题时为string类型，多个主题时为table类型，主题内容为UTF8编码
 -- @return bool true表示成功，false或者nil表示失败
 -- @usage
 -- mqttc:unsubscribe("/abc") -- unsubscribe topic "/abc"

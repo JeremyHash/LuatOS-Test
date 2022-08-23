@@ -124,12 +124,12 @@ end
 -- 并不能保证任何时间任何地点都能百分百同步到正确的时间
 -- 所以，如果用户项目中的业务逻辑严格依赖于时间同步功能
 -- 则不要使用使用本功能模块，建议使用自己的应用服务器来同步时间
--- @number[opt=nil] period，调用本接口会立即同步一次；每隔period小时再自动同步1次，nil表示仅同步一次
--- @function[opt=nil] fnc，同步结束，设置系统时间后的回调函数，回调函数的调用形式为：
+-- @number[opt=nil] period 调用本接口会立即同步一次；每隔period小时再自动同步1次，nil表示仅同步一次
+-- @function[opt=nil] fnc 同步结束，设置系统时间后的回调函数，回调函数的调用形式为：
 --                         fnc(time，result)
 --                         time表示设置之后的系统时间，table类型，例如{year=2017,month=2,day=14,hour=14,min=19,sec=23}
 --                         result为true表示成功，false或者nil为失败
--- @function[opt=nil] fun，同步结束，设置系统时间前的回调函数，回调函数的调用形式为：fun()
+-- @function[opt=nil] fun 同步结束，设置系统时间前的回调函数，回调函数的调用形式为：fun()
 -- @return nil
 -- 
 -- @usage 

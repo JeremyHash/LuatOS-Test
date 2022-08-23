@@ -20,8 +20,8 @@ function close()
 end
 
 --- FTP客户端命令
--- @string command,string类型,命令 例如"PWD" "HELP LIST" "SYST"
--- @number timeout,number类型,可选参数，接收超时时间，单位毫秒,默认为0
+-- @string command 命令，例如"PWD","HELP","SYST"
+-- @number[opt=0] timeout 接收超时时间，单位毫秒
 -- @return string,string,返回 response_code, response_message
 function command(command, timeout)
     if not ftp_client:send(command .. "\r\n") then
@@ -42,7 +42,7 @@ function command(command, timeout)
 end
 
 --- 连接到PASV接口
--- @number timeout,number类型,可选参数，接收超时时间，单位毫秒,默认为0
+-- @number[opt=0] timeout 接收超时时间，单位毫秒
 -- @return string,string,返回 response_code, response_message
 local function pasv_connect(timeout)
     ---被动模式
@@ -80,14 +80,14 @@ local function pasv_connect(timeout)
 end
 
 --- FTP客户端登录
--- @string ftp_mode,string类型,FTP模式"PASV" or "PORT"  默认PASV:被动模式,PORT:主动模式 (暂时仅支持被动模式)
--- @string host,string类型,ip地址
--- @string port,number类型,端口,默认21
--- @string username,string类型,用户名
--- @string password,string类型,密码
--- @number timeout,number类型,可选参数，接收超时时间，单位毫秒,默认为0
--- @bool ssl,可选参数，默认为nil，ssl，是否为ssl连接，true表示是，其余表示否
--- @table,cert,可选参数，默认为nil，cert，ssl连接需要的证书配置，只有ssl参数为true时，才参数才有意义，cert格式如下：
+-- @string ftp_mode FTP模式"PASV"or"PORT",默认PASV:被动模式,PORT:主动模式(暂时仅支持被动模式)
+-- @string host ip地址
+-- @string port 端口,默认21
+-- @string username 用户名
+-- @string password 密码
+-- @number[opt=0] timeout 接收超时时间，单位毫秒
+-- @bool ssl 可选参数，默认为nil，ssl，是否为ssl连接，true表示是，其余表示否
+-- @table cert 可选参数，默认为nil，cert，ssl连接需要的证书配置，只有ssl参数为true时，才参数才有意义，cert格式如下：
 --     {
 --     caCert = "ca.crt", --CA证书文件(Base64编码 X.509格式)，如果存在此参数，则表示客户端会对服务器的证书进行校验；不存在则不校验
 --     clientCert = "client.crt", --客户端证书文件(Base64编码 X.509格式)，服务器对客户端的证书进行校验时会用到此参数
@@ -142,9 +142,9 @@ function login(ftp_mode, host, port, username, password, timeout, ssl, cert)
 end
 
 --- FTP客户端文件上传
--- @string remote_file,string类型,远程文件名
--- @string local_file,string类型,本地文件名
--- @number timeout,number类型,可选参数，接收超时时间，单位毫秒,默认为0
+-- @string remote_file 远程文件名
+-- @string local_file 本地文件名
+-- @number[opt=0] timeout 接收超时时间，单位毫秒
 -- @return string,string,返回 response_code, response_message
 function upload(remote_file, local_file, timeout)
     local com, msg = pasv_connect()
@@ -202,9 +202,9 @@ function upload(remote_file, local_file, timeout)
 end
 
 --- FTP客户端文件下载
--- @string remote_file,string类型,远程文件名
--- @string local_file,string类型,本地文件名
--- @number timeout,number类型,可选参数，接收超时时间，单位毫秒,默认为0
+-- @string remote_file 远程文件名
+-- @string local_file 本地文件名
+-- @number[opt=0] timeout 接收超时时间，单位毫秒
 -- @return string,string,返回 response_code, response_message
 function download(remote_file, local_file, timeout)
     local com, msg = pasv_connect()
@@ -269,36 +269,36 @@ function download(remote_file, local_file, timeout)
 end
 
 --- 设置FTP传输类型 A:ascii I:Binary
--- @string mode,A:ascii I:Binary
--- @number timeout,number类型,可选参数，接收超时时间，单位毫秒,默认为0
+-- @string mode A:ascii I:Binary
+-- @number[opt=0] timeout 接收超时时间，单位毫秒
 -- @return string,string,返回 response_code, response_message
 function checktype(mode, timeout) return command("TYPE " .. mode, timeout) end
 
 --- 显示当前工作目录
--- @number timeout,number类型,可选参数，接收超时时间，单位毫秒,默认为0
+-- @number[opt=0] timeout 接收超时时间，单位毫秒
 -- @return string,string,返回 response_code, response_message
 function pwd(timeout) return command("PWD ", timeout) end
 
 --- 更改工作目录
--- @string path,工作目录
--- @number timeout,number类型,可选参数，接收超时时间，单位毫秒,默认为0
+-- @string path 工作目录
+-- @number[opt=0] timeout 接收超时时间，单位毫秒
 -- @return string,string,返回 response_code, response_message
 function cwd(path, timeout) return command("CWD " .. path, timeout) end
 
 --- 回到上级目录
--- @number timeout,number类型,可选参数，接收超时时间，单位毫秒,默认为0
+-- @number[opt=0] timeout 接收超时时间，单位毫秒
 -- @return string,string,返回 response_code, response_message
 function cdup(timeout) return command("CDUP", timeout) end
 
 --- 创建目录
--- @string path,目录
--- @number timeout,number类型,可选参数，接收超时时间，单位毫秒,默认为0
+-- @string path 目录
+-- @number[opt=0] timeout 接收超时时间，单位毫秒
 -- @return string,string,返回 response_code, response_message
 function mkd(path, timeout) return command("MKD " .. path, timeout) end
 
 --- 列出目录列表或文件信息
--- @string file_irectory,目录或文件
--- @number timeout,number类型,可选参数，接收超时时间，单位毫秒,默认为0
+-- @string file_irectory 目录或文件
+-- @number[opt=0] timeout 接收超时时间，单位毫秒
 -- @return string,string,返回 response_code, response_message
 function list(file_irectory, timeout)
     local com, msg = pasv_connect()
@@ -327,16 +327,16 @@ function list(file_irectory, timeout)
 end
 
 --- 删除目录
--- @string file_irectory,string类型,路径目录
--- @number timeout,number类型,可选参数，接收超时时间，单位毫秒,默认为0
+-- @string file_irectory 路径目录
+-- @number[opt=0] timeout 接收超时时间，单位毫秒
 -- @return string,string,返回 response_code, response_message
 function deletefolder(file_irectory, timeout)
     return command("RMD " .. file_irectory, timeout)
 end
 
 --- 删除文件
--- @string file_irectory,string类型,路径文件(相对/绝对)
--- @number timeout,number类型,可选参数，接收超时时间，单位毫秒,默认为0
+-- @string file_irectory 路径文件(相对/绝对)
+-- @number[opt=0] timeout 接收超时时间，单位毫秒
 -- @return string,string,返回 response_code, response_message
 function deletefile(file_irectory, timeout)
     return command("DELE " .. file_irectory, timeout)

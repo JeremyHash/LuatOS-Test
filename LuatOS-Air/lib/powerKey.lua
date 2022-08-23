@@ -41,9 +41,9 @@ end
 -- 如何定义长按键和短按键，例如长按键判断时长为3秒：
 -- 按下大于等于3秒再弹起判定为长按键；
 -- 按下后，在3秒内弹起，判定为短按键
--- @number[opt=3000] longPrd，长按键判断时长，单位毫秒
--- @function[opt=nil] longCb，长按弹起时的回调函数，如果为nil，使用默认的处理函数，会自动关机
--- @function[opt=nil] shortCb，短按弹起时的回调函数
+-- @number[opt=3000] longPrd 长按键判断时长，单位毫秒
+-- @function[opt=nil] longCb 长按弹起时的回调函数，如果为nil，使用默认的处理函数，会自动关机
+-- @function[opt=nil] shortCb 短按弹起时的回调函数
 -- @return nil
 -- @usage
 -- powerKey.setup(nil,longCb,shortCb)

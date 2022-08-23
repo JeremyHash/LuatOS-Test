@@ -12,7 +12,7 @@ module(..., package.seeall)
 local sCbFnc
 
 --- wifi扫描热点请求
--- @function cbFnc，扫描到热点返回或者超时未返回的回调函数，回调函数的调用形式为：
+-- @function cbFnc 扫描到热点返回或者超时未返回的回调函数，回调函数的调用形式为：
 --      cbFnc(result,cnt,info)
 --      result：true或者false，true表示扫描成功，false表示扫描失败或者超时失败
 --      cnt：number类型，表示扫描到的热点个数
@@ -22,7 +22,7 @@ local sCbFnc
 --          ["8c:be:be:2d:cd:e9"] = -81,
 --          ["20:4e:7f:82:c2:c4"] = -70,
 --      }
--- @number[opt=10000] timeout，等待扫描热点返回的超时时间，单位毫秒，默认为10秒
+-- @number[opt=10000] timeout 等待扫描热点返回的超时时间，单位毫秒，默认为10秒
 -- @usage 
 -- wifiScan.request(cbFnc)
 -- wifiScan.request(cbFnc,5000)

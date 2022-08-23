@@ -4,8 +4,8 @@
 -- 2、GPS关闭
 -- 3、GPS定位数据读取
 -- 4、GPS参数和功能设置
--- 1、2、3是通用功能，除了支持合宙的Air530模块，理论上也支持其他厂家的串口GPS模块
--- 4是专用功能，仅支持合宙的Air530H、530Z和Air82x系列模块
+-- 1、2、3是通用功能，除了支持合宙的Air530H模块，理论上也支持其他厂家的串口GPS模块
+-- 4是专用功能，仅支持合宙的Air530H和Air82x系列模块
 -- @module gpsHxxt
 -- @author openLuat
 -- @license MIT
@@ -515,8 +515,8 @@ end
 -- 4、回调函数[可选]
 -- 例如gpsHxxt.open(gpsHxxt.TIMERORSUC,{tag="TEST",val=120,cb=testGpsCb})
 -- gpsHxxt.TIMERORSUC为GPS应用模式，"TEST"为GPS应用标记，120秒为GPS开启最大时长，testGpsCb为回调函数
--- @number mode，GPS应用模式，支持gpsHxxt.DEFAULT，gpsHxxt.TIMERORSUC，gpsHxxt.TIMER三种
--- @param para，table类型，GPS应用参数
+-- @number mode GPS应用模式，支持gpsHxxt.DEFAULT，gpsHxxt.TIMERORSUC，gpsHxxt.TIMER三种
+-- @param para table类型，GPS应用参数
 --               para.tag：string类型，GPS应用标记
 --               para.val：number类型，GPS应用开启最大时长，mode参数为gpsHxxt.TIMERORSUC或者gpsHxxt.TIMER时，此值才有意义
 --               para.cb：GPS应用结束时的回调函数，回调函数的调用形式为para.cb(para.tag)
@@ -547,8 +547,8 @@ end
 
 --- 关闭一个“GPS应用”
 -- 只是从逻辑上关闭一个GPS应用，并不一定真正关闭GPS，是有所有的GPS应用都处于关闭状态，才回去真正关闭GPS
--- @number mode，GPS应用模式，支持gpsHxxt.DEFAULT，gpsHxxt.TIMERORSUC，gpsHxxt.TIMER三种
--- @param para，table类型，GPS应用参数
+-- @number mode GPS应用模式，支持gpsHxxt.DEFAULT，gpsHxxt.TIMERORSUC，gpsHxxt.TIMER三种
+-- @param para table类型，GPS应用参数
 --               para.tag：string类型，GPS应用标记
 --               para.val：number类型，GPS应用开启最大时长，mode参数为gpsHxxt.TIMERORSUC或者gpsHxxt.TIMER时，此值才有意义；使用close接口时，不需要传入此参数
 --               para.cb：GPS应用结束时的回调函数，回调函数的调用形式为para.cb(para.tag)；使用close接口时，不需要传入此参数
@@ -585,8 +585,8 @@ function closeAll()
 end
 
 --- 判断一个“GPS应用”是否处于激活状态
--- @number mode，GPS应用模式，支持gpsHxxt.DEFAULT，gpsHxxt.TIMERORSUC，gpsHxxt.TIMER三种
--- @param para，table类型，GPS应用参数
+-- @number mode GPS应用模式，支持gpsHxxt.DEFAULT，gpsHxxt.TIMERORSUC，gpsHxxt.TIMER三种
+-- @param para table类型，GPS应用参数
 --               para.tag：string类型，GPS应用标记
 --               para.val：number类型，GPS应用开启最大时长，mode参数为gpsHxxt.TIMERORSUC或者gpsHxxt.TIMER时，此值才有意义；使用isActive接口时，不需要传入此参数
 --               para.cb：GPS应用结束时的回调函数，回调函数的调用形式为para.cb(para.tag)；使用isActive接口时，不需要传入此参数
@@ -606,7 +606,7 @@ end
 --- 设置GPS模块供电控制的回调函数
 -- 如果使用的是Air800，或者供电控制使用的是LDO_VCAM，则打开GPS应用前不需要调用此接口进行设置
 -- 否则在调用gpsHxxt.open前，使用此接口，传入自定义的供电控制函数cbFnc，GPS开启时，gpsHxxt.lua自动执行cbFnc(true)，GPS关闭时，gpsHxxt.lua自动执行cbFnc(false)
--- @param cbFnc，function类型，用户自定义的GPS供电控制函数
+-- @param cbFnc function类型，用户自定义的GPS供电控制函数
 -- @return nil
 -- @usage gpsHxxt.setPowerCbFnc(cbFnc)
 function setPowerCbFnc(cbFnc)
@@ -616,11 +616,11 @@ end
 --- 设置GPS模块和GSM模块之间数据通信的串口参数
 -- 如果使用的是Air800，或者使用的UART2(波特率115200，数据位8，无检验位，停止位1)，则打开GPS应用前不需要调用此接口进行设置
 -- 否则在调用gpsHxxt.open前，使用此接口，传入UART参数
--- @number id，UART ID，支持1和2，1表示UART1，2表示UART2
--- @number baudrate，波特率，支持1200,2400,4800,9600,10400,14400,19200,28800,38400,57600,76800,115200,230400,460800,576000,921600,1152000,4000000
--- @number databits，数据位，支持7,8
--- @number parity，校验位，支持uart.PAR_NONE,uart.PAR_EVEN,uart.PAR_ODD
--- @number stopbits，停止位，支持uart.STOP_1,uart.STOP_2
+-- @number id UART ID，支持1和2，1表示UART1，2表示UART2
+-- @number baudrate 波特率，支持1200,2400,4800,9600,10400,14400,19200,28800,38400,57600,76800,115200,230400,460800,576000,921600,1152000,4000000
+-- @number databits 数据位，支持8
+-- @number parity 校验位，支持uart.PAR_NONE,uart.PAR_EVEN,uart.PAR_ODD
+-- @number stopbits 停止位，支持uart.STOP_1,uart.STOP_2
 -- @return nil
 -- @usage gpsHxxt.setUart(2,115200,8,uart.PAR_NONE,uart.STOP_1)
 function setUart(id,baudrate,databits,parity,stopbits)
@@ -659,8 +659,8 @@ end
 
 --- 设置NMEA数据处理模式.
 -- 如果不调用此接口配置，则默认仅gpsHxxt.lua内部处理NMEA数据
--- @number mode，NMEA数据处理模式，0表示仅gpsHxxt.lua内部处理，1表示仅用户自己处理，2表示gpsHxxt.lua和用户同时处理
--- @param cbFnc，function类型，用户处理一条NMEA数据的回调函数，mode为1和2时，此值才有意义
+-- @number mode NMEA数据处理模式，0表示仅gpsHxxt.lua内部处理，1表示仅用户自己处理，2表示gpsHxxt.lua和用户同时处理
+-- @param cbFnc function类型，用户处理一条NMEA数据的回调函数，mode为1和2时，此值才有意义
 -- @return nil
 -- @usage gpsHxxt.setNmeaMode(0)
 -- @usage gpsHxxt.setNmeaMode(1,cbFnc)
@@ -671,7 +671,7 @@ end
 
 --- 设置GPS模块的运行模式.
 -- 如果不调用此接口配置，则默认为正常运行模式
--- @number mode，运行模式
+-- @number mode 运行模式
 -- 0：正常运行模式
 -- 1：低功耗模式
 -- @return nil
@@ -685,8 +685,8 @@ function setRunMode(mode)
 end
 
 --设置NEMA输出语句种类
--- @string date. NEMA语句名称
--- @number flag. 0关闭1打开
+-- @string date NEMA语句名称
+-- @number flag 0关闭1打开
 -- @usage gpaHxxt.setNemaReportFreq("GSV",1)
 -- 开机后需等待250ms+后发送才有效
 function setNemaReportFreq(date,flag)
@@ -707,7 +707,7 @@ function setNemaReportFreq(date,flag)
 end
 
 --- 设置GPS定位成功后经纬度的过滤时间.
--- @number[opt=0] seconds，单位秒，GPS定位成功后，丢弃前seconds秒的位置信息
+-- @number[opt=0] seconds 单位秒，GPS定位成功后，丢弃前seconds秒的位置信息
 -- @return nil
 -- @usage gpsHxxt.setLocationFilter(2)
 function setLocationFilter(seconds)
@@ -750,7 +750,7 @@ function isOnece()
 end
 
 -- 度分格式转换为度格式
--- @string inStr，度分格式的位置
+-- @string inStr 度分格式的位置
 -- @return string，度格式的位置
 -- @usage degreeMinuteToDegree("3114.50931")--->"31.2418218"，31度14.50931分转换为31.2418218度
 -- @usage degreeMinuteToDegree("12128.44954")--->"121.4741590"，121度28.44954分转换为121.4741590度
@@ -776,7 +776,7 @@ local function degreeMinuteToDegree(inStr)
 end
 
 --- 获取度格式的经纬度信息
--- @string[opt=nil] typ，返回的经纬度格式，typ为"DEGREE_MINUTE"时表示返回度分格式，其余表示返回度格式
+-- @string[opt=nil] typ 返回的经纬度格式，typ为"DEGREE_MINUTE"时表示返回度分格式，其余表示返回度格式
 -- @return table location
 -- 例如typ为"DEGREE_MINUTE"时返回{lngType="E",lng="12128.44954",latType="N",lat="3114.50931"}
 -- 例如typ不是"DEGREE_MINUTE"时返回{lngType="E",lng="121.123456",latType="N",lat="31.123456"}
@@ -904,9 +904,9 @@ function getGsv()
 end
 
 --- 设置是否需要解析的字段
--- @bool[opt=nil] utcTime，是否解析RMC语句中的UTC时间，true表示解析，false或者nil不解析
--- @bool[opt=nil] gsv，是否解析GSV语句，true表示解析，false或者nil不解析
--- @bool[opt=nil] gsaId，是否解析GSA语句中的卫星ID，true表示解析，false或者nil不解析
+-- @bool[opt=nil] utcTime 是否解析RMC语句中的UTC时间，true表示解析，false或者nil不解析
+-- @bool[opt=nil] gsv 是否解析GSV语句，true表示解析，false或者nil不解析
+-- @bool[opt=nil] gsaId 是否解析GSA语句中的卫星ID，true表示解析，false或者nil不解析
 -- @usage gpsHxxt.setParseItem(true,true,true)
 function setParseItem(utcTime,gsv,gsaId)
     psUtcTime,psGsv,psSn = utcTime,gsv,gsaId

@@ -136,7 +136,7 @@ local function taskClient(cbFnc,reqAddr,timeout,productKey,host,port,reqTime,req
 end
 
 --- 发送基站/WIFI定位请求（仅支持中国区域的位置查询）
--- @function cbFnc，用户回调函数，回调函数的调用形式为：
+-- @function cbFnc 用户回调函数，回调函数的调用形式为：
 --              cbFnc(result,lat,lng,addr,time,locType)
 --              result：number类型
 --                      0表示成功
@@ -158,13 +158,13 @@ end
 --                      第五个字节：分，例如59分则为0x3B
 --                      第六个字节：秒，例如48秒则为0x30
 --              locType：numble类型或者nil，定位类型，0表示基站定位成功，255表示WIFI定位成功
--- @bool[opt=nil] reqAddr，是否请求服务器返回具体的位置字符串信息，目前此功能不完善
--- @number[opt=20000] timeout，请求超时时间，单位毫秒，默认20000毫秒
--- @string[opt=nil] productKey，IOT网站上的产品证书，如果在main.lua中定义了PRODUCT_KEY变量，则此参数可以传nil
--- @string[opt=nil] host，服务器域名，此参数可选，目前仅lib中agps.lua使用此参数。应用脚本可以直接传nil
--- @string[opt=nil] port，服务器端口，此参数可选，目前仅lib中agps.lua使用此参数。应用脚本可以直接传nil
--- @bool[opt=nil] reqTime，是否需要服务器返回时间信息，true返回，false或者nil不返回，此参数可选，目前仅lib中agps.lua使用此参数。应用脚本可以直接传nil
--- @table[opt=nil] reqWifi，搜索到的WIFI热点信息(MAC地址和信号强度)，如果传入了此参数，后台会查询WIFI热点对应的经纬度，此参数格式如下：
+-- @bool[opt=nil] reqAddr 是否请求服务器返回具体的位置字符串信息，目前此功能不完善
+-- @number[opt=20000] timeout 请求超时时间，单位毫秒，默认20000毫秒
+-- @string[opt=nil] productKey IOT网站上的产品证书，如果在main.lua中定义了PRODUCT_KEY变量，则此参数可以传nil
+-- @string[opt=nil] host 服务器域名，此参数可选，目前仅lib中agps.lua使用此参数。应用脚本可以直接传nil
+-- @string[opt=nil] port 服务器端口，此参数可选，目前仅lib中agps.lua使用此参数。应用脚本可以直接传nil
+-- @bool[opt=nil] reqTime 是否需要服务器返回时间信息，true返回，false或者nil不返回，此参数可选，目前仅lib中agps.lua使用此参数。应用脚本可以直接传nil
+-- @table[opt=nil] reqWifi 搜索到的WIFI热点信息(MAC地址和信号强度)，如果传入了此参数，后台会查询WIFI热点对应的经纬度，此参数格式如下：
 --              {
 --                  ["1a:fe:34:9e:a1:77"] = -63,
 --                  ["8c:be:be:2d:cd:e9"] = -81,

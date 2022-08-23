@@ -459,7 +459,7 @@ end
 -- 注意：如果要测试飞行模式的功耗，开机后不要立即调用此接口进入飞行模式
 -- 在模块注册上网络之前，调用此接口进入飞行模式不仅无效，还会导致功耗数据异常
 -- 详情参考：http://doc.openluat.com/article/488/0
--- @bool mode，true:飞行模式开，false:飞行模式关
+-- @bool mode true:飞行模式开，false:飞行模式关
 -- @return nil
 -- @usage net.switchFly(mode)
 function switchFly(mode)
@@ -577,7 +577,7 @@ function getCellInfo()
 end
 
 --- 获取当前和临近位置区、小区、mcc、mnc、以及信号的拼接字符串
--- @bool[opt=nil] rssi，信号是否拼接功率，true表示功率，false或者nil表示强度
+-- @bool[opt=nil] rssi 信号是否拼接功率，true表示功率，false或者nil表示强度
 --                      表示强度时，信号的取值范围是0到31
 --                      表示功率时，信号的计算公式为 强度*2-113，取值范围为-113dB到-51dB
 -- @return string cellInfo,当前和临近位置区、小区、mcc、mnc、以及信号的拼接字符串，例如：
@@ -636,7 +636,7 @@ local function rsp(cmd, success, response, intermediate)
 end
 
 --- 实时读取“当前和临近小区信息”
--- @function cbFnc，回调函数，当读取到小区信息后，会调用此回调函数，回调函数的调用形式为：
+-- @function cbFnc 回调函数，当读取到小区信息后，会调用此回调函数，回调函数的调用形式为：
 -- cbFnc(cells)，其中cells为string类型，格式为：当前和临近位置区、小区、mcc、mnc、以及信号强度的拼接字符串，例如："460.01.6311.49234.30;460.01.6311.49233.23;460.02.6322.49232.18;"
 -- @return nil
 function getMultiCell(cbFnc)
@@ -715,7 +715,7 @@ end
 
 local sEngMode
 --- 设置工程模式
--- @number[opt=1] mode，工程模式，目前仅支持0和1
+-- @number[opt=1] mode 工程模式，目前仅支持0和1
 -- mode为0时，不支持临近小区查询，休眠时功耗较低
 -- mode为1时，支持临近小区查询，但是休眠时功耗较高
 -- @return nil

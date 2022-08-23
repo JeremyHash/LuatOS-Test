@@ -200,10 +200,10 @@ end
 
 --- 设置某个参数的值
 -- @string k 参数名
--- @param v，可以是任意类型，参数的新值
--- @param r，设置原因，如果传入了非nil的有效参数，并且v值和旧值相比发生了改变，
+-- @param v 可以是任意类型，参数的新值
+-- @param r 设置原因，如果传入了非nil的有效参数，并且v值和旧值相比发生了改变，
 --                     会产生一个PARA_CHANGED_IND内部消息，携带 k,v,r 3个参数
--- @param s，是否立即写入到文件系统中，false不写入，其余的都写入
+-- @param s 是否立即写入到文件系统中，false不写入，其余的都写入
 -- @return bool或者nil，成功返回true，失败返回nil
 -- @usage 
 -- 参数name赋值为Luat，立即写入文件系统：
@@ -241,9 +241,9 @@ end
 --- 设置某个table类型参数的某一个索引的值
 -- @string k table类型的参数名
 -- @param kk table类型参数的某一个索引名
--- @param v，table类型参数的某一个索引的新值
--- @param r，设置原因，如果传入了非nil的有效参数，并且v值和旧值相比发生了改变，会产生一个TPARA_CHANGED_IND消息，携带 k,kk,v,r 4个参数
--- @param s，是否立即写入到文件系统中，false不写入，其余的都写入
+-- @param v table类型参数的某一个索引的新值
+-- @param r 设置原因，如果传入了非nil的有效参数，并且v值和旧值相比发生了改变，会产生一个TPARA_CHANGED_IND消息，携带k,kk,v,r4个参数
+-- @param s 是否立即写入到文件系统中，false不写入，其余的都写入
 -- @return bool或者nil，成功返回true，失败返回nil
 -- @usage nvm.sett("score","chinese",100)，参数score["chinese"]赋值为100，立即写入文件系统
 -- @usage nvm.sett("score","chinese",100,"SVR")，参数score["chinese"]赋值为100，立即写入文件系统，

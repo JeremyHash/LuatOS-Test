@@ -1,7 +1,7 @@
 -- LuatOS-Air-Test
 -- Author:openluat
 -- CreateDate:20211011
--- UpdateDate:20211105
+-- UpdateDate:20220823
 PROJECT = "LuatOS-Air-Test"
 VERSION = "1.0.0"
 PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
@@ -15,7 +15,7 @@ testConfig = {
     modType = "8910",
     -- single loop
     testMode = "loop",
-    SDCARD_TEST_ENABLE = false,
+    SDCARD_EXIST = true,
     netLed = true,
     adcTest = true,
     i2cTest = true,
@@ -38,7 +38,8 @@ testConfig = {
     consoleTest = false,
     socketTest = true,
     httpTest = true,
-    mqttTest = false
+    mqttTest = false,
+    zipTest = true
 }
 
 require "sys"
@@ -79,7 +80,9 @@ function printTable(tbl, lv)
     lv = lv and lv .. "\t" or ""
     print(lv .. "{")
     for k, v in pairs(tbl) do
-        if type(k) == "string" then k = "\"" .. k .. "\"" end
+        if type(k) == "string" then
+            k = "\"" .. k .. "\""
+        end
         if "string" == type(v) then
             local qv = string.match(string.format("%q", v), ".(.*).")
             v = qv == v and '"' .. v .. '"' or "'" .. v:toHex() .. "'"
@@ -98,8 +101,7 @@ end
 if testConfig.testMode == "single" then
     local tag = "singleTest"
     local res = uart.setup(uart.USB, 921600, 8, uart.PAR_NONE, uart.STOP_1)
-    log.info(tag,
-             "结果输出串口初始化成功，初始化波特率" .. res)
+    log.info(tag, "结果输出串口初始化成功，初始化波特率" .. res)
 end
 
 if testConfig.netLed == true then
@@ -121,29 +123,74 @@ if testConfig.consoleTest == true then
     console.setup(uart.USB, 921600)
 end
 
-if testConfig.socketTest == true then require "SocketTest" end
-if testConfig.httpTest == true then require "HttpTest" end
-if testConfig.mqttTest == true then require "MqttTest" end
-if testConfig.lbsLocTest == true then require "lbsLocTest" end
-if testConfig.bluetoothTest == true then require "bluetoothTest" end
+if testConfig.socketTest == true then
+    require "SocketTest"
+end
+if testConfig.httpTest == true then
+    require "HttpTest"
+end
+if testConfig.mqttTest == true then
+    require "MqttTest"
+end
+if testConfig.lbsLocTest == true then
+    require "lbsLocTest"
+end
+if testConfig.bluetoothTest == true then
+    require "bluetoothTest"
+end
 
 function testTask()
-    if testConfig.adcTest == true then require"adcTest".test() end
-    if testConfig.i2cTest == true then require"i2cTest".test() end
-    if testConfig.spiTest == true then require"spiTest".test() end
-    if testConfig.bitTest == true then require"bitTest".test() end
-    if testConfig.cryptoTest == true then require"cryptoTest".test() end
-    if testConfig.packTest == true then require"packTest".test() end
-    if testConfig.stringTest == true then require"stringTest".test() end
-    if testConfig.commonTest == true then require"commonTest".test() end
-    if testConfig.ntpTest == true then require"ntpTest".test() end
-    if testConfig.tableTest == true then require"tableTest".test() end
-    if testConfig.uartTest == true then require"uartTest".test() end
-    if testConfig.simTest == true then require"simTest".test() end
-    if testConfig.jsonTest == true then require"jsonTest".test() end
-    if testConfig.mathTest == true then require"mathTest".test() end
-    if testConfig.rtosTest == true then require"rtosTest".test() end
-    if testConfig.ioTest == true then require"ioTest".test() end
+    if testConfig.adcTest == true then
+        require"adcTest".test()
+    end
+    if testConfig.i2cTest == true then
+        require"i2cTest".test()
+    end
+    if testConfig.spiTest == true then
+        require"spiTest".test()
+    end
+    if testConfig.bitTest == true then
+        require"bitTest".test()
+    end
+    if testConfig.cryptoTest == true then
+        require"cryptoTest".test()
+    end
+    if testConfig.packTest == true then
+        require"packTest".test()
+    end
+    if testConfig.stringTest == true then
+        require"stringTest".test()
+    end
+    if testConfig.commonTest == true then
+        require"commonTest".test()
+    end
+    if testConfig.ntpTest == true then
+        require"ntpTest".test()
+    end
+    if testConfig.tableTest == true then
+        require"tableTest".test()
+    end
+    if testConfig.uartTest == true then
+        require"uartTest".test()
+    end
+    if testConfig.simTest == true then
+        require"simTest".test()
+    end
+    if testConfig.jsonTest == true then
+        require"jsonTest".test()
+    end
+    if testConfig.mathTest == true then
+        require"mathTest".test()
+    end
+    if testConfig.rtosTest == true then
+        require"rtosTest".test()
+    end
+    if testConfig.ioTest == true then
+        require"ioTest".test()
+    end
+    if testConfig.zipTest == true then
+        require("zipTest").test()
+    end
 end
 
 sys.taskInit(function()
@@ -175,9 +222,8 @@ sys.taskInit(function()
         log.info("PWRON_REASON", rtos.poweron_reason())
         local timeTable = misc.getClock()
         log.info("TIME",
-                 string.format("%d-%d-%d %d:%d:%d", timeTable.year,
-                               timeTable.month, timeTable.day, timeTable.hour,
-                               timeTable.min, timeTable.sec))
+            string.format("%d-%d-%d %d:%d:%d", timeTable.year, timeTable.month, timeTable.day, timeTable.hour,
+                timeTable.min, timeTable.sec))
     end
 end)
 

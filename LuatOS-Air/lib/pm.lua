@@ -20,7 +20,7 @@ local tags = {}
 local flag = true
 
 --- 某个Lua应用唤醒系统
--- @param tag，一般string类型，某个Lua应用的唤醒标记，用户自定义
+-- @param tag 一般string类型，某个Lua应用的唤醒标记，用户自定义
 -- @return 无
 -- @usage pm.wake(tag)
 function wake(tag)
@@ -36,7 +36,7 @@ function wake(tag)
     end
 end
 --- 某个Lua应用休眠系统
--- @param tag，一般string类型，某个Lua应用的唤醒标记，用户自定义，跟wake中的标记保持一致
+-- @param tag 一般string类型，某个Lua应用的唤醒标记，用户自定义，跟wake中的标记保持一致
 -- @return 无
 -- @usage pm.sleep(tag)
 function sleep(tag)
@@ -55,7 +55,7 @@ function sleep(tag)
 end
 
 --- pm.isSleep([tag]) 读取某个Lua应用或者全局的休眠状态
--- @param tag，可选参数，如果查询某个tag的休眠状态，则跟wake中的tag保持一致；如果查询全局休眠状态，则不需要这个参数
+-- @param tag 可选参数，如果查询某个tag的休眠状态，则跟wake中的tag保持一致；如果查询全局休眠状态，则不需要这个参数
 -- @return true休眠，其余没休眠
 -- @usage
 -- pm.isSleep() -- 查询全局休眠状态
