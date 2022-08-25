@@ -1,21 +1,19 @@
 -- SocketTest
 -- Author:openluat
 -- CreateDate:20211012
--- UpdateDate:20211116
+-- UpdateDate:20220825
 module(..., package.seeall)
 
-local taskID
 local ip = "47.96.229.157"
 -- port1 TCP UDP
 -- port2 TCPSSL 单向
 -- port3 TCPSSL 双向
-local port1, port2, port3 = 2901, 2903, 2904
+local port1, port2, port3 = 2901, 2903, 443
 
 -- 1KB
 local testSendData1 = string.rep("SocketTest", 100)
 -- 10KB
-local testSendData2 = string.rep("\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09",
-                                 1000)
+local testSendData2 = string.rep("\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09", 1000)
 
 -- tcpClient1 -> 同步 TCP客户端
 -- tcpClient2 -> 同步 TCPSSL单向认证客户端
@@ -71,7 +69,9 @@ local function socketTestTask()
     log.info(tag .. ".connection", "disconnected")
 
     tag = "SocketTest.syncTcpOneWaySSLTest"
-    tcpClient2 = socket.tcp(true, {caCert = "ca.crt"})
+    tcpClient2 = socket.tcp(true, {
+        caCert = "ca.crt"
+    })
     connectResult, socketId = tcpClient2:connect(ip, port2)
     log.info(tag .. ".connectResult, socketId", connectResult, socketId)
     if connectResult then
@@ -89,12 +89,10 @@ local function socketTestTask()
             end
             log.info(tag .. ".recvLen", recvLen)
             if recvLen == 1000 then
-                log.info(tag .. ".recvLen.check",
-                         "接收数据长度正确SUCCESS")
+                log.info(tag .. ".recvLen.check", "接收数据长度正确SUCCESS")
                 outPutTestRes("SocketTest.syncTcpOneWaySSLTest PASS")
             else
-                log.error(tag .. ".recvLen.check",
-                          "接收数据长度有误FAIL")
+                log.error(tag .. ".recvLen.check", "接收数据长度有误FAIL")
                 outPutTestRes("SocketTest.syncTcpOneWaySSLTest FAIL")
             end
         else
@@ -117,26 +115,27 @@ local function socketTestTask()
     connectResult, socketId = tcpClient3:connect(ip, port3)
     log.info(tag .. ".connectResult, socketId", connectResult, socketId)
     if connectResult then
-        if tcpClient3:send(testSendData1) then
+        if tcpClient3:send("GET / HTTP/1.1\r\nHost: airtest.openluat.com\r\n\r\n") then
             log.info(tag .. ".sendResult", "SUCCESS")
             local recvLen = 0
+            local content = ""
             while true do
                 local result, data, para = tcpClient3:recv(5000)
                 if result then
                     recvLen = recvLen + #data
+                    content = content .. data
                 else
                     log.info(tag .. ".recv", "接收完毕")
                     break
                 end
             end
             log.info(tag .. ".recvLen", recvLen)
-            if recvLen == 1000 then
-                log.info(tag .. ".recvLen.check",
-                         "接收数据长度正确SUCCESS")
+            -- log.info(tag .. ".content", content)
+            if recvLen > 0 then
+                log.info(tag .. ".recvLen.check", "接收数据长度正确SUCCESS")
                 outPutTestRes("SocketTest.syncTcpTwoWaySSLTest PASS")
             else
-                log.error(tag .. ".recvLen.check",
-                          "接收数据长度有误FAIL")
+                log.error(tag .. ".recvLen.check", "接收数据长度有误FAIL")
                 outPutTestRes("SocketTest.syncTcpTwoWaySSLTest FAIL")
             end
         else
@@ -217,7 +216,7 @@ local function socketTestTask()
             else
                 outPutTestRes("SocketTest.asyncTcpTest FAIL")
             end
-            coroutine.resume(taskID, false)
+            coroutine.resume(testTaskID, false)
         end
     end)
     tcpClient3 = socket.tcp()
@@ -225,7 +224,8 @@ local function socketTestTask()
     log.info(tag .. ".connectResult, socketId", connectResult, socketId)
     if connectResult then
         sys.publish("asyncTcpTestInitOK", true)
-        while tcpClient3:asyncSelect() do end
+        while tcpClient3:asyncSelect() do
+        end
     else
         sys.publish("asyncTcpTestInitOK", false)
         outPutTestRes("SocketTest.asyncTcpTest FAIL")
@@ -251,7 +251,7 @@ local function socketTestTask()
             else
                 outPutTestRes("SocketTest.asyncUdpTest FAIL")
             end
-            coroutine.resume(taskID, false)
+            coroutine.resume(testTaskID, false)
         end
     end)
     udpClient2 = socket.udp()
@@ -259,7 +259,8 @@ local function socketTestTask()
     log.info(tag .. ".connectResult, socketId", connectResult, socketId)
     if connectResult then
         sys.publish("asyncUdpTestInitOK", true)
-        while udpClient2:asyncSelect() do end
+        while udpClient2:asyncSelect() do
+        end
     else
         sys.publish("asyncUdpTestInitOK", false)
         outPutTestRes("SocketTest.asyncUdpTest FAIL")
@@ -282,9 +283,15 @@ local function socketTestTask()
             log.error(tag .. ".receive", "CHECK_FAIL")
         end
     end)
-    ws:on("sent", function() log.info(tag .. ".sent", "发送SUCCESS") end)
-    ws:on("error", function(msg) log.error(tag .. ".error", msg) end)
-    ws:on("close", function(code) log.info(tag .. ".close", code) end)
+    ws:on("sent", function()
+        log.info(tag .. ".sent", "发送SUCCESS")
+    end)
+    ws:on("error", function(msg)
+        log.error(tag .. ".error", msg)
+    end)
+    ws:on("close", function(code)
+        log.info(tag .. ".close", code)
+    end)
 
     sys.taskInit(function()
         log.info(tag, "open start task")
@@ -301,16 +308,13 @@ local function socketTestTask()
     websocket.exit(ws)
 end
 
-taskID = sys.taskInit(function()
-    local tag = "SocketTest"
-    sys.waitUntil("IP_READY_IND")
-    log.info(tag, "成功访问网络, Socket测试开始")
-    if testConfig.testMode == "single" then
-        socketTestTask()
-    elseif testConfig.testMode == "loop" then
-        while true do
-            if socket.isReady() then socketTestTask() end
-            sys.wait(100)
-        end
+function test()
+    if socket == nil then
+        log.error(tag, "this fireware is not support socket")
+        return
     end
-end)
+    local tag = "socketTest"
+    log.info(tag, "START")
+    socketTestTask()
+    log.info(tag, "DONE")
+end

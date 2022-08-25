@@ -123,23 +123,24 @@ if testConfig.consoleTest == true then
     console.setup(uart.USB, 921600)
 end
 
-if testConfig.socketTest == true then
-    require "SocketTest"
-end
-if testConfig.httpTest == true then
-    require "HttpTest"
-end
 if testConfig.mqttTest == true then
     require "MqttTest"
 end
-if testConfig.lbsLocTest == true then
-    require "lbsLocTest"
-end
+
 if testConfig.bluetoothTest == true then
     require "bluetoothTest"
 end
 
 function testTask()
+    if testConfig.socketTest == true then
+        require"socketTest".test()
+    end
+    if testConfig.httpTest == true then
+        require"httpTest".test()
+    end
+    if testConfig.lbsLocTest == true then
+        require"lbsLocTest".test()
+    end
     if testConfig.adcTest == true then
         require"adcTest".test()
     end
@@ -193,8 +194,8 @@ function testTask()
     end
 end
 
-sys.taskInit(function()
-    sys.wait(5000)
+testTaskID = sys.taskInit(function()
+    sys.waitUntil("IP_READY_IND")
     if testConfig.testMode == "single" then
         testTask()
     elseif testConfig.testMode == "loop" then

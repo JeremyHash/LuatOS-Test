@@ -1,7 +1,7 @@
 -- LbsLocTest
 -- Author:openluat
 -- CreateDate:20211018
--- UpdateDate:20211018
+-- UpdateDate:20220825
 module(..., package.seeall)
 
 local tag = "LbsLocTest"
@@ -40,8 +40,7 @@ local function lbsLocTestTask()
             log.info(tag .. ".wifiLocTest.scan", "SUCCESS")
             printTable(apInfo)
             log.info(tag, "开始WiFi定位")
-            lbsLoc.request(getWiFiLocCb, false, false, false, false, false,
-                           false, apInfo)
+            lbsLoc.request(getWiFiLocCb, false, false, false, false, false, false, apInfo)
         else
             log.info(tag .. ".wifiLocTest.scan", "FAIL")
             outPutTestRes("LbsLocTest.wifiLocTest FAIL")
@@ -56,12 +55,13 @@ local function lbsLocTestTask()
 
 end
 
-sys.taskInit(function()
-    sys.waitUntil("IP_READY_IND")
-    log.info(tag, "成功访问网络, LbsLoc测试开始")
-    if testConfig.testMode == "single" then
-        lbsLocTestTask()
-    elseif testConfig.testMode == "loop" then
-        while true do lbsLocTestTask() end
+function test()
+    if lbsLoc == nil then
+        log.error(tag, "this fireware is not support lbsLoc")
+        return
     end
-end)
+    local tag = "lbsLocTest"
+    log.info(tag, "START")
+    lbsLocTestTask()
+    log.info(tag, "DONE")
+end

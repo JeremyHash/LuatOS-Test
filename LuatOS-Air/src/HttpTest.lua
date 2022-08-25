@@ -1,25 +1,22 @@
 -- HttpTest
 -- Author:openluat
 -- CreateDate:20211011
--- UpdateDate:20211011
+-- UpdateDate:20220825
 module(..., package.seeall)
 
 local serverAddress = "47.96.229.157:2900"
 local testCookie = string.rep("1234567890asdfghjklp", 50)
 
 -- multipart/form-data封装函数
-local function postTestWithMultipartFormData(url, cert, params, timeout, cbFnc,
-                                             rcvFileName)
-    local boundary, body, k, v, kk, vv =
-        "--------------------------" .. os.time() .. rtos.tick(), {}
+local function postTestWithMultipartFormData(url, cert, params, timeout, cbFnc, rcvFileName)
+    local boundary, body, k, v, kk, vv = "--------------------------" .. os.time() .. rtos.tick(), {}
 
     for k, v in pairs(params) do
         if k == "texts" then
             local bodyText = ""
             for kk, vv in pairs(v) do
-                bodyText = bodyText .. "--" .. boundary ..
-                               "\r\nContent-Disposition: form-data; name=\"" ..
-                               kk .. "\"\r\n\r\n" .. vv .. "\r\n"
+                bodyText = bodyText .. "--" .. boundary .. "\r\nContent-Disposition: form-data; name=\"" .. kk ..
+                               "\"\r\n\r\n" .. vv .. "\r\n"
             end
             body[#body + 1] = bodyText
         elseif k == "files" then
@@ -32,13 +29,12 @@ local function postTestWithMultipartFormData(url, cert, params, timeout, cbFnc,
             }
             for kk, vv in pairs(v) do
                 print(kk, vv)
-                body[#body + 1] = "--" .. boundary ..
-                                      "\r\nContent-Disposition: form-data; name=\"" ..
-                                      kk .. "\"; filename=\"" .. kk ..
-                                      "\"\r\nContent-Type: " ..
-                                      contentType[vv:match("%.(%w+)$")] ..
-                                      "\r\n\r\n"
-                body[#body + 1] = {file = vv}
+                body[#body + 1] = "--" .. boundary .. "\r\nContent-Disposition: form-data; name=\"" .. kk ..
+                                      "\"; filename=\"" .. kk .. "\"\r\nContent-Type: " ..
+                                      contentType[vv:match("%.(%w+)$")] .. "\r\n\r\n"
+                body[#body + 1] = {
+                    file = vv
+                }
                 body[#body + 1] = "\r\n"
             end
         end
@@ -246,8 +242,12 @@ local function getAndSaveToBigFileTestCb(result, prompt, head, filePath)
             log.info(tag .. ".Head", "遍历响应头")
             for k, v in pairs(head) do
                 log.info(tag .. ".Head", k .. " : " .. v)
-                if k == "MD5" then MD5Header = v end
-                if k == "Content-Length" then fileSize = v end
+                if k == "MD5" then
+                    MD5Header = v
+                end
+                if k == "Content-Length" then
+                    fileSize = v
+                end
             end
         end
         if filePath then
@@ -278,8 +278,7 @@ local function getAndSaveToBigFileTestCb(result, prompt, head, filePath)
                 outPutTestRes("HttpTest.getAndSaveToBigFileTest FAIL")
             end
 
-            log.info(tag .. "保存大文件后可用空间 " ..
-                         rtos.get_fs_free_size() .. "Bytes")
+            log.info(tag .. "保存大文件后可用空间 " .. rtos.get_fs_free_size() .. "Bytes")
         end
     else
         log.error(tag .. ".result", "FAIL")
@@ -288,12 +287,10 @@ local function getAndSaveToBigFileTestCb(result, prompt, head, filePath)
     local remove_dir_res = rtos.remove_dir("/Jeremy")
     if remove_dir_res then
         log.info(tag .. ".fileDelete", "删除SUCCESS")
-        log.info(tag .. "删除大文件SUCCESS后可用空间 " ..
-                     rtos.get_fs_free_size() .. "Bytes")
+        log.info(tag .. "删除大文件SUCCESS后可用空间 " .. rtos.get_fs_free_size() .. "Bytes")
     else
         log.error(tag .. ".fileDelete", "删除FAIL")
-        log.info(tag .. "删除大文件FAIL后可用空间 " ..
-                     rtos.get_fs_free_size() .. "Bytes")
+        log.info(tag .. "删除大文件FAIL后可用空间 " .. rtos.get_fs_free_size() .. "Bytes")
     end
     sys.publish("getAndSaveToBigFileTestFinished")
 end
@@ -308,8 +305,12 @@ local function getAndSaveToSmallFileTestCb(result, prompt, head, filePath)
             log.info(tag .. ".Head", "遍历响应头")
             for k, v in pairs(head) do
                 log.info(tag .. ".Head", k .. " : " .. v)
-                if k == "MD5" then MD5Header = v end
-                if k == "Content-Length" then fileSize = v end
+                if k == "MD5" then
+                    MD5Header = v
+                end
+                if k == "Content-Length" then
+                    fileSize = v
+                end
             end
         end
         if filePath then
@@ -340,8 +341,7 @@ local function getAndSaveToSmallFileTestCb(result, prompt, head, filePath)
                 outPutTestRes("HttpTest.getAndSaveToSmallFileTest FAIL")
             end
 
-            log.info(tag .. "保存小文件后可用空间 " ..
-                         rtos.get_fs_free_size() .. "Bytes")
+            log.info(tag .. "保存小文件后可用空间 " .. rtos.get_fs_free_size() .. "Bytes")
         end
     else
         log.error(tag .. ".result", "FAIL")
@@ -350,12 +350,10 @@ local function getAndSaveToSmallFileTestCb(result, prompt, head, filePath)
     local remove_dir_res = rtos.remove_dir("/Jeremy")
     if remove_dir_res then
         log.info(tag .. ".fileDelete", "删除SUCCESS")
-        log.info(tag .. "删除小文件SUCCESS后可用空间 " ..
-                     rtos.get_fs_free_size() .. "Bytes")
+        log.info(tag .. "删除小文件SUCCESS后可用空间 " .. rtos.get_fs_free_size() .. "Bytes")
     else
         log.error(tag .. ".fileDelete", "删除FAIL")
-        log.info(tag .. "删除小文件FAIL后可用空间 " ..
-                     rtos.get_fs_free_size() .. "Bytes")
+        log.info(tag .. "删除小文件FAIL后可用空间 " .. rtos.get_fs_free_size() .. "Bytes")
     end
     sys.publish("getAndSaveToSmallFileTestFinished")
 end
@@ -695,28 +693,23 @@ local function deleteTestCb(result, prompt, head, body)
 end
 
 local function httpTestTask()
-    http.request("GET",
-                 serverAddress .. "/?test1=1&test2=22&test3=333&test4=" ..
-                     string.urlEncode("四四四四") ..
-                     "&test5=FiveFiveFiveFiveFive&test6=" ..
-                     string.rawurlEncode("ろくろくろくろくろくろく"),
-                 nil, nil, nil, nil, getTestCb)
+    http.request("GET", serverAddress .. "/?test1=1&test2=22&test3=333&test4=" .. string.urlEncode("四四四四") ..
+        "&test5=FiveFiveFiveFiveFive&test6=" .. string.rawurlEncode("ろくろくろくろくろくろく"), nil, nil,
+        nil, nil, getTestCb)
     sys.waitUntil("getTestFinished")
 
-    http.request("GET", serverAddress .. "/waitTest", nil, nil, nil, 10000,
-                 getWaitTestCb)
+    http.request("GET", serverAddress .. "/waitTest", nil, nil, nil, 10000, getWaitTestCb)
     sys.waitUntil("getWaitTestFinished")
 
-    http.request("GET", serverAddress .. "/redirect301", nil, nil, nil, nil,
-                 get301TestCb)
+    http.request("GET", serverAddress .. "/redirect301", nil, nil, nil, nil, get301TestCb)
     sys.waitUntil("get301TestFinished")
 
-    http.request("GET", serverAddress .. "/redirect302", nil, nil, nil, nil,
-                 get302TestCb)
+    http.request("GET", serverAddress .. "/redirect302", nil, nil, nil, nil, get302TestCb)
     sys.waitUntil("get302TestFinished")
 
-    http.request("GET", "https://www.baidu.com", {caCert = "baiduca.cer"}, nil,
-                 nil, nil, getWithCATestCb)
+    http.request("GET", "https://www.baidu.com", {
+        caCert = "baiduca.cer"
+    }, nil, nil, nil, getWithCATestCb)
     sys.waitUntil("getWithCATestFinished")
 
     -- http.request("GET", "https://36.7.136.116:4434", {
@@ -726,30 +719,25 @@ local function httpTestTask()
     -- }, nil, nil, nil, getWithCAAndKeyTestCb)
     -- sys.waitUntil("getWithCAAndKeyTestFinished")
 
-    log.info("下载大文件前可用空间 " .. rtos.get_fs_free_size() ..
-                 " Bytes")
+    log.info("下载大文件前可用空间 " .. rtos.get_fs_free_size() .. " Bytes")
     if rtos.make_dir("/Jeremy") then
         log.info("HttpTest.GetAndSaveToBigFileTest.makeDir", "SUCCESS")
     else
         log.error("HttpTest.GetAndSaveToBigFileTest.makeDir", "FAIL")
     end
-    http.request("GET", serverAddress .. "/download/600K", nil, nil, nil, nil,
-                 getAndSaveToBigFileTestCb, "/Jeremy/600K")
+    http.request("GET", serverAddress .. "/download/600K", nil, nil, nil, nil, getAndSaveToBigFileTestCb, "/Jeremy/600K")
     sys.waitUntil("getAndSaveToBigFileTestFinished")
 
-    log.info("下载小文件前可用空间 " .. rtos.get_fs_free_size() ..
-                 " Bytes")
+    log.info("下载小文件前可用空间 " .. rtos.get_fs_free_size() .. " Bytes")
     if rtos.make_dir("/Jeremy") then
         log.info("HttpTest.GetAndSaveToSmallFileTest.makeDir", "SUCCESS")
     else
         log.error("HttpTest.GetAndSaveToSmallFileTest.makeDir", "FAIL")
     end
-    http.request("GET", serverAddress .. "/download/2K", nil, nil, nil, nil,
-                 getAndSaveToSmallFileTestCb, "/Jeremy/2K")
+    http.request("GET", serverAddress .. "/download/2K", nil, nil, nil, nil, getAndSaveToSmallFileTestCb, "/Jeremy/2K")
     sys.waitUntil("getAndSaveToSmallFileTestFinished")
 
-    http.request("POST", serverAddress .. "/", nil, nil, "PostTest", nil,
-                 postTestCb)
+    http.request("POST", serverAddress .. "/", nil, nil, "PostTest", nil, postTestCb)
     sys.waitUntil("postTestFinished")
 
     -- local timestamp = os.time()
@@ -785,9 +773,9 @@ local function httpTestTask()
         ["ci"] = "52365",
         ["hex"] = "10"
     }
-    http.request("POST", serverAddress .. "/postJsonTest", nil,
-                 {["Content-Type"] = "application/json"}, json.encode(testJson),
-                 nil, postJsonTestCb)
+    http.request("POST", serverAddress .. "/postJsonTest", nil, {
+        ["Content-Type"] = "application/json"
+    }, json.encode(testJson), nil, postJsonTestCb)
     sys.waitUntil("postJsonTestFinished")
 
     http.request("POST", serverAddress .. "/withUserHead", nil, {
@@ -795,8 +783,7 @@ local function httpTestTask()
         ["UserHead"] = "PostTestWithUserHead",
         ["Cookie"] = testCookie,
         ["User-Agent"] = "AirM2M",
-        ["Authorization"] = "Basic " ..
-            crypto.base64_encode("123:456", ("123:456"):len())
+        ["Authorization"] = "Basic " .. crypto.base64_encode("123:456", ("123:456"):len())
     }, nil, nil, postWithUserHeadTestCb)
     sys.waitUntil("postWithUserHeadTestFinished")
 
@@ -804,8 +791,11 @@ local function httpTestTask()
         ["Content-Type"] = "application/octet-stream",
         ["Connection"] = "keep-alive",
         ["MD5"] = crypto.md5("/lua/logo_color.png", "file")
-    }, {[1] = {["file"] = "/lua/logo_color.png"}}, nil,
-                 postWithOctetStreamTestCb)
+    }, {
+        [1] = {
+            ["file"] = "/lua/logo_color.png"
+        }
+    }, nil, postWithOctetStreamTestCb)
     sys.waitUntil("postWithOctetStreamTestFinished")
 
     postTestWithMultipartFormData(serverAddress .. "/uploadFile", nil, {
@@ -815,13 +805,15 @@ local function httpTestTask()
             ["md5"] = crypto.md5("/lua/logo_color.png", "file")
         },
 
-        files = {["FormDataUploadFile"] = "/lua/logo_color.png"}
+        files = {
+            ["FormDataUploadFile"] = "/lua/logo_color.png"
+        }
     }, nil, postWithMultipartFormDataTestCb)
     sys.waitUntil("postWithMultipartFormDataTestFinished")
 
-    http.request("POST", serverAddress .. "/withxwwwformurlencoded", nil,
-                 {["Content-Type"] = "application/x-www-form-urlencoded"},
-                 urlencodeTab({
+    http.request("POST", serverAddress .. "/withxwwwformurlencoded", nil, {
+        ["Content-Type"] = "application/x-www-form-urlencoded"
+    }, urlencodeTab({
         content = "x-www-form-urlencoded Test",
         author = "LuatTest",
         email = "yanjunjie@airm2m.com",
@@ -836,22 +828,18 @@ local function httpTestTask()
     http.request("PUT", serverAddress, nil, nil, "putTest", nil, putTestCb)
     sys.waitUntil("putTestFinished")
 
-    http.request("DELETE", serverAddress, nil, nil, "deleteTest", nil,
-                 deleteTestCb)
+    http.request("DELETE", serverAddress, nil, nil, "deleteTest", nil, deleteTestCb)
     sys.waitUntil("deleteTestFinished")
 
 end
 
-sys.taskInit(function()
-    local tag = "HttpTest"
-    sys.waitUntil("IP_READY_IND")
-    log.info(tag, "成功访问网络, Http测试开始")
-    if testConfig.testMode == "single" then
-        httpTestTask()
-    elseif testConfig.testMode == "loop" then
-        while true do
-            if socket.isReady() then httpTestTask() end
-            sys.wait(100)
-        end
+function test()
+    if http == nil then
+        log.error(tag, "this fireware is not support http")
+        return
     end
-end)
+    local tag = "httpTest"
+    log.info(tag, "START")
+    httpTestTask()
+    log.info(tag, "DONE")
+end
