@@ -4,11 +4,11 @@ local tag = "uartTest"
 
 local uartList = {}
 
-if MOD_TYPE == "air101" then
+if MOD_TYPE == "AIR101" then
     uartList = {1, 2, 3, 4}
-elseif MOD_TYPE == "air103" then
+elseif MOD_TYPE == "AIR103" then
     uartList = {1, 2, 3, 4, 5}
-elseif MOD_TYPE == "air105" then
+elseif MOD_TYPE == "AIR105" then
     uartList = {1, 2, 3}
 elseif MOD_TYPE == "ESP32C3" then
     uartList = {1}

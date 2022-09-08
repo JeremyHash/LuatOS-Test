@@ -4,7 +4,7 @@ local tag = "mcuTest"
 
 local clkList = {}
 
-if MOD_TYPE == "air101" or MOD_TYPE == "air103" then clkList = {2, 80, 240} end
+if MOD_TYPE == "AIR101" or MOD_TYPE == "AIR103" then clkList = {2, 80, 240} end
 
 function mcuTest.test()
     if mcu == nil then
@@ -12,7 +12,7 @@ function mcuTest.test()
         return
     end
     log.info(tag, "START")
-    if MOD_TYPE == "air101" or MOD_TYPE == "air103" then
+    if MOD_TYPE == "AIR101" or MOD_TYPE == "AIR103" then
         for _, v in pairs(clkList) do
             assert(mcu.setClk(v) == true, tag .. ".setClk ERROR")
             assert(mcu.getClk(v) == v, tag .. ".getClk ERROR")

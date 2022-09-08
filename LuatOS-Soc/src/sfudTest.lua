@@ -9,7 +9,7 @@ function sfudTest.test()
     end
     log.info(tag, "START")
     local spiFlash
-    if MOD_TYPE == "air101" then
+    if MOD_TYPE == "AIR101" then
         spiFlash = spi.deviceSetup(0, 17, 0, 0, 8, 2 * 1000 * 1000, spi.MSB, 1,
                                    1)
     elseif MOD_TYPE == "ESP32C3" then

@@ -20,10 +20,10 @@ function spiTest.test()
     end
     log.info(tag, "START")
     local spiID, CS_GPIO
-    if MOD_TYPE == "air101" then
+    if MOD_TYPE == "AIR101" then
         spiID = 0
         CS_GPIO = 17
-    elseif MOD_TYPE == "air105" then
+    elseif MOD_TYPE == "AIR105" then
         spiID = 5
         CS_GPIO = 46
     elseif MOD_TYPE == "ESP32C3" then

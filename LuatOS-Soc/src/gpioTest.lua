@@ -2,15 +2,15 @@ local gpioTest = {}
 
 local tag = "gpioTest"
 local gpioList = {}
-if MOD_TYPE == "air101" then
+if MOD_TYPE == "AIR101" then
     gpioList = {0, 1, 4, 7, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27}
-elseif MOD_TYPE == "air103" then
+elseif MOD_TYPE == "AIR103" then
     gpioList = {
         01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18,
         19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 37, 38,
         40, 41, 42
     }
-elseif MOD_TYPE == "air105" then
+elseif MOD_TYPE == "AIR105" then
     gpioList = {
         2, 3, 5, 6, 7, 8, 9, 10, 16, 17, 18, 19, 20, 21, 28, 29, 30, 31, 32, 33,
         36, 37, 38, 39, 40, 41, 44, 45, 36, 37, 49, 50, 51, 52, 53, 56, 57, 58,

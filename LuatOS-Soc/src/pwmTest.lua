@@ -1,14 +1,14 @@
 local pwmTest = {}
 
 local tag = "pwmTest"
-if MOD_TYPE == "air101" then
+if MOD_TYPE == "AIR101" then
     pwmList1 = {0, 1, 2, 3, 4}
-elseif MOD_TYPE == "air103" then
+elseif MOD_TYPE == "AIR103" then
     pwmList1 = {00, 01, 02, 03, 04}
     pwmList2 = {10, 11, 12, 13, 14}
     pwmList3 = {20, 21, 22, 23, 24}
     pwmList4 = {30, 31, 32, 33, 34}
-elseif MOD_TYPE == "air105" then
+elseif MOD_TYPE == "AIR105" then
     pwmList1 = {0, 1, 2, 3, 4, 5, 6, 7}
 end
 

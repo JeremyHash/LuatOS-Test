@@ -9,18 +9,16 @@ function lcdTest.test()
     end
     log.info(tag, "START")
     local spiLcd
-    if MOD_TYPE == "air101" then
-        spiLcd = spi.deviceSetup(5, pin.PC14, 0, 0, 8, 96 * 1000 * 1000,
-                                 spi.MSB, 1, 1)
-    elseif MOD_TYPE == "air105" then
-        spiLcd = spi.deviceSetup(5, pin.PC14, 0, 0, 8, 96 * 1000 * 1000,
-                                 spi.MSB, 1, 1)
+    if MOD_TYPE == "AIR101" then
+        spiLcd = spi.deviceSetup(5, pin.PC14, 0, 0, 8, 96 * 1000 * 1000, spi.MSB, 1, 1)
+    elseif MOD_TYPE == "AIR105" then
+        spiLcd = spi.deviceSetup(5, pin.PC14, 0, 0, 8, 96 * 1000 * 1000, spi.MSB, 1, 1)
     elseif MOD_TYPE == "ESP32C3" then
         spiLcd = spi.deviceSetup(2, 7, 0, 0, 8, 60 * 1000 * 1000, spi.MSB, 1, 1)
     end
     assert(spiLcd ~= nil, tag .. ".deviceSetup ERROR")
-    if MOD_TYPE == "air101" then
-    elseif MOD_TYPE == "air105" then
+    if MOD_TYPE == "AIR101" then
+    elseif MOD_TYPE == "AIR105" then
         assert(lcd.init("gc9306", {
             port = "device",
             pin_dc = pin.PE8,
@@ -67,6 +65,8 @@ function lcdTest.test()
         --     yoffset = 1
         -- }, spiLcd) == true, tag .. ".lcd.init ERROR")
     end
+
+    lcd.setFont(fonts.get("sarasa_regular_12"))
     log.info("lcd.drawLine", lcd.drawLine(20, 20, 150, 20, 0x001F))
     log.info("lcd.drawRectangle", lcd.drawRectangle(20, 40, 120, 70, 0xF800))
     log.info("lcd.drawCircle", lcd.drawCircle(50, 50, 20, 0x0CE0))
@@ -114,7 +114,7 @@ function lcdTest.test()
     --     sys.wait(100)
     -- end
     -- lcd.draw(20, 30, 120, 33, zbuff.create({101, 4, 16}, 0x001F))
-
+    
     log.info(tag .. ".close", "关闭显示屏")
     lcd.close()
     log.info(tag, "DONE")

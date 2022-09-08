@@ -4,9 +4,9 @@ local tag = "lvglTest"
 
 function lvglTest.test()
     local spi_lcd
-    if MOD_TYPE == "air101" then
+    if MOD_TYPE == "AIR101" then
         spi_lcd = spi.deviceSetup(5, pin.PC14, 0, 0, 8, 96 * 1000 * 1000, spi.MSB, 1, 1)
-    elseif MOD_TYPE == "air105" then
+    elseif MOD_TYPE == "AIR105" then
         spi_lcd = spi.deviceSetup(5, pin.PC14, 0, 0, 8, 96 * 1000 * 1000, spi.MSB, 1, 1)
     elseif MOD_TYPE == "ESP32C3" then
         spi_lcd = spi.deviceSetup(2, 7, 0, 0, 8, 60 * 1000 * 1000, spi.MSB, 1, 1)
@@ -28,8 +28,8 @@ function lvglTest.test()
     -- lcd.init("st7735v",{port = "device",pin_dc = pin.PC12,pin_rst = pin.PC05,pin_pwr = pin.PC04,direction = 1,w = 160,h = 80,xoffset = 0,yoffset = 24},spi_lcd))
     -- log.info("lcd.init",
     -- lcd.init("st7735s",{port = "device",pin_dc = pin.PC12,pin_rst = pin.PC05,pin_pwr = pin.PC04,direction = 2,w = 160,h = 80,xoffset = 1,yoffset = 26},spi_lcd))
-    if MOD_TYPE == "air101" then
-    elseif MOD_TYPE == "air105" then
+    if MOD_TYPE == "AIR101" then
+    elseif MOD_TYPE == "AIR105" then
     elseif MOD_TYPE == "ESP32C3" then
         -- assert(lcd.init("gc9306", {
         --     port = "device",

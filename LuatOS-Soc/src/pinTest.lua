@@ -4,7 +4,7 @@ local tag = "pinTest"
 
 local pinList = {}
 
-if MOD_TYPE == "air101" then
+if MOD_TYPE == "AIR101" then
     pinList = {
         PA00 = 0,
         PA01 = 1,
@@ -23,7 +23,7 @@ if MOD_TYPE == "air101" then
         PB10 = 26,
         PB11 = 27
     }
-elseif MOD_TYPE == "air103" then
+elseif MOD_TYPE == "AIR103" then
     pinList = {
         PA01 = 01,
         PA02 = 02,
@@ -65,7 +65,7 @@ elseif MOD_TYPE == "air103" then
         PB25 = 41,
         PB26 = 42
     }
-elseif MOD_TYPE == "air105" then
+elseif MOD_TYPE == "AIR105" then
     pinList = {
         PA2 = 2,
         PA3 = 3,

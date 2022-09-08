@@ -68,7 +68,7 @@ function ioTest.test()
     log.info(tag, "START")
     if MOD_TYPE == "ESP32C3" then
         fsTest("/spiffs")
-    elseif MOD_TYPE == "air105" then
+    elseif MOD_TYPE == "AIR105" then
         fsTest("/")
     end
     log.info(tag, "DONE")
